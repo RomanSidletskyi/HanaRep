@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_SAP_SOLUTIONS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_SAP_LOB"/>
+  <metadata changedAt="2016-12-09 13:01:04.119"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LOB" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="SOLUTION_NAME" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SOLUTION_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_LOB" columnName="VALUE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LOB"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_LOB"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_LU_LOB"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LOB"/>
+        <leftColumns>
+          <columnName>ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>LOB</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="referential"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_LOB" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="300" y="33"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_LOB" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="60" y="38"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

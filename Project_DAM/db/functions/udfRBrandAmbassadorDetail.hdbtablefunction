@@ -1,0 +1,152 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::udfRBrandAmbassadorDetail" (
+                                         startDate varchar(100),
+										 endDate  varchar(100),
+										 assetType VARCHAR(200),
+										 assetRegionName varchar(100),
+										 userRegionName varchar(100),
+										 language_  varchar(100),
+										 userId varchar(100),
+										 type  varchar(15),
+										 dois varchar(2000)
+										  ) 
+	RETURNS table 
+				( 
+				"SAP Digital ID" varchar(40) ,
+				"Asset Name" varchar(256),
+				"Asset Type" varchar(256),
+				"Asset Region" varchar(256),
+				"Asset Language" varchar(256),
+				"Internal Downloads" INT,
+				"External Downloads" INT,
+				"Total Downloads"  INT,
+				"Inapp Views" INT,
+				"Views" INT,
+				"Referal pages info" varchar(256),
+				"Expiration Date"  VARCHAR(10),
+				"Downloads North America" INT,
+				"Downloads Central & South America" INT,
+				"Downloads Europe" INT,
+				"Downloads Africa & Middle East" INT,
+				"Downloads Asia Pacific & Japan" INT,
+				"Downloads Global" INT,
+				"Inside of SAP w/o Region" INT,
+				"Outside of SAP w/o Region" INT
+							
+				)  
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+
+RETURN 
+
+ SELECT 
+ DISTINCT
+  U.SAP_DIGITAL_ID "SAP Digital ID"
+ ,u.asset_name "Asset Name"
+ ,u.ASSET_TYPE as "Asset Type"
+ ,region.REGION_COUNTRY as "Asset Region" 
+ ,lang.ASSET_LANGUAGE as "Asset Language" 
+ ,IFNULL(internal_amount,0) as "Internal Downloads"
+,IFNULL(external_amount,0) as "External Downloads"
+,IFNULL(wldownloads.amount,0) "Total Downloads"
+,IFNULL(wlpreview.amount,0) as "Inapp Views" 
+,IFNULL(wltotalpreview.totalpreviewamount,0) as "Views"
+,wldownloads.REFERING_APP AS "Referal pages info"
+,TO_VARCHAR(CASE WHEN EXPIRATION_DATE='' THEN '1900-01-01' ELSE EXPIRATION_DATE END, 'YYYY-MM-DD') "Expiration Date"
+
+,AmericasNorth "Downloads North America"
+,AmericasSouth "Downloads Central & South America"
+,Europe "Downloads Europe"
+,Africa "Downloads Africa & Middle East"
+,AsiaJapan "Downloads Asia Pacific & Japan"
+,"Global" as "Downloads Global"
+,"Inside of SAP w/o Region"
+,"Outside of SAP w/o Region"
+
+ FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" u
+INNER JOIN TUSER4."SAP_DM_APPROVAL_DATA" AS sdad ON sdad.APPROVAL_STATUS_CD='Approved' AND sdad.uoi_id=u.uoi_id
+LEFT JOIN 
+		 (  SELECT WD.REFERING_APP,
+		 		 SUM(CASE WHEN WD.USER_LOGIN =''  then 1 
+							 ELSE 0 
+		 		      END) external_amount,
+				 SUM(CASE WHEN IFNULL(WD.USER_LOGIN,'')!='' THEN 1 
+				          ELSE 0 
+				     END) as internal_amount,		
+		           COUNT(1) as amount,
+		  		   WD.logical_uoi_id,
+					SUM(CASE WHEN WD.USER_REGION_NAME='North America' THEN 1 ELSE 0 END) AmericasNorth,
+					SUM(CASE WHEN WD.USER_REGION_NAME='Latin American and Caribbean' THEN 1 ELSE 0 END) AmericasSouth,
+					SUM(CASE WHEN WD.USER_REGION_NAME='Europe' THEN 1 ELSE 0 END) Europe,
+					SUM(CASE WHEN WD.USER_REGION_NAME='Africa and Middle East' THEN 1 ELSE 0 END) Africa,
+					SUM(CASE WHEN WD.USER_REGION_NAME='Asia Pacific and Japan' THEN 1 ELSE 0 END) AsiaJapan,
+					SUM(CASE WHEN WD.USER_REGION_NAME='Global' THEN 1 ELSE 0 END) "Global",
+					
+					SUM(CASE WHEN IFNULL(WD.USER_REGION_NAME,WD."RegionbyIP_NAME") !='' THEN 0
+					         WHEN IFNULL(WD.USER_LOGIN,'')='' AND ( IFNULL(WD."Region_IDbyIP",0)=0 or WD."Region_IDbyIP"=-1) THEN 1 
+					         ELSE 0 
+					     END) as "Outside of SAP w/o Region",
+				
+					SUM(CASE  WHEN IFNULL(WD.USER_REGION_NAME,WD."RegionbyIP_NAME") !='' THEN 0
+					          WHEN IFNULL(WD.USER_LOGIN,'')!='' AND  ( IFNULL(WD."Region_IDbyIP",0)=0 or WD."Region_IDbyIP"=-1) AND 
+								         (IFNULL(WD.USERID,'')=''  OR IFNULL(WD.USER_REGION_NAME,'')=''  OR WD.USER_REGION_NAME='N/A' )
+								        THEN 1 
+							  ELSE 0 
+					      END) as "Inside of SAP w/o Region"
+					
+			FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_WORKFLOW_LOGS_DOWNLOAD" WD
+			 WHERE  ( WD.DOWNLOAD_TIME >= :startdate AND WD.DOWNLOAD_TIME <ADD_DAYS(:enddate,1) ) AND 
+			        ('All'=:userRegionName OR WD.USER_REGION_NAME=:userRegionName)
+			        AND WD.REFERING_APP LIKE 'https://jam4.sapjam.com/%'
+			 group by WD.REFERING_APP,WD.logical_uoi_id
+  ) wldownloads ON u.logical_uoi_id=wldownloads.logical_uoi_id
+LEFT JOIN 
+		 ( SELECT count(9) as totalpreviewamount,
+		          CV.logical_uoi_id
+		   FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_WORKFLOW_LOGS_CONTENT_VIEW" CV 
+		   WHERE 
+		      ( CV.CONTENT_VIEW_TIME >= :startdate AND CV.CONTENT_VIEW_TIME <ADD_DAYS(:enddate,1) ) AND 
+		      ('All'=:userRegionName or  CV.REGION_NAME=:userRegionName or (:userRegionName='N/A' AND  IFNULL(CV.REGION_NAME,'')=''))
+		      AND CV.REFERING_APP LIKE 'https://jam4.sapjam.com/%'
+		   group by CV.logical_uoi_id
+  		 ) wltotalpreview ON u.logical_uoi_id=wltotalpreview.logical_uoi_id
+LEFT JOIN 
+
+		 ( SELECT count(9) as amount,
+		          u.logical_uoi_id
+		   FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_WORKFLOW_LOGS_PREVIEW" u
+		   WHERE 
+		      ( u.PREVIEW_TIME >= :startdate AND u.PREVIEW_TIME <ADD_DAYS(:enddate,1) ) AND 
+		      ('All'=:userRegionName or  u.REGION_NAME=:userRegionName or (:userRegionName='N/A' AND  IFNULL(u.REGION_NAME,'')=''))
+		   group by u.logical_uoi_id
+  		 ) wlpreview ON u.logical_uoi_id=wlpreview.logical_uoi_id
+
+
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_REGION_COUNTRY" RC ON U.UOI_ID=RC.UOI_ID
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_COMMON_METADATA" L ON U.UOI_ID=L.UOI_ID
+
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Calculation_View/CV_REGION_COUNTRY" region on  region.uoi_id=u.uoi_id 
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Calculation_View/CV_LENGUAGE" lang on  lang.uoi_id=u.uoi_id 
+INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_WORKFLOW_LOGS_DOWNLOAD" WD on u.logical_uoi_id=WD.logical_uoi_id
+INNER JOIN  tuser4.SECURITY_POLICY_UOIS UOIS_P ON UOIS_P.UOI_ID=U.UOI_ID
+INNER JOIN  tuser4.SECURITY_POLICIES SP ON  SP.ID=UOIS_P.SEC_POLICY_ID
+
+WHERE WD.DOWNLOAD_TIME >= :startdate AND 
+      WD.DOWNLOAD_TIME <ADD_DAYS(:enddate,1) AND
+      (UPPER(concat(concat(',',REPLACE(REPLACE(:dois ,CHAR(10),''),' ','')),',')) like UPPER(concat(concat('%,',u.SAP_DIGITAL_ID),',%'))  OR :type = 'NotDOISList')  AND
+      
+      (RC.REGION_NAME=:assetRegionName or :assetRegionName='All' ) AND
+      (IFNULL(wldownloads.amount,0)!=0 OR IFNULL(wltotalpreview.totalpreviewamount,0)!=0 ) AND
+      
+      (EXISTS( select CO.USER_ID from "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" CO  
+                                 where CO.EMAIL_ADDR=U.CONTENT_EMAIL and :userId = CO.USER_ID) 
+       OR :userId=U.UPLOADED_USER_ID OR :type != 'MyAssets'
+       ) AND
+      u.MODEL_ID !='600013' AND
+      (U.ASSET_TYPE =:assettype OR 'All'=:assettype) AND
+      (L.ASSET_LANGUAGE=:language_ OR 'All'=:language_) AND
+       SP.NAME ='JAM' AND u.AUTHORIZATION = 'JAM'  ;
+
+
+
+END;

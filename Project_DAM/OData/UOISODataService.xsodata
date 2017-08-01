@@ -1,0 +1,145 @@
+service  { 
+"Project_DAM.db.VIEWS.Calculation_View::CV_ASSET_TYPE_COUNT"
+    //Full path to your Attribute View & its Name  
+   as "AssetTypeCount"                  //Name of Entity Type     
+   with ( "ASSET_TYPE","COUNT") 
+   key ("ASSET_TYPE");
+   
+   "Project_DAM.db.VIEWS.Calculation_View::CV_ASSETS_CONTENT"
+    //Full path to your Attribute View & its Name  
+   as "AssetCollection"                  //Name of Entity Type     
+   with ( "UOI_ID",
+   		  "SAP_DIGITAL_ID",
+   		  "ASSET_NAME",
+   		  "ASSET_DESCRIPTION",
+   		  "UPLOAD_DATE",
+   		  "Last_Modified_Date",
+   		  "EXPIRATION_DATE",
+   		  "DUPLOAD_DATE",
+   		  "DLast_Modified_Date",
+   		  "DEXPIRATION_DATE",
+   		  "UPLOADED_BY",
+   		  "CONTENT_EMAIL",
+   		  "CONTENT_OWNER",
+   		  
+   		  "UPLOADED_LOGIN_ID",
+   		  "CONTENT_OWNER_LOGINS", 
+   		  "SUBSCRIPTION_LOGINS", 
+   		  
+   		  "APPROVAL_STATUS",
+   		  "APPROVER_NAME",
+   		  
+   		  "ASSET_TYPE",  
+   		  "CONTENT_CATEGORY",
+   		  "SOLUTION_PRODUCT",
+   		  "INDUSTRY",
+   		  "REGION_COUNTRY",
+   		  "SERVICES",
+   		  "ASSET_LANGUAGE",
+   		  "SOLUTION",
+   		  
+   		  "ASSET_LOCATION",
+   		  "IS_EXPIRED",
+   		  "IS_APPROVED",
+   		  "AUTHORIZATION",
+   		  "EXTENSION",
+   		  
+   		  "MARKETING_PROGRAM_ID",
+   		  "PROGRAM_NAME",
+   		  "CRM_WBS_ELEMEMENT",
+   		  "CAMPAIGN_NAME",
+   		  "TASK",
+          "TOPIC",
+          "DOCUMENT_FORMAT",
+          "POLICY_INFORMATION", 
+          "TYPE",
+          "KEYWORDS",
+          "EVENT",
+          "COMPANY_SIZE",
+          "MARKETING_PLAN",
+          "BUSINESS_PARTNER_NUMBER",
+          "CONTENT_ROLE"
+   		  )                //List of exposed columns
+   key  ("UOI_ID");                    //Key relevant for Attribute view   
+   
+   "TUSER4"."SAP_MKT_LU_USAGE"
+   as "Authorizations"                  //Name of Entity Type    
+    with ( "CODE",
+        "NAME");
+        
+   "TUSER4"."SAP_MKT_LU_ASSET"
+   as "AssetTypes"                  //Name of Entity Type    
+    with ( "CODE",
+        "NAME");
+    
+     "TUSER4"."SAP_LU_REGION_COUNTRY"
+    //Full path to your Attribute View & its Name  
+   as "Regions"                  //Name of Entity Type    
+    with ( "ID", "NAME");
+    
+     "TUSER4"."CRM_WBS_ELEMENT"
+    //Full path to your Attribute View & its Name  
+   as "CrmWbsElements"                  //Name of Entity Type    
+    with ( "CAMPAIGN_ID", "CRM_WBS_CODE");
+    
+    
+    "TUSER4"."SAP_CMP_DOCUMENT_FORMAT"
+    as "DocumentFormats"
+    with ("ID","VALUE");
+    
+    "TUSER4"."SAP_LU_DM_ASSET_TYPE"
+    as "ContentCategories"
+    with ("CODE","NAME");
+    
+    "TUSER4"."SAP_LU_TYPE"
+    as "Types"
+    with ("ID","VALUE");
+    
+    "TUSER4"."SAP_LU_TOPIC"
+    as "Topics"
+    with ("ID","VALUE");
+    
+    "TUSER4"."SAP_LU_LANGUAGE"
+    as "Languages"
+    with ("CODE","NAME");
+    
+    "TUSER4"."SAP_LU_SOLUTION"
+    as "SolutionProducts"
+    with ("CODE","NAME");
+    
+     "TUSER4"."SAP_LU_SERVICES"
+    as "Services"
+    with ("CODE","NAME");
+    
+     "TUSER4"."SAP_LU_LOB"
+    as "Solutions"
+    with ("ID","VALUE");
+    
+     "TUSER4"."SAP_LU_INDUSTRY"
+    as "Industries"
+    with ("ID","VALUE");
+    
+    "TUSER4"."SAP_CMP_TGP_INFORMATION"
+    as "PolicyInformation"
+    with ("ID","VALUE");
+    
+    "TUSER4"."SAP_LU_EVENT"
+    as "Events"
+    with ("ID","VALUE");
+    
+    "TUSER4"."SAP_LU_MARKETING_PLAN"
+    as "IntegratedPlans"
+    with ("ID","VALUE");
+    
+    "TUSER4"."SAP_LU_TARGET_SEGMENT"
+    as "CompanySizes"
+    with ("CODE","NAME");
+    
+    "TUSER4"."SAP_LU_TASK"
+    as "Tasks"
+    with ("ID","VALUE");
+}
+
+annotations {
+enable OData4SAP;
+}

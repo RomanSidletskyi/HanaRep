@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_UOISMETADATA" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" generateConcatAttributes="false" visibility="internal" dimensionType="Standard" hierarchiesSQLEnabled="false" translationRelevant="true">
+  <origin/>
+  <descriptions defaultDescription="AV_UOISMETADATA"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="SAP_DIGITAL_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SAP_DIGITAL_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="DOI"/>
+    </attribute>
+    <attribute id="ASSET_NAME" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSET_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="ASSET_NAME"/>
+    </attribute>
+    <attribute id="ASSET_DESCRIPTION" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSET_DESCRIPTION"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="DESCR"/>
+    </attribute>
+    <attribute id="IS_EXPIRED" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IS_EXPIRED"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="IS_EXPIRED"/>
+    </attribute>
+    <attribute id="ASSET_LOCATION" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSET_LOCATION"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="MASTER_OBJ_NAME_LOC"/>
+    </attribute>
+    <attribute id="Last_Modified_Date" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Last_Modified_Date"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="METADATA_STATE_DT"/>
+    </attribute>
+    <attribute id="CONTENT_OWNER" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CONTACT_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CONTACT_NAME"/>
+    </attribute>
+    <attribute id="CONTENT_EMAIL" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CONTACT_EMAIL"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CONTACT_EMAIL"/>
+    </attribute>
+    <attribute id="UPLOADED_LOGIN_ID" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="LOGIN_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="USERS" columnName="LOGIN_ID"/>
+    </attribute>
+    <attribute id="UPLOADED_BY" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="USERS" columnName="NAME"/>
+    </attribute>
+    <attribute id="EXPIRATION_DATE" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EXPIRATION_DATE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="EXPIRATION_DT"/>
+    </attribute>
+    <attribute id="ASSET_TYPE" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSET_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="sap_mkt_lu_asset" columnName="NAME"/>
+    </attribute>
+    <attribute id="CRM_WBS_ELEMEMENT" order="14" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CRM_WBS_ELEMEMENT"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CRM_WBS_ELEMEMENT"/>
+    </attribute>
+    <attribute id="CAMPAIGN_NAME" order="15" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAMPAIGN_NAME"/>
+    </attribute>
+    <attribute id="UPLOADED_USER_ID" order="16" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="USER_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="USERS" columnName="USER_ID"/>
+    </attribute>
+    <attribute id="LOGICAL_UOI_ID" order="17" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="LOGICAL_UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="LOGICAL_UOI_ID"/>
+    </attribute>
+    <attribute id="UPLOAD_DATE" order="18" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UPLOAD_DATE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="IMPORT_DT"/>
+    </attribute>
+    <attribute id="CONTENT_CLASS" order="19" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CONTENT_CLASS"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMP_USAGE_SCOPE" columnName="VALUE"/>
+    </attribute>
+    <attribute id="CONTENT_STATE" order="20" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CONTENT_STATE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="CONTENT_STATE"/>
+    </attribute>
+    <attribute id="EXTERNAL_SOURCE_LINK" order="21" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EXTERNAL_SOURCE_LINK"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="EXTERNAL_SOURCE_LINK"/>
+    </attribute>
+    <attribute id="AUTHORIZATION" order="22" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="AUTHORIZATION"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_MKT_LU_USAGE" columnName="NAME"/>
+    </attribute>
+    <attribute id="MASTER_OBJ_NAME" order="23" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="MASTER_OBJ_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="MASTER_OBJ_NAME"/>
+    </attribute>
+    <attribute id="USAGE_SCOPE" order="25" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="USAGE_SCOPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="USAGE_SCOPE"/>
+    </attribute>
+    <attribute id="TYPE" order="26" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_TYPE" columnName="VALUE"/>
+    </attribute>
+    <attribute id="MARKETING_PROGRAM_ID" order="27" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="MARKETING_PROGRAM_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="PROGRAM_ID"/>
+    </attribute>
+    <attribute id="PROGRAM_NAME" order="28" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PROGRAM_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="PROGRAMNAME_CD"/>
+    </attribute>
+    <attribute id="CONTENT_ROLE" order="29" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CONTENT_ROLE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="CONTENT_ROLE"/>
+    </attribute>
+    <attribute id="MODEL_ID" order="30" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="MODEL_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="MODEL_ID"/>
+    </attribute>
+    <attribute id="CONTENT_TYPE" order="31" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CONTENT_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="CONTENT_TYPE"/>
+    </attribute>
+    <attribute id="USAGE" order="32" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="USAGE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="USAGE"/>
+    </attribute>
+    <attribute id="LASER_ID" order="33" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="LASER_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="LASER_ID"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes>
+    <calculatedAttribute id="EXTENSION" hidden="false" order="24" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EXTENSE"/>
+      <keyCalculation datatype="VARCHAR" length="3" expressionLanguage="COLUMN_ENGINE">
+        <formula>upper( midstr( rightstru(&quot;MASTER_OBJ_NAME&quot;, 3), if(instr(rightstru(&quot;MASTER_OBJ_NAME&quot;, 3), '.')>0,instr(rightstru(&quot;MASTER_OBJ_NAME&quot;, 3), '.')+1,1), 3 ) )</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+  </calculatedAttributes>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="USERS"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="sap_mkt_lu_asset"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="UOIS"/>
+        <columnFilter columnName="IS_LATEST_VERSION">
+          <valueFilter xsi:type="AccessControl:SingleValueFilter" including="true" value="Y"/>
+        </columnFilter>
+        <columnFilter columnName="CONTENT_STATE">
+          <valueFilter xsi:type="AccessControl:SingleValueFilter" including="false" value="DELETED"/>
+        </columnFilter>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMP_USAGE_SCOPE"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_MKT_LU_USAGE"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_TYPE"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="sap_mkt_lu_asset"/>
+        <leftColumns>
+          <columnName>ASSET_CD</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>CODE</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="UOIS"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+        <leftColumns>
+          <columnName>UOI_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>UOI_ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="referential"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="UOIS"/>
+        <rightTable schemaName="TUSER4" columnObjectName="USERS"/>
+        <leftColumns>
+          <columnName>IMPORT_USER_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>USER_ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="UOIS"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_CMP_USAGE_SCOPE"/>
+        <leftColumns>
+          <columnName>USAGE_SCOPE</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="UOIS"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_MKT_LU_USAGE"/>
+        <leftColumns>
+          <columnName>USAGE</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>CODE</columnName>
+        </rightColumns>
+        <properties cardinality="C1_N" joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_TYPE"/>
+        <leftColumns>
+          <columnName>SAP_TYPE</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_DM_METADATA" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="489" y="28"/>
+        </shape>
+        <shape modelObjectName="USERS" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="822" y="31"/>
+        </shape>
+        <shape modelObjectName="sap_mkt_lu_asset" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="850" y="246"/>
+        </shape>
+        <shape modelObjectName="UOIS" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="96" y="28"/>
+        </shape>
+        <shape modelObjectName="SAP_CMP_USAGE_SCOPE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="481" y="1333"/>
+        </shape>
+        <shape modelObjectName="SAP_MKT_LU_USAGE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="899" y="497"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_TYPE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="806" y="402"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

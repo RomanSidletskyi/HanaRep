@@ -1,0 +1,46 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::udfRBrandShareSubmitterAmount"      
+                                       (startdate varchar(100),
+                                        enddate  varchar(100),
+                                        submitterrole varchar(200),
+                                        userid varchar(100)
+                                        ) 
+  RETURNS table (
+                    "Brand Team" INT,
+                    "Brand Ambassadors" INT
+              )  
+    LANGUAGE SQLSCRIPT 
+    SQL SECURITY INVOKER AS
+BEGIN
+
+RETURN  
+
+SELECT 
+  sum(case when fu.USER_GROUP = 'BT' then 1 else 0 end) as "Brand Team",
+  sum(case when fu.USER_GROUP = 'BA' then 1 else 0 end) as "Brand Ambassadors"
+FROM "TUSER4"."BRAND_FEEDBACK_FORM" f
+INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" u on u.uoi_id = f.UOI_ID
+JOIN (
+  SELECT DISTINCT f.ID, ug.USER_NAME, ug.USER_GROUP 
+  FROM  "TUSER4"."BRAND_FEEDBACK_FORM" f
+  JOIN (
+     SELECT u.USER_ID as USER_ID, concat(concat(FIRST_NAME, ' '),LAST_NAME) as USER_NAME,
+         case when ug.NAME = 'Brand team' then 'BT' else 'BA' end as USER_GROUP, ug.NAME 
+      FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+      JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+      JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+      WHERE ug.NAME in ('Brand team', 'Brand Ambassador')--   and u.GROUP_ID <> 1 -- EXCLUDE ADMINs
+     ) ug on ug.USER_ID = f.CREATED_BY
+   WHERE f.STATUS <> 'DELETED'
+      AND f.CREATED_DATE >= :startdate
+      AND f.CREATED_DATE < ADD_DAYS(:enddate,1)
+      AND (ug.USER_GROUP = :submitterrole or 'All' = :submitterrole) -- SubmittedBy (All/ Brand Team/ Brand Ambassador)
+      AND (:userid in (
+                  SELECT u.USER_ID as USER_ID
+                  FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+                  JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                  JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                  WHERE ug.NAME in ('Administrator','Brand team')
+               ) or (f.CREATED_BY = :userid)or (:userid = 'All'))
+ ) fu on fu.ID = f.ID;
+
+END;

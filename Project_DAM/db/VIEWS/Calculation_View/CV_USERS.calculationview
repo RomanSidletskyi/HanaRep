@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_USERS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="crossClient" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="reportingEnabled" calculationScenarioType="SCRIPT_BASED" dataCategory="CUBE" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_S"/>
+  <metadata changedAt="2017-07-12 15:32:11.41"/>
+  <defaultSchema schemaName="_SYS_BIC"/>
+  <localVariables>
+    <variable id="P_GROUP" parameter="true">
+      <descriptions defaultDescription="P_GROUP"/>
+      <variableProperties datatype="VARCHAR" defaultValue="10006" length="10" mandatory="true">
+        <valueDomain type="AttributeValue">
+          <attribute name="GROUP_ID"/>
+        </valueDomain>
+        <selection multiLine="false" type="SingleValue"/>
+      </variableProperties>
+    </variable>
+  </localVariables>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="VARCHAR" id="USER_ID" length="10"/>
+        <viewAttribute datatype="VARCHAR" id="LOGIN_ID" length="55"/>
+        <viewAttribute datatype="VARCHAR" id="EMAIL_ADDR" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="NAME" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="GROUP_ID" length="10"/>
+        <viewAttribute datatype="VARCHAR" id="IS_DISABLED" length="1"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <localVariable>#P_GROUP</localVariable>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+  var_out = SELECT DISTINCT U.USER_ID as &quot;USER_ID&quot;,
+                            U.LOGIN_ID as &quot;LOGIN_ID&quot;,
+                            P.EMAIL_ADDR as &quot;EMAIL_ADDR&quot;,
+                            U.NAME as &quot;NAME&quot;,
+                            U.GROUP_ID as &quot;GROUP_ID&quot;,
+                            IS_DISABLED as &quot;IS_DISABLED&quot;
+                           
+    FROM &quot;TUSER4&quot;.&quot;PARTICIPANTS&quot; P
+    inner join &quot;TUSER4&quot;.&quot;USERS&quot; U on U.USER_ID=P.TEAMS_USER_ID;
+
+
+END /********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="USER_ID" order="1">
+        <descriptions defaultDescription="USER_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="USER_ID"/>
+      </attribute>
+      <attribute id="LOGIN_ID" order="2">
+        <descriptions defaultDescription="LOGIN_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="LOGIN_ID"/>
+      </attribute>
+      <attribute id="EMAIL_ADDR" order="3">
+        <descriptions defaultDescription="EMAIL_ADDR"/>
+        <keyMapping columnObjectName="Script_View" columnName="EMAIL_ADDR"/>
+      </attribute>
+      <attribute id="NAME" order="4">
+        <descriptions defaultDescription="NAME"/>
+        <keyMapping columnObjectName="Script_View" columnName="NAME"/>
+      </attribute>
+      <attribute id="GROUP_ID" order="5">
+        <descriptions defaultDescription="GROUP_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="GROUP_ID"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures>
+      <measure id="IS_DISABLED" order="6" aggregationType="max" measureType="simple">
+        <descriptions defaultDescription="IS_DISABLED"/>
+        <measureMapping columnObjectName="Script_View" columnName="IS_DISABLED"/>
+      </measure>
+    </baseMeasures>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

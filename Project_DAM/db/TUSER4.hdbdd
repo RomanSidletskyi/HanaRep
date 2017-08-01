@@ -1,0 +1,1503 @@
+namespace Project_DAM.db;
+
+@Schema: 'TUSER4'
+
+context TUSER4 {
+	// Base types
+	
+	//------------ ID columns types ------------
+	type numeric_identifier : Decimal(10, 0);
+	
+	type bigint_identifier : Integer64;
+	
+	type model_identifier : String(100);
+	
+	type uoi_identifier : String(40);
+	
+	//------------ Other column types ------------	
+	
+	type date : UTCTimestamp;
+	
+	type flag_string : String(1);
+	
+	type state_string : String(8);
+	
+	type extra_small_string : String(10);
+	
+	type small_string : String(50);
+	
+	type name_string : String(80);
+	
+	type common_string : String(100);
+	
+	type medium_string : String(200);
+
+	type description_string : String(249);
+
+	type large_string : String(2000);
+	
+	type extra_large_string : String(4000);
+	
+	type text : LargeString;
+	
+	//------------ Entities declaration ------------
+	
+/*	// Technical UOI_XXX entities
+	@Catalog.tableType: #COLUMN
+	entity UOI_STATUS {
+		key CODE: state_string;
+			NAME: name_string not null;
+			DESCR: description_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity UOI_TYPES {
+		key CODE: state_string;
+			NAME: name_string not null;
+			DESCR: description_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity UOI_CONTENT_STATES {
+		key CODE: state_string;
+			NAME: name_string not null;
+			DESCR: description_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity UOI_CONTENT_TYPES {
+		key CODE: state_string;
+			NAME: name_string not null;
+			DESCR: description_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity UOI_METADATA_STATES {
+		key CODE: state_string;
+			NAME: name_string not null;
+			DESCR: description_string;
+	};
+	
+	//------------ Entities ------------
+	
+	@Catalog.tableType: #COLUMN
+	entity MODELS {
+		key ID: numeric_identifier;
+			MODEL_ID: model_identifier not null;
+			NAME: name_string not null;
+			DESCR: description_string;
+			NOTES: large_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity GROUPS {
+		key ID: numeric_identifier;
+			NAME: name_string;// not null;
+			DESCR: description_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity USERS {
+		key USER_ID: name_string;
+			LOGIN_ID: name_string not null;
+			NAME: name_string not null;
+			GROUP_ID: numeric_identifier not null;
+			CREATE_DT: date;
+			IS_DISABLED: flag_string not null;
+//			DESCR: description_string;
+//			PREFERENCES_TEMPLATE_ID: numeric_identifier;
+//			DOMAIN_NAME: name_string;
+//			IS_SERVICE: flag_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity USER_GROUPS {
+		key USER_ID: bigint_identifier;
+			NAME: String(150) not null;
+			DESCR: description_string;
+			CREATE_DT: date;
+			CREATE_ID: name_string;
+			UPDATE_DT: date;
+			UPDATE_ID: name_string;
+			LOCKING_SESSION: numeric_identifier;
+			OWNERSHIP_TYPE: extra_small_string;
+			OTDS_GRP_MAPPING: String(150);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity USER_GROUP_USERS {
+		key USER_GROUP_ID: bigint_identifier;
+		key USER_ID: name_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity PARTICIPANTS {
+		key UOI_ID: uoi_identifier;
+			FIRST_NAME: name_string not null;
+			LAST_NAME: name_string not null;
+			EMAIL_ENABLED: flag_string not null;
+			EMAIL_ADDR: description_string;
+			TEAMS_USER_ID: name_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SECURITY_POLICIES {
+		key ID: bigint_identifier;
+			NAME: description_string not null;
+			DESCR: description_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SECURITY_POLICY_PERMISSIONS {
+		key SEC_POLICY_ID: bigint_identifier;
+		key USER_GROUP_ID: bigint_identifier;
+			ASSET_VIEW_PERM: flag_string not null;
+			SUMMARY_VIEW_PERM: flag_string not null;
+			PREVIEW_VIEW_PERM: flag_string not null;
+			PROJECT_VIEW_PERM: flag_string not null;
+			EXPORT_PERM: flag_string not null;
+			SUBSCRIBE_PERM: flag_string not null;
+			COMMENTS_PERM: flag_string not null;
+			METADATA_EDIT_PERM: flag_string not null;
+			CONTENT_EDIT_PERM: flag_string not null;
+			MEMBERSHIP_EDIT_PERM: flag_string not null;
+			DELETE_ASSET_PERM: flag_string not null;
+			CUSTOM_PERM_01: flag_string;
+			CUSTOM_PERM_02: flag_string;
+			CUSTOM_PERM_03: flag_string;
+			CUSTOM_PERM_04: flag_string;
+			EDIT_PARENT_PERM: flag_string not null; 
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity MIME_TYPES {
+		key ID: numeric_identifier;
+			NAME: name_string not null;
+			CONTENT_TYPE: state_string not null;
+			DESCR: description_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity FILE_EXTENSIONS {
+		key MIME_TYPE_ID: numeric_identifier;
+		key ID: numeric_identifier;
+			FILE_EXTENSION: name_string not null;
+			DESCR: description_string;
+			MIME_TYPE: name_string not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity UOIS {
+		key UOI_ID: uoi_identifier;
+			LOGICAL_UOI_ID: uoi_identifier;
+			VERSION: numeric_identifier not null;
+			NAME: String(256);
+			UOI_STATUS: state_string not null;
+			CONTENT_TYPE: state_string not null;
+			CONTENT_SUBTYPE: state_string ;
+			UOI_TYPE: state_string not null;
+			IS_EDITABLE: flag_string not null;
+			CONTENT_STATE: state_string not null;
+			METADATA_STATE: state_string not null;
+			IS_LATEST_VERSION: flag_string not null;
+//			IS_SGML_CHUNKED: flag_string not null;
+//			MODEL_ID: numeric_identifier;
+			META_MODEL_ID: model_identifier not null;
+//			ENTITY_VERSION: Double;
+//			TRANSFORMER_ID: numeric_identifier;
+//			IMPORT_ID: numeric_identifier;
+			DESCR: extra_large_string;
+//			VERSION_DESCRIPTION: description_string;
+//			VALIDATION_DT: date;
+//			VALID_USER_ID: name_string;
+			THUMB_NAIL_OBJ_ID: uoi_identifier;
+			THUMB_NAIL_OBJ_LOCATION: description_string;
+			SCREEN_RES_OBJ_ID: uoi_identifier;
+			SCREEN_RES_OBJ_LOCATION: description_string;
+			MASTER_OBJ_ID: uoi_identifier;
+			MASTER_OBJ_NAME: description_string;
+			MASTER_OBJ_THEME: description_string;
+			MASTER_OBJ_GIST: large_string;
+			MASTER_OBJ_SIZE: Decimal(20, 0);
+			MASTER_OBJ_UNIT: name_string;
+			MASTER_OBJ_NAME_LOC: description_string;
+			MASTER_OBJ_MIME_TYPE: name_string;
+			IS_MULTI_OBJ_UOI: flag_string;
+			CONTENT_STATE_USER_ID: name_string;
+			CONTENT_STATE_DT: date;
+			METADATA_STATE_USER_ID: name_string;
+			METADATA_STATE_DT: date;
+			IMPORT_DT: date;
+			IMPORT_USER_ID: name_string;
+//			AUTHOR: name_string;
+//			TITLE: description_string;
+//			SUBJECT: description_string;
+//			RECEIVED_DT: date;
+			EMBARGO_DT: date;
+			DOI: uoi_identifier;
+//			DOC_LEVEL_IDENTIFIER: name_string;
+//			PUBLIC_IDENTIFIER: name_string;
+//			SGML_DECLARATION: name_string;
+//			DO_TYPE_ID: numeric_identifier;
+//			DO_SOFTWARE: name_string;
+//			PO_LOCATION_ID: numeric_identifier;
+//			PO_TYPE_ID: numeric_identifier;
+//			PO_COLOR_ID: numeric_identifier;
+//			PO_REFERENCE: name_string;
+//			ADOBE_ILLUS_FORWHO: common_string;
+//			ADOBE_ILLUS_BOUND_BOX: common_string;
+//			ADOBE_ILLUS_HIRES_BOUND_BOX: common_string;
+//			ADOBE_ILLUS_DOC_PROCESS_COLORS: common_string;
+//			ADOBE_ILLUS_COLOR_USAGE: common_string;
+//			ADOBE_ILLUS_TEMPLATE_BOX: common_string;
+//			ADOBE_ILLUS_TILE_BOX: common_string;
+//			ADOBE_ILLUS_TARGET_RESOLUTION: common_string;
+//			ADOBE_ILLUS_NUM_LAYERS: common_string;
+			BITMAP_WIDTH: numeric_identifier;
+			BITMAP_HEIGHT: numeric_identifier;
+			BITMAP_RESOLUTION: numeric_identifier;
+			BITMAP_ORIENTATION: state_string;
+//			BITMAP_COLOR_DEPTH: state_string;
+//			BITMAP_COLOR_MAP: state_string;
+//			FH_BOUNDING_BOX: common_string;
+//			FH_BOUNDING_BOX_ALD: common_string;
+//			FH_DOC_SUPPLIED_RESOURCES: common_string;
+//			FH_DOC_PROCESS_COLORS: common_string;
+//			FH_COLOR_USAGE: common_string;
+//			LAYOUT_CREATE_DT: date;
+//			LAYOUT_MODIFY_DT: date;
+//			LAYOUT_FILE_SIZE: Decimal(11, 2);
+//			LAYOUT_PAGE_CNT: numeric_identifier;
+//			LAYOUT_START_PAGE: numeric_identifier;
+//			LAYOUT_WIDTH: numeric_identifier;
+//			LAYOUT_HEIGHT: numeric_identifier;
+//			LAYOUT_PIC_MISSING: flag_string;
+//			LAYOUT_FACING_PAGES: flag_string;
+//			LAYOUT_MASTER_PAGES: flag_string;	
+//			VUOI_ATTR_01: description_string;
+//			VUOI_ATTR_02: description_string;
+//			VUOI_ATTR_03: description_string;
+//			VUOI_ATTR_04: description_string;
+//			VUOI_ATTR_05: description_string;
+//			NUOI_ATTR_06: description_string;
+//			NUOI_ATTR_07: description_string;
+//			NUOI_ATTR_08: description_string;
+//			NUOI_ATTR_09: description_string;
+//			NUOI_ATTR_10: description_string;
+//			DTUOI_ATTR_11: description_string;
+//			DTUOI_ATTR_12: description_string;
+//			DTUOI_ATTR_13: description_string;
+//			DTUOI_ATTR_14: description_string;
+//			DTUOI_ATTR_15: description_string;	
+//			NOTES: large_string;
+//			SECURITY_LEVEL_ID: numeric_identifier;
+//			CAVEAT_MASK: numeric_identifier;
+//			ORGANIZATION_MASK: numeric_identifier;
+//			DATA_TYPE: uoi_identifier;	
+			EXPIRATION_DT: date;
+//			FPO_OBJ_ID: uoi_identifier;
+//			VIDEO_FORMAT: description_string;
+//			PROCESS_VIDEO_BT_FF: flag_string;
+//			USER_RESTRICTIONS: String(500);
+			ASSET_NAME: String(255);
+//			old_import_user_id: name_string;
+//			SMART_ID: String(36);
+			USAGE_SCOPE: small_string;
+			USAGE: String(255);
+			IS_EXPIRED: small_string;
+			EXTERNAL_SOURCE_LINK: String(500);
+			MASTER_ASSET_ID: uoi_identifier;
+//			IS_COLLATERAL: small_string;
+//			DIC_NUMBER: small_string;
+//			ALIASASSETID: String(36);
+//			MASTERASSETID: String(36);
+//			ALIASFILEID: String(36);
+//			MASTERFILEID: String(36);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_DM_SUB_INDUSTRY {
+		UOI_ID: uoi_identifier;
+		SUB_INDUSTRY: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_DM_SOLUTIONS {
+		key UOI_ID: uoi_identifier;
+			SOLUTION: String(150);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_DM_SMART_MASTER {
+		key UOI_ID: uoi_identifier;
+			SMART_ASSET_ID: String(36);
+			SMART_FILE_ID: String(36);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_DM_SMART_ALIAS {
+		UOI_ID: uoi_identifier;
+		SMART_ASSET_ID: String(36);
+		SMART_FILE_ID: String(36);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_DM_SAP_COM_METADATA {
+		key UOI_ID: uoi_identifier;
+			ASSET: medium_string;
+			SUB_ASSET: medium_string;
+			CORE_COMPETENCY: medium_string;
+			PUBLISH_STATUS: medium_string;
+			REGISTRATION_LEVEL: medium_string;
+			SOLUTION_CATEGORY: medium_string;
+			KEYWORDS: large_string;
+			DISCREPANCY_STATUS: flag_string;
+			EVENTS: medium_string;
+			PUBLISH_DATE: date;
+			FIELD_LAST_MODIFIED_DATE: date;
+			ASSET_LAST_SEND_DATE: date;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_DM_PUBLISHING_METADATA {
+		UOI_ID: uoi_identifier;
+		EXTERNAL_ID: common_string;
+		PUBLISH_DESTINATION: common_string;
+		PUBLISH_STATUS: uoi_identifier;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_DM_PARTNER_TYPE {
+		UOI_ID: uoi_identifier;
+		PARTNER_TYPE: String(60);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_DM_MARKETING_PLAN {
+		UOI_ID: uoi_identifier;
+		MARKETING_PLAN: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_DM_INDUSTRY_SPEC_LOB {
+		key UOI_ID: uoi_identifier;
+		key INDUSTRY_SPEC_LOB: String(120);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_DM_AUDIENCE {
+		key UOI_ID: uoi_identifier;
+		key AUDIENCE_CD: common_string not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_DM_ASSET_DESTINATION {
+		UOI_ID: uoi_identifier;
+		ASSET_DESTINATION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_DM_ADDITIONAL_ASSET_USERS {
+		key UOI_ID: uoi_identifier;
+		key NAME: small_string;
+			EMAIL: String(60);
+			ROLE: String(2);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_CRM {
+		UOI_ID: uoi_identifier;
+		BUSINESS_PARTNER: String(128);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_TARGET_SEG {
+		UOI_ID: uoi_identifier;
+		TARGET_SEGMENT_CD: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_SOLUTION_PRODUCT {
+		UOI_ID: uoi_identifier;
+		SOLUTION_PRODUCT_CD: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_SOLUTION {
+		UOI_ID: uoi_identifier;
+		SOLUTION_CD: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_COMMON_SERVICES {
+		key UOI_ID: uoi_identifier;
+		key SERVICES_CD: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_SAP_COM_PRODUCT {
+		UOI_ID: uoi_identifier;
+		SAPCOM_PRODUCT_ID: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_REGION {
+		UOI_ID: uoi_identifier;
+		REGION_CD: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_METADATA {
+		UOI_ID: uoi_identifier;
+		LANGUAGE_CD: small_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_LIFECYCLE {
+		UOI_ID: uoi_identifier;
+		LIFECYCLE_CD: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_INDUSTRY {
+		UOI_ID: uoi_identifier;
+		INDUSTRY_CD: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_COMMON_EXTERNAL_APP {
+		key UOI_ID: uoi_identifier;
+		key APPLICATION_CD: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_COUNTRY1 {
+		UOI_ID: uoi_identifier;
+		COUNTRY_CD: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_CMPS_EVENT {
+		UOI_ID: uoi_identifier;
+		EVENT_CD: common_string;
+		CUSTOM_NAME: common_string;
+		START_DATE: date;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_AUDIENCE {
+		UOI_ID: uoi_identifier;
+		AUDIENCE_CD: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_COMMON_ASSETTYPE {
+		UOI_ID: uoi_identifier;
+		ASSETTYPE_CD: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_CMPS_PROJECT_IDS {
+		UOI_ID: uoi_identifier;
+		PROJECT_NUMBER: state_string;// not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_METADATA {
+		key UOI_ID: uoi_identifier;
+			MATERIAL_NUMBER: String(12);
+			CMP_ID_NUMBER: String(12);
+			LANGUAGE: uoi_identifier not null;
+			ASSET_CATEGORY: uoi_identifier not null;
+			ASSET_TYPE: uoi_identifier;
+			TARGET_SEGMENT: uoi_identifier;
+			MAIN_CATEGORY: uoi_identifier not null;
+			MC_ENTERPRISE_APP: uoi_identifier;
+			MC_BUSINESS_SOLUTION: uoi_identifier;
+			MC_MIDSIZE_SOLUTION: uoi_identifier;
+			MC_INDUSTRY: uoi_identifier;
+			MC_SERVICE: uoi_identifier;
+			MC_PARTNER: uoi_identifier;
+			MC_PLATFORM: uoi_identifier;
+			VALUE_SCENARIO: uoi_identifier;
+			REGION: uoi_identifier;
+			COUNTRY: uoi_identifier;
+			SAP_BOARD_AREA: uoi_identifier;
+			PAGE_FORMAT: uoi_identifier;
+			REGUESTED_BY: extra_small_string;
+			MC_OTHER: medium_string;
+//			MC_BUSINESS_SOLUTION_BAK: uoi_identifier;
+//			PROJECT_NUMBER: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMP_METADATA {
+		key UOI_ID: uoi_identifier;
+			CMP_TGP_INFORMATION: String(250);
+			CMP_DOCUMENT_FORMAT: String(250);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_CAG {
+		UOI_ID: uoi_identifier;
+		CUSTOMER_CD: large_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_ASSET_STATUS {
+		UOI_ID: uoi_identifier;
+		ASSET_STATUS: large_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity VIDEO_URLS {
+		key UOI_ID: uoi_identifier;
+			VIDEO_PREFERENCE: numeric_identifier;
+			LO_RES_MIME_TYPE: name_string;
+			LO_RES_LOCATION: large_string;
+			MASTER_OBJ_MIME_TYPE: name_string;
+			MASTER_LOCATION: large_string;
+			LO_RES_OFFSET_MSEC: numeric_identifier;
+			MASTER_OFFSET_MSEC: numeric_identifier;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity OBJECT_STACKS {
+		 key OBJECT_ID: uoi_identifier;
+		 LOGICAL_OBJECT_ID: uoi_identifier;
+			VERSION: numeric_identifier not null;
+			OBJECT_NAME: String(256) not null;
+			OBJECT_NAME_LOCATION: description_string not null;
+			CONTENT_KIND: String(20) not null;
+			CONTENT_MANAGER_ID: String(32) not null;
+			CONTENT_SIZE: Decimal(20, 0) not null;
+			CONTENT_CHECKSUM: String(32);
+			STATUS: String(20);
+			TEXT_FILE_NAME_LOCATION: description_string;
+			TEXT_CONTENT: text;
+			HOST: name_string;
+			PARTITION: description_string;
+			DIRECTORY: description_string;
+			UNIT: name_string;
+			MIME_TYPE_ID: Decimal(10, 1);
+			MIME_TYPE: name_string;
+			IS_LOCKED: flag_string;
+			IS_LATEST_VERSION: flag_string;
+			THEME: description_string;
+			OBJECT_GIST: large_string;
+			OBJECT_ENCODING: state_string;
+			CONTENT_HEIGHT: numeric_identifier;
+			CONTENT_WIDTH: numeric_identifier;
+			SHA1_CHECKSUM: common_string; 
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity WORKFLOW_LOGS_Full_Search {
+		key EVENT_ID: numeric_identifier;
+		key CONTEXT_ID: numeric_identifier;
+		key COMPONENT_ID: numeric_identifier;
+			HOST_NAME: name_string not null;
+			TIME: date not null;
+			USERID: name_string;
+			CONTEXT: description_string;
+			OBJECT_ID: name_string;
+			OBJECT_TYPE: name_string;
+			OBJECT_NAME: String(256);
+			SEQ_NUM: bigint_identifier;
+			searched_text: text;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity WORKFLOW_LOGS_Logins {
+		EVENT_ID: numeric_identifier not null;
+		CONTEXT_ID: numeric_identifier not null;
+		COMPONENT_ID: numeric_identifier not null;
+		HOST_NAME: name_string not null;
+		TIME: date not null;
+		USERID: name_string;
+		CONTEXT: description_string;
+		OBJECT_ID: name_string;
+		OBJECT_TYPE: name_string;
+		OBJECT_NAME: String(256);
+		SEQ_NUM: bigint_identifier;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity WORKFLOW_LOGS_Model_Search {
+		key EVENT_ID: numeric_identifier;
+		key CONTEXT_ID: numeric_identifier;
+		key COMPONENT_ID: numeric_identifier;
+			HOST_NAME: name_string not null;
+			TIME: date not null;
+			USERID: name_string;
+			CONTEXT: description_string;
+			OBJECT_ID: name_string;
+			OBJECT_TYPE: name_string;
+			OBJECT_NAME: String(256);
+			SEQ_NUM: bigint_identifier;
+			searched_model: text;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity WORKFLOW_LOGS_preview {
+		EVENT_ID: numeric_identifier not null;
+		CONTEXT_ID: numeric_identifier not null;
+		COMPONENT_ID: numeric_identifier not null;
+		HOST_NAME: name_string not null;
+		TIME: date not null;
+		USERID: name_string;
+		CONTEXT: description_string;
+		OBJECT_ID: name_string;
+		OBJECT_TYPE: name_string;
+		OBJECT_NAME: String(256);
+		SEQ_NUM: bigint_identifier;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity WORKFLOW_LOGS_Upload_Download {
+		EVENT_ID: numeric_identifier not null;
+		CONTEXT_ID: numeric_identifier not null;
+		COMPONENT_ID: numeric_identifier not null;
+		HOST_NAME: name_string not null;
+		TIME: date not null;
+		USERID: name_string;
+		CONTEXT: description_string;
+		OBJECT_ID: name_string;
+		OBJECT_TYPE: name_string;
+		OBJECT_NAME: String(256);
+		SEQ_NUM: bigint_identifier;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity WORKFLOW_LOGS {
+		key EVENT_ID: numeric_identifier;
+		key CONTEXT_ID: numeric_identifier;
+		key COMPONENT_ID: numeric_identifier;
+			HOST_NAME: name_string not null;
+			TIME: date not null;
+			USERID: name_string;
+			CONTEXT: description_string;
+			EVENT_STR: large_string;
+			APP_MSG: text;
+			OBJECT_ID: name_string;
+			OBJECT_TYPE: name_string;
+			OBJECT_NAME: String(256);
+			SEQ_NUM: bigint_identifier;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_YEAR_LU {
+		key ID: numeric_identifier;
+			VALUE: Integer;
+			DESCRIPTION: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_DM_METADATA {
+		key UOI_ID: uoi_identifier;
+			ASSET_TYPE_CD: common_string;
+			CAMPAIGN_NAME: String(250);
+			CAMPAIGN_LIFECYCLE_CD: common_string;
+			CAMPAIGN_STATUS_CD: common_string;
+			CAMPAIGN_TYPE_CD: common_string;
+			CONTACT_NAME: small_string;
+			DESCRIPTION: extra_large_string;
+			PARTNER_NAME: common_string;
+			ASSET_NAME: String(250);
+			ASSET_CD: common_string;
+			PROGRAMNAME_CD: common_string;
+			PROGRAMTYPE_CD: common_string;
+			CAMPAIGN_ID: common_string;
+			YEAR: numeric_identifier;
+			MAUI: common_string;
+			CRM_WBS_ELEMEMENT: large_string;
+			LEAD_REGION: small_string;
+			PROGRAM_ID: uoi_identifier;
+			CAG_MANAGER: common_string;
+			CAG_CAMPAIGN: common_string;
+			CAG_PROGRAM: common_string;
+			CAG_MASTER_ASSET: common_string;
+			CAG_OBJECTIVES: large_string;
+			CAG_MESSAGING: large_string;
+			CAG_EXECUTION: large_string;
+			CAG_GTM: large_string;
+			CONTACT_EMAIL: String(60);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_IMAGE_METADATA {
+		key UOI_ID: uoi_identifier;
+			REGION: common_string;
+			INDUSTRY_NAME: common_string;
+			ASSET_TYPE: small_string;
+			COLOR: small_string;
+			PHOTO_TYPE: small_string;
+			SOURCE_ID: String(20);
+			COPYRIGHT_OWNER: common_string;
+			SAP_ID: String(20);
+			SOLUTION_NAME: common_string;
+			IMAGE_ID: String(20);
+			MISCELLANEOUS_NAME: common_string;
+			ORIENTATION: small_string;
+			PEOPLE_SELECTION: common_string;
+			PHOTAGRAPHER_NAME: common_string;
+			PRODUCER_NAME: common_string;
+			EXPIRATION_DATE: date;
+			USAGE_RIGHTS: large_string;
+			IMAGE_DESCRIPTION: large_string;
+			IMAGE_DETAIL: large_string;
+			MAXIMUM_PRINTABLE_SIZE: common_string;
+			PRODUCTION_DATE: date;
+			UPDATED_DATE: date;
+			PRODUCTION_SIZE: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SECURITY_POLICY_UOIS {
+		key SEC_POLICY_ID: bigint_identifier;
+		key UOI_ID: uoi_identifier;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_DM_APPROVAL_DATA {
+		UOI_ID: uoi_identifier;
+		APPROVAL_STATUS_CD: common_string;
+		APPROVER_NAME: common_string;
+		COMMENTS: String(1000);
+		REJECTED_DATE: date;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity UOIS_FULLTEXT_METADATA {
+		key UOI_ID: uoi_identifier;
+			ALL_METADATA_INDEX: state_string not null;
+			INDEXED_DT: date;
+			MESSAGE: String(512);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity sap_wcms_products {
+		sap_dam_id: text;
+		wcms_dam_id: text;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity sap_wcms_partner_types {
+		sap_dam_id: text;
+		wcms_dam_id: text;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity sap_wcms_metadata_mapping {
+		sap_dam_id: text;
+		wcms_dam_id: text;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity sap_wcms_service_mapping {
+		sap_dam_id: common_string;
+		wcms_dam_id: text;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity sap_wcms_lob_mapping {
+		sap_dam_id: uoi_identifier;
+		wcms_dam_id: text;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity sap_wcms_language_mapping {
+		sap_dam_id: small_string;
+		wcms_dam_id: text;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity sap_wcms_sub_industry_mapping {
+		sap_dam_id: common_string;
+		wcms_dam_id: text;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_COMMON_YES_NO {
+		key CODE: extra_small_string;
+			NAME: extra_small_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_MAP_SAPCOM_PRODUCTS_TO_SOLUTIONS {
+		key solution_id: small_string;
+		key sapcom_product: String(150);
+			sapcom_product_id: String(150);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_PROGRAM_ID {
+		key ID: uoi_identifier;
+			VALUE: uoi_identifier not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_MKT_LU_USAGE {
+		key CODE: common_string;
+			NAME: common_string not null;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_MKT_LU_REGION {
+		key CODE: common_string;
+			NAME: common_string not null;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_MKT_LU_PROGRAM {
+		key CODE: common_string;
+			NAME: common_string not null;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_MKT_LU_COUNTRY {
+		key CODE: small_string;
+			NAME: small_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_MKT_LU_ASSET_STATUS {
+		key CODE: uoi_identifier;
+			NAME: uoi_identifier not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_PAGE_FORMAT {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_IMG_LU_ASSET_TYPE {
+		key CODE: common_string;
+			NAME: common_string not null;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_IMAGE_TYPES {
+		key UOI_ID: uoi_identifier;
+			IMAGE_TPE: String(20);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_VALUE_SCENARIO {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_TARGET_SEGMENT {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_SAP_BOARD_AREA {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_REGION {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+			LU_CODE: small_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMP_DOCUMENT_FORMAT {
+		key ID: String(255);
+			VALUE: String(255) not null;
+			DESCRIPTION: String(255);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_MC_SERVICE {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_MC_PLATFORM {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_MC_PARTNER {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_MC_MIDSIZE_SOLUTION {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_MC_INDUSTRY {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_MC_ENTERPRISE_APP {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_MC_BUSINESS_SOLUTION {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_MAIN_CATEGORY {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_LANGUAGE {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+			LU_CODE: small_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_EVENT {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_COUNTRY {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+			LU_CODE: small_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_cmps_asset_type_mk_asset {
+		key id: Integer;
+			value: String(255) not null;
+			description: String(255) not null;
+			lu_code: String(255);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_ASSET_TYPE {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+			ASSET_CATEGORY_ID: Integer;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_ASSET_CATEGORY {
+		key ID: uoi_identifier;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMPS_ARCHIVE_SERVER_PATHS {
+		key UOI_ID: uoi_identifier;
+			PATH: extra_large_string;
+			UOI_ID_BAK: uoi_identifier;
+			MD5: Integer;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMP_USAGE_SCOPE {
+		key ID: String(255);
+			VALUE: String(255) not null;
+			DESCRIPTION: String(255);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_CMP_TGP_INFORMATION {
+		key ID: String(255);
+			VALUE: String(255) not null;
+			DESCRIPTION: String(255);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_TARGET_SEGMENT {
+		key CODE: common_string;
+			NAME: common_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SUB_INDUSTRY {
+		key ID: common_string;
+			VALUE: common_string;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SOLUTIONS {
+		key ID: String(150);
+			VALUE: String(150);
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_LU_SOLUTION_PRODUCT {
+		ID: extra_small_string;
+		VALUE: String(300) not null;
+		DESCRIPTION: String(300);
+		RMS_NODE1: Integer;
+		RMS_NODE2: Integer;
+		RMS_NODE3: Integer;
+		OLD_DAMVALUE: String(300);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SOLUTION {
+		key CODE: String(300);
+			NAME: String(300);
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SERVICES {
+		key CODE: common_string;
+			NAME: common_string;
+			SORT: Double;
+	};	
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SAP_COM_SUB_ASSET_TYPE {
+		key ID: medium_string;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SAP_COM_SOLUTION_CAT {
+		key ID: medium_string;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};	
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SAP_COM_REG_LEVEL {
+		key ID: uoi_identifier;
+			VALUE: uoi_identifier not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SAP_COM_PRODUCTS {
+		key ID: medium_string;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SAP_COM_EVENTS {
+		key ID: medium_string;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SAP_COM_CORE_COMPETENCY {
+		key ID: medium_string;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SAP_COM_ASSET_TYPE {
+		key ID: medium_string;
+			VALUE: medium_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_SAP_COM_ASSET_DEST {
+		key ID: uoi_identifier;
+			VALUE: uoi_identifier not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_REGION {
+		key CODE: common_string;
+			NAME: common_string;
+			SORT: Double;
+			ID: Integer not null;               //------- IDENTITY(1,1) -> WTF?
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_PUBLISH_STATUS {
+		key ID: uoi_identifier;
+			VALUE: uoi_identifier not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_PARTNER_TYPE {
+		key ID: String(60);
+			VALUE: String(60) not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_MARKETING_PLAN {
+		key ID: Double;
+			VALUE: common_string not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_LOB {
+		key ID: uoi_identifier;
+			VALUE: uoi_identifier not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_LIFECYCLE {
+		key CODE: common_string;
+			NAME: common_string not null;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_LANGUAGE {
+		key CODE: small_string;
+			NAME: small_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_INDUSTRY_SPEC_LOB {
+		key ID: String(120);
+			VALUE: String(120);
+			DESCRIPTION: String(200);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_INDUSTRY {
+		key ID: uoi_identifier;
+			VALUE: uoi_identifier not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_INCENTIVE {
+		key ID: uoi_identifier;
+			VALUE: uoi_identifier not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_EXTERNAL_APPLICATION {
+		key ID: uoi_identifier;
+			VALUE: uoi_identifier not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_DM_CMPGN_TYPE {
+		key CODE: common_string;
+			NAME: common_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_DM_CMPGN_STATUS {
+		key CODE: common_string;
+			NAME: common_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_DM_CMPGN_LCYCLE {
+		key CODE: common_string;
+			NAME: common_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_DM_AUDIENCE {
+		key CODE: common_string;
+			NAME: common_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_DM_ASSET_TYPE {
+		key CODE: common_string;
+			NAME: common_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_CUSTOMER {
+		key ID: uoi_identifier;
+			VALUE: uoi_identifier not null;
+			DESCRIPTION: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_COUNTRY {
+		key CODE: common_string;
+			NAME: common_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity META_DATA_STATUS {
+		STATUS_CODE: state_string;
+		TABLE_COLUMN_NAME: name_string;
+		DESCR: description_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity EVENT_CTXTS {
+		key EVENT_ID: numeric_identifier;
+		key CONTEXT_ID: numeric_identifier;
+		key COMPONENT_ID: numeric_identifier;
+			IS_ENABLED_INTERNAL: flag_string not null;
+			IS_ENABLED_EXTERNAL: flag_string not null;
+			DESCR: description_string;
+			PUBLICATION_KEY: description_string;
+			FILE_DEST: name_string;
+			TAB_DEST: name_string;
+			MESSAGE: large_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_LU_COUNRTY1 {
+		key CODE: common_string;
+			NAME: common_string;
+			SORT: Double;
+			ID: Integer not null;               //------- IDENTITY(1,1) -> WTF?
+			region_code: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_map_sub_lob {
+		key parent_id: uoi_identifier;
+		key sub_id: String(120);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_map_sub_industry {
+		key parent_id: uoi_identifier;
+		key sub_id: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_map_sub_asset_type {
+		key parent_id: medium_string;
+		key sub_id: medium_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_mkt_lu_asset {
+		key CODE: small_string;
+			NAME: small_string;
+			SORT: Double;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_wcms_solution_category_mapping {
+		key sap_dam_id: medium_string;
+			wcms_dam_id: text not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_wcms_industry_mapping {
+		key sap_dam_id: uoi_identifier;
+			wcms_dam_id: text not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_wcms_events_mapping {
+		key sap_dam_id: medium_string;
+			wcms_dam_id: text not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_wcms_core_competency_mapping {
+		key sap_dam_id: medium_string;
+			wcms_dam_id: text not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_wcms_company_segment_mapping {
+		key sap_dam_id: common_string;
+			wcms_dam_id: text not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_wcms_asset_type_mapping {
+		key sap_dam_id: medium_string;
+			wcms_dam_id: text not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_wcms_asset_sub_type_mapping {
+		key sap_dam_id: medium_string;
+			wcms_dam_id: text not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity SAP_USER_INFO {
+		key USER_ID: name_string;
+		REGION_ID: Integer;
+		COUNTRY_ID: Integer;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_wcms_registration_level_mapping {
+		key sap_dam_id: uoi_identifier;
+			wcms_dam_id: text not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_wcms_region_mapping {
+		key sap_dam_id: common_string;
+			wcms_dam_id: text not null;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_wcms_marketing_location_mapping {
+		key sap_dam_id: common_string;
+		key wcms_dam_id: String(150);
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity sap_map_sapcom_asset_to_asset {
+		key asset_id: small_string;
+		key sapcom_asset_id: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_LOB {
+		UOI_ID: uoi_identifier;
+		LOB: large_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_MCM_OFFER_DATA {
+		UOI_ID: uoi_identifier;
+		OFFER_ID: uoi_identifier;
+		OFFER_TYPE: common_string;
+		CATEGORY: common_string;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	entity VIEW_ELEMENTS {
+		key VIEW_ID: numeric_identifier;
+		key POSITION: numeric_identifier;
+			ELEMENT_TYPE: state_string;
+			ELEMENT_ID: name_string;
+			SESSION_ID: numeric_identifier;
+	};
+	
+	@Catalog.tableType: #COLUMN
+	@nokey
+	entity SAP_LU_APPROVAL {
+		CODE: common_string;
+		NAME: common_string;
+		SORT: numeric_identifier;
+	}; */
+	
+	Context procedures {
+		type tt_search_result {
+			ID: uoi_identifier;
+			SCORE: Double;
+		};
+		
+		type tt_search_result_id {
+			ID: uoi_identifier;
+		};
+		
+		type tt_view_element_count {
+			COUNT: bigint_identifier;
+		};
+		
+		@Catalog.tableType: #COLUMN
+		@nokey
+		entity search_result {
+			ID: uoi_identifier;
+			SCORE: Double;
+			ARTESIA_ID: medium_string;
+		};
+	};	
+};

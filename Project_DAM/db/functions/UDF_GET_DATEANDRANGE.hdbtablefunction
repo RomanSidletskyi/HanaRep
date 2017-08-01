@@ -1,0 +1,50 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::UDF_GET_DATEANDRANGE" 
+                                                  (startdate TIMESTAMP,
+										           enddate  TIMESTAMP ) 
+	RETURNS table ( "Range_Name" NVARCHAR(100) ,
+                "Range_Order" INT,
+                "StartDate" TIMESTAMP,
+                "EndDate"   TIMESTAMP
+              ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+DECLARE Range_Type VARCHAR(10):='Year';
+Range_Type :=
+				CASE WHEN startdate=enddate THEN  'Hour'
+				     WHEN DAYS_BETWEEN(startdate,enddate)<20 THEN  'Day'
+				     WHEN DAYS_BETWEEN(startdate,enddate)<70 THEN  'Week'
+				     WHEN DAYS_BETWEEN(startdate,enddate)<620 THEN  'Month'
+				     ELSE 'Year'
+				END;   
+
+RETURN 
+SELECT "Range_Name",
+        row_number() OVER (ORDER BY "Range_O") AS "Range_Order",
+        MIN(DATETIMESTAMP) as "StartDate",ADD_SECONDS(MAX(DATETIMESTAMP),60*60) as "EndDate"
+FROM
+(
+	SELECT CASE :Range_Type WHEN 'Hour' THEN CASE  WHEN HOUR = 0  THEN '12 AM'
+												   WHEN HOUR < 12 THEN concat(HOUR,' AM')
+							                       WHEN HOUR = 12 THEN '12 PM' 
+							                       WHEN HOUR > 12 THEN CASE WHEN HOUR-12 <10 THEN concat('0',concat(HOUR-12,' PM'))
+							                                                ELSE concat(HOUR-12,' PM')
+							                                            END
+							                 END
+			    			WHEN 'Day'  THEN CONCAT(CONCAT(CONCAT(YEAR,'.'),CONCAT(MONTH,'.')),DAY)
+		        			WHEN 'Week' THEN CONCAT(CONCAT(WEEK_YEAR,'-W'),WEEK)
+		        			WHEN 'Month' THEN CONCAT(CONCAT(YEAR,' '),MONTH)
+		        			WHEN 'Year' THEN T.YEAR
+		   END as "Range_Name",
+		   CASE :Range_Type WHEN 'Hour' THEN HOUR
+			    			WHEN 'Day'  THEN CONCAT(CONCAT(CONCAT(YEAR,'.'),CONCAT(MONTH,'.')),DAY)
+		        			WHEN 'Week' THEN CONCAT(CONCAT(WEEK_YEAR,'-W'),WEEK)
+		        			WHEN 'Month' THEN CONCAT(CONCAT(YEAR,' '),MONTH)
+		        			WHEN 'Year' THEN T.YEAR
+		   END as "Range_O",
+	       T.DATETIMESTAMP
+	FROM "_SYS_BI"."M_TIME_DIMENSION" T
+	WHERE T.DATETIMESTAMP >= :startdate AND T.DATETIMESTAMP <ADD_DAYS(:ENDdate,1)
+	) AS Z 
+GROUP BY Z."Range_Name",Z."Range_O";
+END;

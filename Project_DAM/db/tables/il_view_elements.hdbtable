@@ -1,0 +1,17 @@
+// To define an HDB table with main sql type columns, you can use the following code.
+// In the example below a schema should exist.
+
+
+table.schemaName = "TUSER4";
+table.tableType = COLUMNSTORE; // ROWSTORE is an alternative value
+
+
+table.columns =
+ [
+    {name = "VIEW_ID";  sqlType = DECIMAL;  precision = 8; scale = 3;},
+    {name = "POSITION"; sqlType = DECIMAL;  precision = 8; scale = 3;},
+    {name = "ELEMENT_TYPE";  sqlType = NVARCHAR; length = 8; defaultValue = " ";comment = "";},
+    {name = "ELEMENT_ID";  sqlType = NVARCHAR; length = 80; defaultValue = " ";comment = "";},
+    {name = "ARTESIA_ID";  sqlType = DECIMAL;  precision = 8; scale = 3;}
+
+];

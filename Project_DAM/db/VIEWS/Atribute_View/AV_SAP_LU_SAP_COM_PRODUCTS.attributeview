@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_SAP_LU_SAP_COM_PRODUCTS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_SAP_LU_SAP_COM_PRODUCTS"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_COMMON_SAP_COM_PRODUCT" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="SAP_COM_PRODUCT" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SAP_COM_PRODUCT"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_PRODUCTS" columnName="VALUE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_COMMON_SAP_COM_PRODUCT"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_PRODUCTS"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_COMMON_SAP_COM_PRODUCT"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_PRODUCTS"/>
+        <leftColumns>
+          <columnName>SAPCOM_PRODUCT_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="referential"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_COMMON_SAP_COM_PRODUCT" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="36" y="82"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_SAP_COM_PRODUCTS" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="370" y="209"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="102" width="319"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

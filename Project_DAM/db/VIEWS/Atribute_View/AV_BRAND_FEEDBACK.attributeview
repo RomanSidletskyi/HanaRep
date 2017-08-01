@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_BRAND_FEEDBACK" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" visibility="internal" dimensionType="Standard">
+  <descriptions defaultDescription="AV_BRAND_FEEDBACK"/>
+  <attributes>
+    <attribute id="FORM_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_FORM" columnName="ID"/>
+    </attribute>
+    <attribute id="UOI_ID" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_FORM" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="FORM_CREATED_BY" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CREATED_BY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_FORM" columnName="CREATED_BY"/>
+    </attribute>
+    <attribute id="FORM_CREATED_DATE" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CREATED_DATE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_FORM" columnName="CREATED_DATE"/>
+    </attribute>
+    <attribute id="FORM_STATUS" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="STATUS"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_FORM" columnName="STATUS"/>
+    </attribute>
+    <attribute id="CATEGORY_ID" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_CATEGORY" columnName="ID"/>
+    </attribute>
+    <attribute id="CATEGORY_NAME" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_CATEGORY" columnName="NAME"/>
+    </attribute>
+    <attribute id="CATEGORY_STATUS" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="STATUS_1"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_CATEGORY" columnName="STATUS"/>
+    </attribute>
+    <attribute id="SECTION_ID" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_SECTION" columnName="ID"/>
+    </attribute>
+    <attribute id="SECTION_NAME" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_SECTION" columnName="NAME"/>
+    </attribute>
+    <attribute id="SECTION_STATUS" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="STATUS"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_SECTION" columnName="STATUS"/>
+    </attribute>
+    <attribute id="ITEM_ID" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_ITEM" columnName="ID"/>
+    </attribute>
+    <attribute id="ITEM_NAME" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_ITEM" columnName="NAME"/>
+    </attribute>
+    <attribute id="ITEM_VALUE" order="14" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="VALUE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_ITEM" columnName="VALUE"/>
+    </attribute>
+    <attribute id="ITEM_EVALUETED_BY" order="15" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EVALUETED_BY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_ITEM" columnName="EVALUETED_BY"/>
+    </attribute>
+    <attribute id="ITEM_EVALUATION_DATE" order="16" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EVALUATION_DATE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_ITEM" columnName="EVALUATION_DATE"/>
+    </attribute>
+    <attribute id="CATEGORY_POSITION" order="17" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="POSITION"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_CATEGORY" columnName="POSITION"/>
+    </attribute>
+    <attribute id="SECTION_POSITION" order="18" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="POSITION"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_SECTION" columnName="POSITION"/>
+    </attribute>
+    <attribute id="ITEM_POSITION" order="19" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="POSITION"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_ITEM" columnName="POSITION"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_FORM"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_CATEGORY"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_SECTION"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_ITEM"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_FORM"/>
+        <rightTable schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_CATEGORY"/>
+        <leftColumns>
+          <columnName>ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>FEEDBACK_FORM_ID</columnName>
+        </rightColumns>
+        <properties cardinality="C1_N" joinOperator="Equal" joinType="referential"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_CATEGORY"/>
+        <rightTable schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_SECTION"/>
+        <leftColumns>
+          <columnName>ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>FEEDBACK_CATEGORY_ID</columnName>
+        </rightColumns>
+        <properties cardinality="C1_N" joinOperator="Equal" joinType="referential"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_SECTION"/>
+        <rightTable schemaName="TUSER4" columnObjectName="BRAND_FEEDBACK_ITEM"/>
+        <leftColumns>
+          <columnName>ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>FEEDBACK_SECTION_ID</columnName>
+        </rightColumns>
+        <properties cardinality="C1_N" joinOperator="Equal" joinType="referential"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="BRAND_FEEDBACK_FORM" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="BRAND_FEEDBACK_CATEGORY" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="368" y="30"/>
+        </shape>
+        <shape modelObjectName="BRAND_FEEDBACK_SECTION" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="693" y="30"/>
+        </shape>
+        <shape modelObjectName="BRAND_FEEDBACK_ITEM" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="1006" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

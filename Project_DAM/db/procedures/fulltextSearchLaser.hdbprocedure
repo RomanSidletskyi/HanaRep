@@ -1,0 +1,138 @@
+PROCEDURE "TUSER4"."Project_DAM.db.procedures::fulltextSearchLaser" ( 
+in keyword NVARCHAR(300), 
+in artesia_id NVARCHAR(300), 
+in view_id DECIMAL, 
+in session_id DECIMAL, 
+in fuzzy_coef Double, 
+in ids NVARCHAR(300),
+in doi NVARCHAR(300),
+in laserId  NVARCHAR(300),
+in rowcnt INT,
+in user_id NVARCHAR(45),
+in is_admin int,
+out count INT --,
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "TUSER4" 
+	AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/  
+	
+	DECLARE strexec NVARCHAR(4000);
+	DECLARE tableName NVARCHAR(200);
+	DECLARE searchColumnName NVARCHAR(200);
+	DECLARE idColumnName NVARCHAR(200);
+	DECLARE TermMappingTable NVARCHAR(200);
+	DECLARE TermMappingTableListID NVARCHAR(200);
+
+	DELETE FROM "TUSER4"."Project_DAM.db.tables::mac_search_result" WHERE "ARTESIA_ID" = :artesia_id;
+	delete FROM "TUSER4"."VIEW_ELEMENTS" WHERE "VIEW_ID" = :view_id;
+	
+BEGIN
+	
+		 DECLARE CURSOR c_search FOR 
+                 SELECT  p."tableName" as tableName,
+		                 p."searchColumnName" as searchColumnName,
+		                 p."idColumnName" as idColumnName,
+		                 p."TERMMAPPINGTABLE" as TermMappingTable,
+		                 p."TERMMAPPINGTABLELISTID" as TermMappingTableListID
+			   	  FROM "TUSER4"."Project_DAM.db.tables::tbl_searchtables" p
+			   	  where p."searchColumnName" in ('ASSET_NAME','ASSET_DESCRIPTION')
+			   	  order by 1,2;
+ 			FOR cur_row as c_search DO 
+			
+	
+		       		strexec :=' INSERT INTO "TUSER4"."Project_DAM.db.tables::mac_search_result" SELECT '
+				 		          || cur_row.idColumnName
+				  		          ||' AS ID, SCORE() AS SCORE, '''||artesia_id||''' AS ARTESIA_ID '
+				  		          ||' FROM '||cur_row.tableName
+				  		          ||' WHERE contains( '||cur_row.searchColumnName||','''||keyword||''', fuzzy('||:fuzzy_coef||'))';
+    
+	                     
+	 exec strexec;
+	
+	--	select strexec from DUMMY; 
+		        
+	        END FOR;
+  
+	END;
+	
+
+	
+/*	INSERT INTO "TUSER4"."VIEW_ELEMENTS"(view_id, element_type, element_id, position, session_id) 
+		SELECT :view_id, 'UOI', uo.uoi_id, uo.rownum, :session_id 
+			FROM (SELECT TOP 200 ui.uoi_id, Row_Number() OVER (ORDER BY b0 DESC) AS rownum FROM (
+				SELECT DISTINCT uoi.uoi_id, uoi.IMPORT_DT b0 FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" uoi 
+					 inner join "TUSER4"."SAP_DM_METADATA" t1 on uoi.uoi_id = t1.uoi_id 
+					WHERE uoi.IS_LATEST_VERSION = 'Y' 
+						AND uoi.IS_EXPIRED = 'N'
+						AND t1.IS_ACTIVE_LASER_ASSET='Y'
+						and ( 1=1
+						    and case when :ids = '' then '' else t1.CRM_WBS_ELEMEMENT end = :ids   
+							and case when :doi = '' then '' else uoi.SAP_DIGITAL_ID end = :doi   
+							and case when :laserId = '' then '' else uoi.LASER_ID end = :laserId   
+							and case when :keyword = '' then '' else uoi.uoi_id end IN (SELECT * FROM :selected_ids)
+							) 
+				) ui 
+			) uo;
+			
+*/
+
+strexec := 	'INSERT INTO "TUSER4"."VIEW_ELEMENTS"(view_id, element_type, element_id, position, session_id) ' ;
+strexec := strexec 	||	' SELECT '|| :view_id ||' , ''UOI'', uo.uoi_id, uo.rownum, '|| :session_id ||' ' ;
+strexec := strexec 		||	' FROM (SELECT TOP ' || :rowcnt || ' ui.uoi_id, Row_Number() OVER (ORDER BY b0 DESC) AS rownum FROM ( '; 
+strexec := strexec 			||	' SELECT DISTINCT uoi.uoi_id, uoi.UPLOAD_DATE as b0 FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" uoi ' ;
+strexec := strexec ||' inner join "TUSER4"."SAP_DM_METADATA" t1 on uoi.uoi_id = t1.uoi_id ';
+
+/*Admin*/
+IF (:is_admin <>'1') THEN strexec := strexec ||' inner join "TUSER4"."SECURITY_POLICY_UOIS" t19 on uoi.uoi_id = t19.uoi_id ' ;
+END IF;
+
+/*Admin*/
+IF (:is_admin <>'1') THEN strexec := strexec ||' inner join "TUSER4"."SECURITY_POLICY_PERMISSIONS" t20 on t20.sec_policy_id = t19.sec_policy_id and t20.ASSET_VIEW_PERM = ''Y'' ';
+END IF;
+
+/*Admin*/
+IF (:is_admin <>'1') THEN strexec := strexec ||' inner join "TUSER4"."USER_GROUP_USERS" t21 on t20.user_group_id = t21.user_group_id  ';
+END IF;
+
+/**/
+
+strexec := strexec ||' WHERE (uoi.CONTENT_STATE != ''DELETED'' OR uoi.CONTENT_STATE IS NULL) ';
+
+strexec := strexec ||'		AND uoi.IS_EXPIRED = ''N'' ';
+strexec := strexec ||'		AND t1.IS_ACTIVE_LASER_ASSET = ''Y'' ';
+
+strexec := strexec ||'		and ( 1=1 ';
+	
+strexec := strexec ||'		AND (uoi.MODEL_ID in (''500000'',''600003'')) ';
+	
+IF ( :ids <>'' ) THEN strexec := strexec ||' and uoi.CRM_WBS_ELEMEMENT = ''' || :ids || ''' ';
+END IF;
+
+IF (:doi <>'') THEN strexec := strexec ||' and t3.SAP_DIGITAL_ID = ''' || :doi ||''' ';
+END IF;
+
+IF (:laserId <>'') THEN strexec := strexec ||' and uoi.LASER_ID = ''' || :laserId ||''' ';
+END IF;
+
+IF (:is_admin <>'1') THEN  strexec := strexec ||' and t21.user_id= ''' || :user_id ||''' ';
+END IF;
+
+IF (:keyword <>'') THEN  strexec := strexec ||'	AND uoi.uoi_id IN (SELECT DISTINCT p."ID" FROM (SELECT "ID", "SCORE" FROM "TUSER4"."Project_DAM.db.tables::mac_search_result" WHERE "ARTESIA_ID" = '''||:artesia_id||'''  ORDER BY SCORE DESC, ID ASC) as p) '; 
+END IF;
+	
+strexec := strexec ||'	)) ui 	) uo ';
+
+--select strexec from DUMMY;
+	exec strexec;
+	
+			
+	SELECT COUNT(*) INTO count FROM "TUSER4"."VIEW_ELEMENTS" WHERE "VIEW_ID" = :view_id;
+	DELETE FROM "TUSER4"."Project_DAM.db.tables::mac_search_result" WHERE "ARTESIA_ID" = :artesia_id;
+
+
+END

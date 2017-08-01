@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_SAP_LU_DM_ASSET_TYPE" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_SAP_LU_DM_ASSET_TYPE"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_COMMON_ASSETTYPE" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="CONTENT_CATEGORY" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CONTENT_CATEGORY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_DM_ASSET_TYPE" columnName="NAME"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_DM_ASSET_TYPE"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_COMMON_ASSETTYPE"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_LU_DM_ASSET_TYPE"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_COMMON_ASSETTYPE"/>
+        <leftColumns>
+          <columnName>CODE</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ASSETTYPE_CD</columnName>
+        </rightColumns>
+        <properties cardinality="C1_N" joinOperator="Equal" joinType="referential"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_LU_DM_ASSET_TYPE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_COMMON_ASSETTYPE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="363" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

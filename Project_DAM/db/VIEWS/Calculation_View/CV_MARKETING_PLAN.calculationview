@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_MARKETING_PLAN" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="SCRIPT_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <descriptions defaultDescription="CV_MARKETING_PLAN"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute datatype="NVARCHAR" id="UOI_ID" length="40"/>
+        <viewAttribute datatype="NVARCHAR" id="MARKETING_PLAN" length="4000"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+ 	 var_out = SELECT AMP.UOI_ID,
+LEFT(STRING_AGG(MP.VALUE,', '),4000) AS MARKETING_PLAN
+FROM tuser4.SAP_DM_MARKETING_PLAN AMP
+INNER JOIN tuser4.SAP_LU_MARKETING_PLAN MP ON MP.ID=AMP.MARKETING_PLAN
+GROUP BY AMP.UOI_ID;
+
+END /********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <descriptions/>
+    <attributes>
+      <attribute id="UOI_ID" key="true" order="1">
+        <descriptions defaultDescription="UOI_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="UOI_ID"/>
+      </attribute>
+      <attribute id="MARKETING_PLAN" order="2">
+        <descriptions defaultDescription="MARKETING_PLAN"/>
+        <keyMapping columnObjectName="Script_View" columnName="MARKETING_PLAN"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

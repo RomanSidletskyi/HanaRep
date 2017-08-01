@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_SAP_COMMON_METADATA" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_SAP_COMMON_METADATA"/>
+  <metadata changedAt="2017-02-14 14:37:46.237"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_COMMON_METADATA" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="ASSET_LANGUAGE" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSET_LANGUAGE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_LANGUAGE" columnName="NAME"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_COMMON_METADATA"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_LANGUAGE"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_COMMON_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_LANGUAGE"/>
+        <leftColumns>
+          <columnName>LANGUAGE_CD</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>CODE</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_COMMON_METADATA" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_LANGUAGE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="373" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

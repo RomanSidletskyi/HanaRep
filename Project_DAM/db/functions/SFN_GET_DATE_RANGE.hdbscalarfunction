@@ -1,0 +1,17 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::SFN_GET_DATE_RANGE" 
+(
+StartDateFormated timestamp,
+EndDateFormated timestamp
+ ) 
+	RETURNS templ_val nvarchar(10)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+templ_val :=
+case when StartDateFormated=EndDateFormated then  'Hour'
+     when DAYS_BETWEEN(StartDateFormated,EndDateFormated)<20 then  'Day'
+     when DAYS_BETWEEN(StartDateFormated,EndDateFormated)<70 then  'Week'
+     when DAYS_BETWEEN(StartDateFormated,EndDateFormated)<620 then  'Month'
+     else 'Year'
+end; 
+END;

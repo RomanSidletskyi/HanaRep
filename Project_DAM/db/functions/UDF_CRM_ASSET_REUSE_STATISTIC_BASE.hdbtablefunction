@@ -1,0 +1,54 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::UDF_CRM_ASSET_REUSE_STATISTIC_BASE"  
+                                                     (startdate varchar(100),
+										                  enddate  varchar(100),
+										                  ASSOCIATED_CRM_WBS_CODE VARCHAR(200),
+										                  DISTRIBUTION_NAME VARCHAR(100),
+										                  assettype VARCHAR(200),
+										                  USERS_ID varchar(100),
+										                  DOIS varchar(100),
+										                  TYPE  varchar(15)
+										                  ) 
+RETURNS table (     "Date load" TIMESTAMP ,
+					"CRM/WBS Element" VARCHAR(256),
+					"Distribution Channel" VARCHAR(256),
+					"Asset Type" VARCHAR(256),
+					"Number of Downloads" INT ,
+					Views INT)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+
+DECLARE USERSID VARCHAR(100):='0';
+IF (:USERS_ID!=0) THEN
+	SELECT CASE WHEN GROUP_ID=1 THEN '0' ELSE :USERS_ID END INTO USERSID FROM "TUSER4"."USERS" WHERE USER_ID=:USERS_ID LIMIT 1;
+END IF;
+ 
+RETURN
+SELECT  CS.DATE_LOAD  AS "Date load",
+        CS.ASSOCIATED_CRM_WBS_CODE AS "CRM/WBS Element",
+        CS.DISTRIBUTION_NAME AS "Distribution Channel",
+        CS.ASSET_TYPE AS "Asset Type" ,
+       COUNT(CS.DATE_LOAD) AS "Number of Downloads",
+       IFNULL(MAX(WV.VAMAUNT),0) AS Views
+FROM  "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U
+-- LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" CO ON CO.EMAIL_ADDR=U.CONTENT_EMAIL
+INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS ON U.LOGICAL_UOI_ID=CS.LOGICAL_UOI_ID
+
+LEFT JOIN (SELECT LOGICAL_UOI_ID,COUNT(CONTENT_VIEW_TIME) AS VAMAUNT
+            FROM  "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_WORKFLOW_LOGS_CONTENT_VIEW" WV 
+            WHERE WV.CONTENT_VIEW_TIME >= :STARTDATE AND  WV.CONTENT_VIEW_TIME <= TO_TIMESTAMP(ADD_DAYS(:ENDDATE,1))  
+		    GROUP BY WV.logical_uoi_id
+		    ) WV ON CS.LOGICAL_UOI_ID=WV.LOGICAL_UOI_ID
+WHERE CS.DATE_LOAD BETWEEN :STARTDATE AND TO_TIMESTAMP(ADD_DAYS(:ENDDATE,1))  AND
+      (:USERSID in ( select CO.USER_ID    from "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" CO  where CO.EMAIL_ADDR=U.CONTENT_EMAIL)
+        OR :USERSID=U.UPLOADED_USER_ID OR :USERSID=0) AND
+      (CS.ASSOCIATED_CRM_WBS_CODE =:ASSOCIATED_CRM_WBS_CODE OR 'All'=:ASSOCIATED_CRM_WBS_CODE) AND
+      (CS.DISTRIBUTION_NAME =:DISTRIBUTION_NAME OR 'All'=:DISTRIBUTION_NAME) AND
+      (CS.ASSET_TYPE =:ASSETTYPE OR 'All'=:ASSETTYPE) AND
+      (UPPER(concat(concat(',',REPLACE(REPLACE(:DOIS ,CHAR(10),''),' ','')),',')) like UPPER(concat(concat('%,',U.SAP_DIGITAL_ID),',%')) OR :TYPE = 'NotDOISList')
+GROUP BY CS.DATE_LOAD,
+       CS.ASSOCIATED_CRM_WBS_CODE,
+       CS.DISTRIBUTION_NAME,
+       CS.ASSET_TYPE;
+
+END;	       

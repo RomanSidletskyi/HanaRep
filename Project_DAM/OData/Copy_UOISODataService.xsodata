@@ -1,0 +1,37 @@
+service  { 
+   "Project_DAM.db.VIEWS.Calculation_View::CV_ASSETS_CONTENT"
+    //Full path to your Attribute View & its Name  
+   as "AssetCollection"                  //Name of Entity Type     
+   with ( "UOI_ID",
+   		  "SAP_DIGITAL_ID",
+   		  "ASSET_NAME",
+   		  "ASSET_DESCRIPTION",
+   		  "UPLOAD_DATE",
+   		  "Last_Modified_Date",
+   		  "EXPIRATION_DATE",
+   		  "UPLOADED_BY",
+   		  "CONTENT_EMAIL",
+   		  "CONTENT_OWNER",
+   		  
+   		  "UPLOADED_LOGIN",
+   		  "CONTENT_OWNER_LOGINS", 
+   		  "SUBSCRIPTION_LOGINS", 
+   		  
+   		  "APPROVAL_STATUS",
+   		  "APPROVER_NAME",
+   		  
+   		  "ASSET_TYPE",  
+   		  "CONTENT_CATEGORY",
+   		  "SOLUTION_PRODUCT",
+   		  "INDUSTRY",
+   		  "REGION_COUNTRY",
+   		  "SERVICES",
+   		  "ASSET_LANGUAGE",
+   		  "SOLUTION",
+   		  
+   		  "ASSET_LOCATION",
+   		  "IS_EXPIRED",
+   		  "IS_APPROVED"
+   		  )                //List of exposed columns
+   key  ("UOI_ID");                    //Key relevant for Attribute view        
+}

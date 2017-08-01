@@ -1,0 +1,81 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::UDF_CRM_CAMPAIGN_STATISTIC_DETAIL" 
+                                                         (STARTDATE varchar(100),
+										                  ENDDATE  varchar(100),
+										                  ASSOCIATED_CRM_WBS_CODE VARCHAR(200),
+										                  DISTRIBUTION_NAME VARCHAR(100),
+								                          ASSETTYPE VARCHAR(200),
+										                  USERS_ID varchar(100) ) 
+RETURNS table      
+(
+"Asset name" VARCHAR(255) ,
+"Asset Type" VARCHAR(50) ,
+"Asset SAP Digital ID" VARCHAR(40) ,
+"Associated CRM/WBS Element" VARCHAR(256) ,
+"Associated Campaign Name" VARCHAR(256) ,   
+"Distribution Channel" VARCHAR(256) ,
+"Generated anonymous asset URL" VARCHAR(256) ,
+"Associated Number of Downloads" INT ,
+"Number of Views" INT ,
+"Campaign Type" VARCHAR(55) ,
+"Objective" VARCHAR(55) ,
+"Partner Function Name" VARCHAR(255) ,
+"Tactic" VARCHAR(55) ,
+"Integrated Plan" VARCHAR(400) ,
+"Public video preview page"   VARCHAR(256) ,
+"Hosting URL"     VARCHAR(256) ,
+"Buyer Stage"     VARCHAR(100) 
+)
+
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+RETURN
+SELECT U.ASSET_NAME AS "Asset name",
+       U.ASSET_TYPE AS "Asset Type",
+       U.SAP_DIGITAL_ID AS  "Asset SAP Digital ID",
+       CS.ASSOCIATED_CRM_WBS_CODE "Associated CRM/WBS Element",
+	   CS.ASSOCIATED_CAMPAIGN_NAME "Associated Campaign Name", 
+	   CS.DISTRIBUTION_NAME "Distribution Channel",
+	   CONCAT('https://dam.sap.com/mac',CS.CRM_TRACKING_URL) "Generated anonymous asset URL",
+	   IFNULL(CS.ADOWNLOADS,0) as "Associated Number of Downloads", 
+	   WV.VAMAUNT AS "Number of Views",
+	   CS.CAMPAIGN_TYPE "Campaign Type",
+	   CS.OBJECTIVE "Objective",
+	   CS.PARTNER_FUNCTION_NAME "Partner Function Name",
+	   CS.TACTIC "Tactic",
+	   CS.INTEGRATED_PLAN "Integrated Plan",
+	   CS.PREVIEW_URL "Public video preview page",
+	   CS.HOSTING_URL "Hosting URL",
+	   BUYER_STAGE.BUYER_STAGE "Buyer Stage"  
+FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U
+LEFT JOIN (SELECT   U.UOI_ID,
+                    CS.ASSOCIATED_CRM_WBS_CODE,
+                    CS.ASSOCIATED_CAMPAIGN_NAME,
+                    CS.DISTRIBUTION_NAME,
+                    CS.CAMPAIGN_TYPE, 
+                    CS.OBJECTIVE,
+                    CS.PARTNER_FUNCTION_NAME,
+                    CS.TACTIC,
+                    CS.INTEGRATED_PLAN,
+                    CS.PREVIEW_URL,
+                    CS.HOSTING_URL,CS.CRM_TRACKING_URL,
+                    COUNT(CS.DATE_LOAD) AS ADOWNLOADS
+           FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U
+           JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS  ON U.LOGICAL_UOI_ID=CS.LOGICAL_UOI_ID
+           WHERE (CS.DATE_LOAD BETWEEN :STARTDATE AND TO_TIMESTAMP(ADD_DAYS(:ENDDATE,1))) AND
+      			 (CS.ASSOCIATED_CRM_WBS_CODE =:ASSOCIATED_CRM_WBS_CODE OR :ASSOCIATED_CRM_WBS_CODE='All') AND
+     			 (CS.DISTRIBUTION_NAME =:DISTRIBUTION_NAME OR :DISTRIBUTION_NAME='All') AND
+     			 (CS.ASSET_TYPE =:ASSETTYPE OR :ASSETTYPE='All') 
+     	   GROUP BY U.UOI_ID,CS.ASSOCIATED_CRM_WBS_CODE,CS.ASSOCIATED_CAMPAIGN_NAME,CS.DISTRIBUTION_NAME,
+                    CS.CAMPAIGN_TYPE, CS.OBJECTIVE,CS.PARTNER_FUNCTION_NAME,CS.TACTIC,CS.INTEGRATED_PLAN,
+                    CS.PREVIEW_URL,CS.HOSTING_URL,CS.CRM_TRACKING_URL
+           ) AS CS ON U.UOI_ID=CS.UOI_ID
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Calculation_View/CV_BUYER_STAGE" BUYER_STAGE ON U.UOI_ID=BUYER_STAGE.UOI_ID
+LEFT JOIN (SELECT LOGICAL_UOI_ID,COUNT(CONTENT_VIEW_TIME) AS VAMAUNT
+            FROM  "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_WORKFLOW_LOGS_CONTENT_VIEW" WV 
+            WHERE WV.CONTENT_VIEW_TIME >= :STARTDATE AND  WV.CONTENT_VIEW_TIME <= TO_TIMESTAMP(ADD_DAYS(:ENDDATE,1))  
+		    GROUP BY WV.logical_uoi_id
+		    ) WV ON U.LOGICAL_UOI_ID=WV.LOGICAL_UOI_ID
+WHERE (U.ASSET_TYPE =:ASSETTYPE OR :ASSETTYPE='All')  AND IFNULL(CS.ASSOCIATED_CRM_WBS_CODE,'')!='' ;
+
+END;

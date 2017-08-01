@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_CONTENT_OWNERSBYEMAIL" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" visibility="internal" calculationScenarioType="SCRIPT_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <origin/>
+  <descriptions defaultDescription="CV_CONTENT_OWNERSBYEMAIL"/>
+  <metadata changedAt="2016-11-16 11:02:07.187"/>
+  <localVariables/>
+  <variableMappings/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <viewAttributes>
+        <viewAttribute datatype="VARCHAR" id="EMAIL_ADDR" length="255"/>
+        <viewAttribute datatype="VARCHAR" id="LOGIN_ID" length="600"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+ 	 var_out = SELECT   P.EMAIL_ADDR as &quot;EMAIL_ADDR&quot;,
+ 	                    STRING_AGG(U.LOGIN_ID,',') as &quot;LOGIN_ID&quot;
+               FROM &quot;TUSER4&quot;.&quot;PARTICIPANTS&quot; P
+		       inner join &quot;TUSER4&quot;.&quot;USERS&quot; U on U.USER_ID=P.TEAMS_USER_ID
+               group by  P.EMAIL_ADDR;
+END /********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <attributes>
+      <attribute id="EMAIL_ADDR" order="1">
+        <descriptions defaultDescription="EMAIL_ADDR"/>
+        <keyMapping columnObjectName="Script_View" columnName="EMAIL_ADDR"/>
+      </attribute>
+      <attribute id="LOGIN_ID" order="2">
+        <descriptions defaultDescription="LOGIN_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="LOGIN_ID"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

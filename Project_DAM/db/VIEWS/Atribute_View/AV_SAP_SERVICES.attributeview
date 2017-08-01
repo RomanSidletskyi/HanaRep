@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_SAP_SERVICES" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="SAP_SERVICES"/>
+  <metadata changedAt="2016-12-08 15:36:31.317" createdAt="2016-12-08 15:36:31.21"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_COMMON_SERVICES" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="SERVICE_NAME" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_SERVICES" columnName="NAME"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_SERVICES"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_COMMON_SERVICES"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_LU_SERVICES"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_COMMON_SERVICES"/>
+        <leftColumns>
+          <columnName>CODE</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>SERVICES_CD</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="inner"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_LU_SERVICES" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_COMMON_SERVICES" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="324" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

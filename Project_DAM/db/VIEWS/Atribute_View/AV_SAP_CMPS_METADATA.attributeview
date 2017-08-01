@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_SAP_CMPS_METADATA" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_SAP_CMPS_ASSET_TYPE"/>
+  <metadata changedAt="2017-02-14 13:04:22.805"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="CMPS_ASSET_TYPE" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_ASSET_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_ASSET_TYPE" columnName="VALUE"/>
+    </attribute>
+    <attribute id="ASSET_CATEGORY" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSET_CATEGORY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA" columnName="ASSET_CATEGORY"/>
+    </attribute>
+    <attribute id="CMPS_CMP_ID_NUMBER" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_CMP_ID_NUMBER"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA" columnName="CMP_ID_NUMBER"/>
+    </attribute>
+    <attribute id="CMPS_COUNTRY" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_COUNTRY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_COUNTRY" columnName="VALUE"/>
+    </attribute>
+    <attribute id="CMPS_LANGUAGE" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_LANGUAGE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_LANGUAGE" columnName="VALUE"/>
+    </attribute>
+    <attribute id="CMPS_MATERIAL_NUMBER" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_MATERIAL_NUMBER"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA" columnName="MATERIAL_NUMBER"/>
+    </attribute>
+    <attribute id="CMPS_REGION" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_REGION"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_REGION" columnName="VALUE"/>
+    </attribute>
+    <attribute id="CMPS_SAP_BOARD_AREA" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_SAP_BOARD_AREA"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_SAP_BOARD_AREA" columnName="VALUE"/>
+    </attribute>
+    <attribute id="CMPS_TARGET_SEGMENT" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_TARGET_SEGMENT"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_TARGET_SEGMENT" columnName="VALUE"/>
+    </attribute>
+    <attribute id="CMPS_VALUE_SCENARIO" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_VALUE_SCENARIO"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_VALUE_SCENARIO" columnName="VALUE"/>
+    </attribute>
+    <attribute id="CMPS_SUB_MAIN_CATEGORY" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_SUB_MAIN_CATEGORY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_SUB_MAIN_CATEGORY" columnName="VALUE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMPS_ASSET_TYPE"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMPS_COUNTRY"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMPS_LANGUAGE"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMPS_REGION"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMPS_SAP_BOARD_AREA"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMPS_TARGET_SEGMENT"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMPS_VALUE_SCENARIO"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMPS_SUB_MAIN_CATEGORY"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_CMPS_ASSET_TYPE"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA"/>
+        <leftColumns>
+          <columnName>ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ASSET_TYPE</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_CMPS_COUNTRY"/>
+        <leftColumns>
+          <columnName>COUNTRY</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_CMPS_LANGUAGE"/>
+        <leftColumns>
+          <columnName>LANGUAGE</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_CMPS_REGION"/>
+        <leftColumns>
+          <columnName>REGION</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_CMPS_SAP_BOARD_AREA"/>
+        <leftColumns>
+          <columnName>SAP_BOARD_AREA</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_CMPS_TARGET_SEGMENT"/>
+        <leftColumns>
+          <columnName>TARGET_SEGMENT</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_CMPS_VALUE_SCENARIO"/>
+        <leftColumns>
+          <columnName>VALUE_SCENARIO</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_CMPS_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_CMPS_SUB_MAIN_CATEGORY"/>
+        <leftColumns>
+          <columnName>SUB_MAIN_CATEGORY</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_CMPS_METADATA" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="14" y="28"/>
+        </shape>
+        <shape modelObjectName="SAP_CMPS_ASSET_TYPE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="350" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_CMPS_COUNTRY" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="357" y="164"/>
+        </shape>
+        <shape modelObjectName="SAP_CMPS_LANGUAGE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="363" y="301"/>
+        </shape>
+        <shape modelObjectName="SAP_CMPS_REGION" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="368" y="436"/>
+        </shape>
+        <shape modelObjectName="SAP_CMPS_SAP_BOARD_AREA" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="606" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_CMPS_TARGET_SEGMENT" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="606" y="163"/>
+        </shape>
+        <shape modelObjectName="SAP_CMPS_VALUE_SCENARIO" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="608" y="321"/>
+        </shape>
+        <shape modelObjectName="SAP_CMPS_SUB_MAIN_CATEGORY" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="605" y="467"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

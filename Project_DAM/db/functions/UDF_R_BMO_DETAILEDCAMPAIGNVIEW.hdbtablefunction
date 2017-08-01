@@ -1,0 +1,63 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::UDF_R_BMO_DETAILEDCAMPAIGNVIEW" (timePeriod varchar(4),
+										                  crm_wbs  varchar(200),
+										                  ASSETTYPE VARCHAR(200),
+										                  campaignType VARCHAR(100),
+										                  tactic VARCHAR(100),
+										                  Objective VARCHAR(100),
+										                  crm_RegionName varchar(40)
+										                  ) 
+RETURNS table      
+(
+"CRM/WBS Element" VARCHAR(256),
+"Campaign Name"   VARCHAR(256),
+"Asset SAP Digital ID" VARCHAR(256),
+ "Asset Name"      VARCHAR(256),
+ "Asset Type"      VARCHAR(256),  
+ "Sum of Number of Downloads" INT
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+
+DECLARE STARTDATE timestamp;
+DECLARE ENDDATE timestamp;
+
+STARTDATE:=TO_TIMESTAMP( :timePeriod||'-01-01','YYYY-MM-DD');
+ENDDATE:=ADD_YEARS( :STARTDATE,1);
+	
+RETURN
+ SELECT 
+ 		   
+		
+         CASE WHEN  grouping(CS.UOI_ID)+ grouping(CS.ASSET_TYPE)+grouping(U.ASSET_NAME)=3 THEN CONCAT(CS.ASSOCIATED_CRM_WBS_CODE,' Total')
+              else CS.ASSOCIATED_CRM_WBS_CODE
+		 end  as "CRM/WBS Element",
+		 CASE WHEN   grouping(CS.UOI_ID)+ grouping(CS.ASSET_TYPE)+grouping(U.ASSET_NAME)=3 THEN  CONCAT(CS.ASSOCIATED_CAMPAIGN_NAME,' Total') 
+              else CS.ASSOCIATED_CAMPAIGN_NAME
+		 end   as "Campaign Name",
+		 CS.UOI_ID as"Asset SAP Digital ID" ,
+		 U.ASSET_NAME  as "Asset Name",
+		 CS.ASSET_TYPE as "Asset Type",
+		 count(CS.DATE_LOAD)       as "Sum of Number of Downloads"
+		 
+		 FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS 
+		 INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U on CS.UOI_ID=U.UOI_ID
+		  where 
+		     (:crm_RegionName=CS.CRM_REGIONNAME or :crm_RegionName ='All') and
+			 (CS.DATE_LOAD BETWEEN :STARTDATE AND :ENDDATE) AND
+ 	         (:crm_wbs=CS.ASSOCIATED_CRM_WBS_CODE or :crm_wbs='All') AND
+			 (:ASSETTYPE=CS.ASSET_TYPE  OR :ASSETTYPE='All') AND
+			 (:campaignType= CS.CAMPAIGN_TYPE or :campaignType='All') AND
+			 (:tactic= CS.TACTIC or :tactic='All') AND
+			 (:objective= CS.OBJECTIVE or :objective='All')
+
+		group by     CS.ASSOCIATED_CRM_WBS_CODE,
+					 CS.ASSOCIATED_CAMPAIGN_NAME,
+					 ROLLUP(CS.UOI_ID,
+					        U.ASSET_NAME ,
+					        CS.ASSET_TYPE)
+	    HAVING  grouping(CS.UOI_ID)+ grouping(CS.ASSET_TYPE)+grouping(U.ASSET_NAME)=0 or
+	           grouping(CS.UOI_ID)+ grouping(CS.ASSET_TYPE)+grouping(U.ASSET_NAME)=3;
+
+
+END;

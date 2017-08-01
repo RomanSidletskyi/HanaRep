@@ -1,0 +1,163 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::UDF_CRM_ASSET_REUSE_STATISTIC_DETAIL"  
+                                                         (STARTDATE varchar(100),
+										                  ENDDATE  varchar(100),
+										                  ASSOCIATED_CRM_WBS_CODE VARCHAR(200),
+										                  PRIMARY_CRM_WBS_ELEMEMENT VARCHAR(200),
+										                  DISTRIBUTION_NAME VARCHAR(100),
+										                  ASSETTYPE VARCHAR(200),
+										                  USERS_ID varchar(100),
+										                  DOIS varchar(100),
+										                  TYPE  varchar(15)
+										                  ) 
+RETURNS table      
+(
+"Asset SAP Digital ID" VARCHAR(40) , 
+"Asset Type" VARCHAR(256) ,
+"Asset name" VARCHAR(256) ,
+"Associated Region name" VARCHAR(100),
+"Associated Company name"  VARCHAR(256),
+"Primary Region name" VARCHAR(100),
+"Primary Company name" VARCHAR(256),
+"Associated CRM/WBS Element" VARCHAR(256) ,
+"Associated Campaign Name" VARCHAR(256) ,  
+"Primary CRM/WBS Element" VARCHAR(256) ,
+"Primary Campaign Name" VARCHAR(256) ,  
+"Distribution Channel" VARCHAR(256) ,
+"Generated anonymous asset URL" VARCHAR(256) ,
+"Primary Number of Downloads" INT ,
+"Associated Number of Downloads" INT ,
+"Number of Views" INT ,
+"Campaign Type" VARCHAR(55) ,
+"Objective" VARCHAR(55) ,
+"Partner Function Name" VARCHAR(255) ,
+"Tactic" VARCHAR(55) ,
+"Integrated Plan" VARCHAR(400) ,
+"Public video preview page"  VARCHAR(256) ,
+"Hosting URL"     VARCHAR(256) ,
+"Buyer Stage"    VARCHAR(100) 
+)
+
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+DECLARE USERSID VARCHAR(100):='0';
+IF (:USERS_ID!='0') THEN
+	SELECT CASE WHEN GROUP_ID=1 THEN '0' ELSE :USERS_ID END INTO USERSID FROM "TUSER4"."USERS" WHERE USER_ID=:USERS_ID LIMIT 1;
+END IF;
+
+
+RETURN
+SELECT 
+       U.SAP_DIGITAL_ID AS  "Asset SAP Digital ID",
+       U.ASSET_TYPE AS "Asset Type",
+       U.ASSET_NAME AS "Asset name",
+       CASE WHEN IFNULL(CS."Associated Region name",'')='' THEN 'N/A' ELSE CS."Associated Region name" END as  "Associated Region name", 
+       CASE WHEN IFNULL(CS."Associated Company name",'')='' THEN 'N/A' ELSE  CS."Associated Company name" END as "Associated Company name",
+       CASE WHEN IFNULL(CS."Primary Region name",'')='' THEN 'N/A' ELSE  CS."Primary Region name" END as  "Primary Region name",  
+       CASE WHEN IFNULL(CS."Primary Company name",'')='' THEN 'N/A' ELSE   CS."Primary Company name" END  as "Primary Company name",
+       CS."Associated CRM/WBS Element",
+       CS."Associated Campaign Name", 
+       CS."Primary CRM/WBS Element",
+       CS."Primary Campaign Name", 
+       CS."Distribution Channel",
+       CONCAT('https://dam.sap.com/mac',CS."Generated anonymous asset URL") "Generated anonymous asset URL",
+       IFNULL(CS."Primary Number of Downloads",0) as "Primary Number of Downloads",
+       IFNULL(CS."Associated Number of Downloads",0) as "Associated Number of Downloads", 
+       WV.VAMAUNT AS "Number of Views",
+       CS."Campaign Type" "Campaign Type",
+       CS."Objective" "Objective",
+       CS."Partner Function Name" "Partner Function Name",
+       CS."Tactic" "Tactic",
+       CS."Integrated Plan" "Integrated Plan",
+       CS."Public video preview page" "Public video preview page",
+       CS."Hosting URL" "Hosting URL",
+       BUYER_STAGE.BUYER_STAGE "Buyer Stage"  
+FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U
+-- LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" CO ON CO.EMAIL_ADDR=U.CONTENT_EMAIL
+
+LEFT JOIN (
+
+         SELECT   U.UOI_ID,
+                  U.CRM_WBS_ELEMEMENT as "Primary CRM/WBS Element",
+                  U.CAMPAIGN_NAME as "Primary Campaign Name",                         
+                  CASE WHEN IFNULL(IFNULL(WD.USER_REGION_NAME,WD."RegionbyIP_NAME"),'')='' THEN 'N/A' ELSE IFNULL(WD.USER_REGION_NAME,WD."RegionbyIP_NAME") END  as "Primary Region name",                  
+                  CASE WHEN IFNULL(WD.COMPANY_NAME,'')='' THEN 'N/A' ELSE WD.COMPANY_NAME END as "Primary Company name",                  
+                  COUNT(WD.DOWNLOAD_TIME) AS "Primary Number of Downloads",
+                  null as "Associated CRM/WBS Element",
+                  null as "Associated Campaign Name",
+                  null as "Distribution Channel",
+                  null as "Campaign Type", 
+                  null as "Objective",
+                  null as "Partner Function Name",
+                  null as "Tactic",
+                  null as "Integrated Plan",
+                  null as "Public video preview page",
+                  null as "Hosting URL",
+                  null as "Generated anonymous asset URL",
+                  'N/A' as "Associated Region name",
+                  'N/A' as "Associated Company name",
+                  0 AS "Associated Number of Downloads"
+           FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U
+           INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_WORKFLOW_LOGS_DOWNLOAD" WD ON U.LOGICAL_UOI_ID=WD.LOGICAL_UOI_ID
+           LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS  ON WD.ID=CS.WORKFLOW_LOGS_DOWNLOAD_ID
+           WHERE IFNULL(CS.WORKFLOW_LOGS_DOWNLOAD_ID,0) =0  AND
+                 U.CRM_WBS_ELEMEMENT!='' AND U.CRM_WBS_ELEMEMENT LIKE 'CRM-%' AND
+                 WD.DOWNLOAD_TIME BETWEEN :STARTDATE AND TO_TIMESTAMP(ADD_DAYS(:ENDDATE,1))  AND
+                 (U.CRM_WBS_ELEMEMENT =:PRIMARY_CRM_WBS_ELEMEMENT OR :PRIMARY_CRM_WBS_ELEMEMENT='All') AND
+                 (U.ASSET_TYPE =:ASSETTYPE OR :ASSETTYPE='All') 
+           GROUP BY U.UOI_ID, 
+                    U.CRM_WBS_ELEMEMENT,
+                    U.CAMPAIGN_NAME,
+                    CASE WHEN IFNULL(IFNULL(WD.USER_REGION_NAME,WD."RegionbyIP_NAME"),'')='' THEN 'N/A' 
+                         ELSE IFNULL(WD.USER_REGION_NAME,WD."RegionbyIP_NAME") END,                  
+                  CASE WHEN IFNULL(WD.COMPANY_NAME,'')='' THEN 'N/A' ELSE WD.COMPANY_NAME END
+
+  UNION ALL
+         
+         SELECT   U.UOI_ID,
+                  null as "Primary CRM/WBS Element",
+                  null as "Primary Campaign Name",                         
+                  'N/A' as "Primary Region name",                  
+                  'N/A'  as "Primary Company name",                  
+                  0 AS "Primary Number of Downloads",
+                  CS.ASSOCIATED_CRM_WBS_CODE as "Associated CRM/WBS Element",
+                  CS.ASSOCIATED_CAMPAIGN_NAME as "Associated Campaign Name",
+                  CS.DISTRIBUTION_NAME as "Distribution Channel",
+                  CS.CAMPAIGN_TYPE as "Campaign Type", 
+                  CS.OBJECTIVE as "Objective",
+                  CS.PARTNER_FUNCTION_NAME as "Partner Function Name",
+                  CS.TACTIC as "Tactic",
+                  CS.INTEGRATED_PLAN as "Integrated Plan",
+                  CS.PREVIEW_URL as "Public video preview page",
+                  CS.HOSTING_URL as "Hosting URL",
+                  CS.CRM_TRACKING_URL as "Generated anonymous asset URL",
+                  CASE WHEN IFNULL(CS.REGION_NAME,'')='' THEN 'N/A' ELSE CS.REGION_NAME END as "Associated Region name",
+                  CASE WHEN IFNULL(CS.COMPANY_NAME,'')='' THEN 'N/A' ELSE CS.COMPANY_NAME END as "Associated Company name",
+                  COUNT(CS.DATE_LOAD) AS "Associated Number of Downloads"
+           FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U
+           LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS  ON U.LOGICAL_UOI_ID=CS.LOGICAL_UOI_ID
+           WHERE (CS.DATE_LOAD BETWEEN :STARTDATE AND TO_TIMESTAMP(ADD_DAYS(:ENDDATE,1))) AND
+                 (CS.ASSOCIATED_CRM_WBS_CODE =:ASSOCIATED_CRM_WBS_CODE OR :ASSOCIATED_CRM_WBS_CODE='All') AND
+                 (CS.DISTRIBUTION_NAME =:DISTRIBUTION_NAME OR :DISTRIBUTION_NAME='All') AND
+                 (CS.ASSET_TYPE =:ASSETTYPE OR :ASSETTYPE='All') 
+           GROUP BY U.UOI_ID,CS.ASSOCIATED_CRM_WBS_CODE,CS.ASSOCIATED_CAMPAIGN_NAME,CS.DISTRIBUTION_NAME,
+                    CS.CAMPAIGN_TYPE, CS.OBJECTIVE,CS.PARTNER_FUNCTION_NAME,CS.TACTIC,CS.INTEGRATED_PLAN,
+                    CS.PREVIEW_URL,CS.HOSTING_URL,CS.CRM_TRACKING_URL,
+                    CASE WHEN IFNULL(CS.REGION_NAME,'')='' THEN 'N/A' ELSE CS.REGION_NAME END ,
+                  CASE WHEN IFNULL(CS.COMPANY_NAME,'')='' THEN 'N/A' ELSE CS.COMPANY_NAME END
+           ) AS CS ON U.UOI_ID=CS.UOI_ID
+
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Calculation_View/CV_BUYER_STAGE" BUYER_STAGE ON U.UOI_ID=BUYER_STAGE.UOI_ID
+
+LEFT JOIN (SELECT LOGICAL_UOI_ID,COUNT(CONTENT_VIEW_TIME) AS VAMAUNT
+            FROM  "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_WORKFLOW_LOGS_CONTENT_VIEW" WV 
+            WHERE WV.CONTENT_VIEW_TIME >= :STARTDATE AND  WV.CONTENT_VIEW_TIME <= TO_TIMESTAMP(ADD_DAYS(:ENDDATE,1))  
+            GROUP BY WV.logical_uoi_id
+            ) WV ON U.LOGICAL_UOI_ID=WV.LOGICAL_UOI_ID
+WHERE (U.ASSET_TYPE =:ASSETTYPE OR :ASSETTYPE='All')  AND 
+      (EXISTS( select CO.USER_ID from "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" CO  where CO.EMAIL_ADDR=U.CONTENT_EMAIL AND :USERSID = CO.USER_ID)
+        OR :USERSID=U.UPLOADED_USER_ID OR :USERSID=0) AND
+      (IFNULL(CS."Associated CRM/WBS Element",'')!='' OR IFNULL(CS.UOI_ID,'')!='') AND 
+      (UPPER(concat(concat(',',REPLACE(REPLACE(:DOIS ,CHAR(10),''),' ','')),',')) like UPPER(concat(concat('%,',U.SAP_DIGITAL_ID),',%')) OR :TYPE = 'NotDOISList');
+   
+END;

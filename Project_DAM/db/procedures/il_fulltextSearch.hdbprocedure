@@ -1,0 +1,275 @@
+PROCEDURE "TUSER4"."Project_DAM.db.procedures::il_fulltextSearch" 
+( 
+in keywords NVARCHAR(300), 
+in artesia_id NVARCHAR(300), 
+in field_content NVARCHAR(1), 
+in file_content NVARCHAR(1), 
+in view_id DECIMAL, 
+in session_id DECIMAL, 
+in fuzzy_coef Double, 
+
+in additionjoin NVARCHAR(4000),
+in additionfilters NVARCHAR(4000),
+in rowcnt INT,
+out count INT 
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "TUSER4" 
+	AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/  
+/***********parce keyword*******************/
+
+
+	DECLARE table_row_count Integer := 0;
+	DECLARE column_counter Integer := 1;
+	DECLARE column_row_count Integer := 0;
+	DECLARE table_name NVARCHAR(200);
+	DECLARE table_nameDic NVARCHAR(200);
+	DECLARE searched_column_name NVARCHAR(40);
+	DECLARE SELECTed_column_name NVARCHAR(20);
+	DECLARE strexec NVARCHAR(4000);
+    DECLARE table_counter Integer := 1;
+    DECLARE score Integer := 1;
+	
+	  DECLARE keyword NVARCHAR(300);
+	  DECLARE _items_log nvarchar(100) ARRAY;
+	  DECLARE _items_group nvarchar(100) ARRAY;
+	  DECLARE _text nvarchar(100);
+	  DECLARE _index integer;
+	  DECLARE _index_group integer;
+	  DECLARE _indic_and_or integer; --1 and ;2 or
+	  DECLARE keywords_count integer:=0;
+	  DECLARE keywords_counter integer:=1;
+	  DECLARE groupkeywords_count integer:=0;
+	  DECLARE groupkeywords_counter integer:=1;
+  
+  
+  _text := :keywords;
+  _index := 1;
+  _index_group:=1;
+  _indic_and_or:=0;
+
+   WHILE LOCATE(:_text,' and ') > 0 or LOCATE(:_text,' or ') > 0 DO
+   
+   IF (LOCATE(:_text,' and ')<LOCATE(:_text,' or ') and LOCATE(:_text,' and ')>0) or LOCATE(:_text,' or ')=0 then
+    --1
+    	_items_log[:_index] := SUBSTR_BEFORE(:_text,' and ');
+    	_items_group[:_index] :=_index_group;
+	    _text := SUBSTR_AFTER(:_text,' and ');
+	    _index := :_index + 1;
+	    _indic_and_or:=1;
+	  
+	   --2 check next
+         --2.1 next and
+	    IF LOCATE(:_text,' and ')<LOCATE(:_text,' or ') and LOCATE(:_text,' and ')>0 then
+	       _indic_and_or:=1;
+	    END IF;
+       --2.1 next or 
+       	IF LOCATE(:_text,' and ')>LOCATE(:_text,' or ') and LOCATE(:_text,' or ')>0 then
+	           	_items_log[:_index] := SUBSTR_BEFORE(:_text,' or ');
+	           	_items_group[:_index] :=_index_group;
+	           
+	           	_index_group:=_index_group+1;
+	           	
+	           	_text := SUBSTR_AFTER(:_text,' or ');
+			    _index := :_index + 1;
+			    _indic_and_or:=2;
+		END IF;
+    ELSE--IF LOCATE(:_text,' and ')>LOCATE(:_text,' or ') and LOCATE(:_text,' or ')>0  then
+           
+           _items_log[:_index] := SUBSTR_BEFORE(:_text,' or ');
+           _items_group[:_index] :=_index_group;
+	  	   _index_group:=_index_group+1;
+	  	  
+	  	   _text := SUBSTR_AFTER(:_text,' or ');
+	   	   _index := :_index + 1;
+	       _indic_and_or:=2;  
+   END IF;
+   
+   END WHILE;
+
+    _items_log[:_index] := :_text;
+    _items_group[:_index] :=_index_group;
+    rst = UNNEST(:_items_log,:_items_group) AS ("items_log","items_group");
+
+
+/***************************************************************************************************************************************************************************/
+ 
+	DELETE FROM "TUSER4"."Project_DAM.db.tables::il_search_result"
+	WHERE "ARTESIA_ID" = :artesia_id;
+	
+	
+IF (:field_content = 'Y') THEN
+
+	
+	/********go through all keywords******************/
+	SELECT max("items_group") INTO groupkeywords_count 
+	FROM :rst;
+	
+	WHILE  groupkeywords_counter< groupkeywords_count  + 1 DO --or  
+	 
+	    keywords_counter:=1;
+		indexed_keywords = SELECT row_number() OVER (ORDER BY "items_log" ) AS ROW_NUMBER,
+		                          "items_log" 
+		                   FROM :rst WHERE "items_group" = :groupkeywords_counter;
+		
+		
+	   	SELECT COUNT(*) INTO keywords_count FROM :indexed_keywords;	
+
+   
+	    WHILE keywords_counter  <keywords_count  + 1 DO --and in separete logical group
+	        
+	       table_counter:=1;
+	       column_row_count:=1; 
+	       SELECT "items_log" INTO keyword FROM :indexed_keywords WHERE "ROW_NUMBER" = :keywords_counter;
+	     
+	    	indexed_tables = SELECT row_number() OVER (ORDER BY t."CATEGORYWEIGHT" desc) AS ROW_NUMBER, p."TABLE_NAME" ,t."CATEGORYWEIGHT"
+			                FROM ( SELECT DISTINCT "TABLE_NAME" 
+			                       FROM "SYS"."FULLTEXT_INDEXES" 
+			                       WHERE "SCHEMA_NAME" = 'TUSER4' and "TABLE_NAME" like 'SAP_LU_IL_%' ) as p
+			                INNER JOIN (SELECT MAX("CATEGORYWEIGHT") as CATEGORYWEIGHT,"TABLE_NAME"  
+			                            FROM "TUSER4"."SAP_LU_IL_SEARCH_TBL_WEIGHT" 
+			                            GROUP BY "TABLE_NAME" 
+			                            ) t on p."TABLE_NAME"=t."TABLE_NAME";
+			
+			SELECT COUNT(*) INTO table_row_count FROM :indexed_tables;	
+				
+			WHILE table_counter   <table_row_count  + 1 DO
+				
+				SELECT "TABLE_NAME" INTO table_name FROM :indexed_tables WHERE "ROW_NUMBER" = :table_counter;
+				SELECT "CATEGORYWEIGHT" INTO score FROM :indexed_tables WHERE "ROW_NUMBER" = :table_counter;
+			
+				SELECT CASE
+					WHEN table_name='OBJECT_STACKS' THEN '"OBJECT_ID"'
+					ELSE '"UOI_ID"' 
+					END AS COLUMN INTO SELECTed_column_name FROM DUMMY;
+				
+				indexed_columns = SELECT row_number() OVER (ORDER BY p."COLUMN_NAME") AS ROW_NUMBER, p."COLUMN_NAME" FROM (
+					SELECT "TABLE_NAME", SUBSTRING("INTERNAL_COLUMN_NAME", 14, LENGTH("INTERNAL_COLUMN_NAME") - 14) AS COLUMN_NAME FROM "SYS"."FULLTEXT_INDEXES" WHERE "SCHEMA_NAME" = 'TUSER4' AND "TABLE_NAME" = :table_name
+				) as p;
+				
+				SELECT COUNT(*) INTO column_row_count FROM :indexed_columns;
+				column_counter := 1;
+							
+				WHILE column_counter < column_row_count + 1 DO
+					
+					SELECT "COLUMN_NAME" INTO searched_column_name FROM :indexed_columns WHERE "ROW_NUMBER" = :column_counter;
+					
+					IF NOT (table_name ='SAP_LU_IL_FILE_FORMATS' or table_name='SAP_LU_IL_PERMISSION' or
+					        table_name='SAP_LU_IL_RIGHTS' or table_name='SAP_LU_IL_TYPE' or table_name='SAP_LU_IL_WORKFLOW_STATUS'
+					       )
+				     	 THEN table_nameDic:=replace(table_name,'SAP_LU_IL','SAP_DM_IL');
+	
+						 IF (:SELECTed_column_name != 'TEXT_CONTENT') THEN
+							 IF (:keywords_counter = 1) THEN  
+									  strexec := 'INSERT INTO "TUSER4"."Project_DAM.db.tables::il_search_keywords" ';
+									  strexec :=strexec || ' SELECT '||SELECTed_column_name||' AS ID, '||score||' AS SCORE, '''||artesia_id||''' AS ARTESIA_ID ';
+									  strexec :=strexec || ' FROM "TUSER4"."'||table_name||'" SAP_LU_IL INNER JOIN "TUSER4"."'||table_nameDic||'" SAP_DM_IL on SAP_DM_IL.CODE=SAP_LU_IL.ID ';
+									  strexec :=strexec || ' WHERE contains('||searched_column_name||', '''||keyword||''', fuzzy('||:fuzzy_coef||'))';
+									  exec strexec;
+						
+
+							 ELSE 
+								 	  strexec := 'INSERT INTO "TUSER4"."Project_DAM.db.tables::il_search_keywords" ';
+									  strexec :=strexec || ' SELECT '||SELECTed_column_name||' AS ID, '||score||' AS SCORE, '''||artesia_id||''' AS ARTESIA_ID ';
+									  strexec :=strexec || ' FROM "TUSER4"."'||table_name||'" SAP_LU_IL INNER JOIN "TUSER4"."'||table_nameDic||'" SAP_DM_IL on SAP_DM_IL.CODE=SAP_LU_IL.ID ';
+									  strexec :=strexec || ' INNER JOIN "TUSER4"."Project_DAM.db.tables::il_search_result_temp" d on d.ID=SAP_DM_IL.'||SELECTed_column_name||' and  d."ARTESIA_ID" = '||:artesia_id;
+									  strexec :=strexec || ' WHERE contains('||searched_column_name||', '''||keyword||''', fuzzy('||:fuzzy_coef||'))';
+									  exec strexec;
+							 END IF;
+					     END IF;
+					   END IF;
+					     							
+					   column_counter := column_counter + 1;
+					END WHILE;  --column
+				    table_counter := table_counter + 1;		
+				END WHILE;--table
+                  
+				 IF (:keywords_counter = 1) THEN  
+					  strexec := 'INSERT INTO "TUSER4"."Project_DAM.db.tables::il_search_result_temp" ';
+					  strexec :=strexec || ' SELECT * FROM  "TUSER4"."Project_DAM.db.tables::il_search_keywords" ';
+					  exec strexec;
+				 ELSE 
+					  strexec := 'DELETE FROM "TUSER4"."Project_DAM.db.tables::il_search_result_temp" t ';
+					  strexec :=strexec || ' WHERE NOT EXISTS (SELECT 1 FROM "TUSER4"."Project_DAM.db.tables::il_search_keywords" WHERE ID=t.ID and  "ARTESIA_ID" =t."ARTESIA_ID" )';
+					  exec strexec;
+				 END IF;
+               
+               DELETE FROM "TUSER4"."Project_DAM.db.tables::il_search_keywords" WHERE "ARTESIA_ID" = :artesia_id;
+			   keywords_counter:=keywords_counter+1;
+			END WHILE;--in one Group
+			
+			exec 'INSERT INTO "TUSER4"."Project_DAM.db.tables::il_search_result" SELECT * FROM "TUSER4"."Project_DAM.db.tables::il_search_result_temp" WHERE "ARTESIA_ID" = '||:artesia_id;
+			
+			DELETE FROM "TUSER4"."Project_DAM.db.tables::il_search_result_temp" WHERE "ARTESIA_ID" = :artesia_id;
+			                                 				  
+
+			groupkeywords_counter:=groupkeywords_counter+1;
+			
+       END WHILE;--Group
+
+	END IF;
+	
+	
+	SELECTed_ids = SELECT DISTINCT p."ID" FROM (SELECT "ID", "SCORE" FROM "TUSER4"."Project_DAM.db.tables::il_search_result" 
+	                                             WHERE "ARTESIA_ID" = :artesia_id ORDER BY SCORE DESC, ID ASC) AS p;
+	
+/*	INSERT INTO "TUSER4"."VIEW_ELEMENTS"(view_id, element_type, element_id, position, session_id) 
+		SELECT :view_id, 'UOI', uo.uoi_id, uo.rownum, :session_id 
+			FROM (SELECT TOP 200 ui.uoi_id, Row_Number() OVER (ORDER BY b0 DESC) AS rownum FROM (
+				SELECT DISTINCT uoi.uoi_id, uoi.IMPORT_DT b0 FROM "TUSER4"."UOIS" uoi 
+					INNER JOIN "TUSER4"."SAP_DM_APPROVAL_DATA" t1 ON uoi.uoi_id = t1.uoi_id 
+					LEFT OUTER JOIN "TUSER4"."SAP_ASSET_STATUS" t2 ON uoi.uoi_id = t2.uoi_id 
+					WHERE uoi.IS_LATEST_VERSION = 'Y' 
+						AND (uoi.CONTENT_STATE != 'DELETED' OR uoi.CONTENT_STATE IS NULL) 
+						AND (uoi.USAGE_SCOPE != 'Folders' OR uoi.USAGE_SCOPE IS NULL) 
+						AND t1.APPROVAL_STATUS_CD = 'Approved'   
+						AND uoi.IS_EXPIRED = 'N'
+						AND (t2.ASSET_STATUS != 'Source' OR t2.ASSET_STATUS IS NULL) 
+						and ( 1=1
+						    and case when : = '' then '' ELSE t3.ASSET_CD END = :asset_cd   
+							) AND uoi.uoi_id IN (SELECT * FROM :SELECTed_ids)
+				) ui 
+			) uo;
+			
+*/
+
+	DELETE FROM  "TUSER4"."Project_DAM.db.tables::il_view_elements"  WHERE "VIEW_ID" = :view_id;
+
+strexec := 	'INSERT INTO  "TUSER4"."Project_DAM.db.tables::il_view_elements" (view_id, element_type, element_id, position, session_id) ' ;
+strexec := strexec 	||	' SELECT '|| :view_id ||' , ''UOI'', uo.uoi_id, uo.rownum, '|| :session_id ||' ' ;
+strexec := strexec 		||	' FROM (SELECT TOP ' || :rowcnt || ' ui.uoi_id, Row_Number() OVER (ORDER BY b0 DESC) AS rownum FROM ( '; 
+strexec := strexec 			||	' SELECT DISTINCT uoi.uoi_id, uoi.IMPORT_DT b0 FROM "TUSER4"."UOIS" uoi ' ;
+
+IF (:additionfilters <> '' ) THEN strexec := strexec ||:additionjoin ;
+END IF;
+
+
+	strexec := strexec ||' WHERE uoi.IS_LATEST_VERSION = ''Y'' ';
+
+	--strexec := strexec ||'		AND (uoi.CONTENT_STATE != ''DELETED'' OR uoi.CONTENT_STATE IS NULL) ';
+    --	strexec := strexec ||'		AND uoi.IS_EXPIRED = ''N'' ';
+	
+	strexec := strexec ||'		and ( 1=1 ';
+	
+IF (:additionfilters <> '') THEN strexec := strexec ||' and  ' ||:additionfilters ||' ';
+END IF;
+	
+strexec := strexec ||'	AND uoi.uoi_id IN (SELECT DISTINCT p."ID" 
+                                           FROM (SELECT "ID", "SCORE" FROM "TUSER4"."Project_DAM.db.tables::il_search_result"
+                                                 WHERE "ARTESIA_ID" = '''||:artesia_id||'''  ORDER BY SCORE DESC, ID ASC) 
+                                                 AS p
+                                           )  ';  --AND uoi.uoi_id IN (SELECT * FROM :SELECTed_ids)
+strexec := strexec ||'	)) ui 	) uo ';
+	
+	exec strexec;
+		
+	
+	SELECT COUNT(*) INTO count FROM "TUSER4"."Project_DAM.db.tables::il_view_elements" WHERE "VIEW_ID" = :view_id;
+	DELETE FROM "TUSER4"."Project_DAM.db.tables::il_search_result" WHERE "ARTESIA_ID" = :artesia_id;
+
+END

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_SAP_COMMON_CMPS_EVENT" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_SAP_COMMON_CMPS_EVENT"/>
+  <metadata changedAt="2017-02-14 14:22:49.021"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="CUSTOM_NAME" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CUSTOM_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_COMMON_CMPS_EVENT" columnName="CUSTOM_NAME"/>
+    </attribute>
+    <attribute id="UOI_ID" key="true" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_COMMON_CMPS_EVENT" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="CMPS_EVENT" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CMPS_EVENT"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_CMPS_EVENT" columnName="VALUE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_COMMON_CMPS_EVENT"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_CMPS_EVENT"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_COMMON_CMPS_EVENT"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_CMPS_EVENT"/>
+        <leftColumns>
+          <columnName>EVENT_CD</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="inner"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_COMMON_CMPS_EVENT" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_CMPS_EVENT" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="385" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

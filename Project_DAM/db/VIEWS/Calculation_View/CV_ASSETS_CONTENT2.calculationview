@@ -1,0 +1,1248 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_ASSETS_CONTENT2" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="crossClient" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" calculationScenarioType="TREE_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" outputViewType="Projection">
+  <origin/>
+  <descriptions defaultDescription="CV_ASSETS_CONTENT2"/>
+  <localVariables/>
+  <variableMappings/>
+  <informationModelLayout relativeWidthScenario="47"/>
+  <dataSources>
+    <DataSource id="AV_UOISMETADATA" type="ATTRIBUTE_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Atribute_View/attributeviews/AV_UOISMETADATA</resourceUri>
+    </DataSource>
+    <DataSource id="CV_CONTENT_OWNERSBYEMAIL" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_CONTENT_OWNERSBYEMAIL</resourceUri>
+    </DataSource>
+    <DataSource id="CV_CONTENT_CATEGORY" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_CONTENT_CATEGORY</resourceUri>
+    </DataSource>
+    <DataSource id="CV_REGION_COUNTRY" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_REGION_COUNTRY</resourceUri>
+    </DataSource>
+    <DataSource id="CV_LENGUAGE" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_LENGUAGE</resourceUri>
+    </DataSource>
+    <DataSource id="CV_SOLUTION_PRODUCT" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_SOLUTION_PRODUCT</resourceUri>
+    </DataSource>
+    <DataSource id="CV_SERVICES" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_SERVICES</resourceUri>
+    </DataSource>
+    <DataSource id="CV_INDUSTRY" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_INDUSTRY</resourceUri>
+    </DataSource>
+    <DataSource id="CV_SOLUTION" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_SOLUTION</resourceUri>
+    </DataSource>
+    <DataSource id="AV_APROVERS" type="ATTRIBUTE_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Atribute_View/attributeviews/AV_APROVERS</resourceUri>
+    </DataSource>
+    <DataSource id="CV_SUBSCRIPTION_BY_DOI" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_SUBSCRIPTION_BY_DOI</resourceUri>
+    </DataSource>
+    <DataSource id="CV_TASK" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_TASK</resourceUri>
+    </DataSource>
+    <DataSource id="CV_TOPICS" type="CALCULATION_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Calculation_View/calculationviews/CV_TOPICS</resourceUri>
+    </DataSource>
+    <DataSource id="AV_SAP_CMP_METADATA" type="ATTRIBUTE_VIEW">
+      <viewAttributes allViewAttributes="true"/>
+      <resourceUri>/Project_DAM.db.VIEWS.Atribute_View/attributeviews/AV_SAP_CMP_METADATA</resourceUri>
+    </DataSource>
+  </dataSources>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:JoinView" id="CONTENT_OWNER" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+        <viewAttribute id="MODEL_ID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#AV_UOISMETADATA">
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MODEL_ID" source="MODEL_ID"/>
+      </input>
+      <input node="#CV_CONTENT_OWNERSBYEMAIL">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="EMAIL_ADDR"/>
+      </input>
+      <joinAttribute name="CONTENT_EMAIL"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="CONTENT_CATEGORY" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#CONTENT_OWNER">
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+      </input>
+      <input node="#CV_CONTENT_CATEGORY">
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="UOI_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="REGION_COUNTRY" joinOrder="OUTSIDE_IN" joinType="rightOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="UOI_ID_1"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#CV_REGION_COUNTRY">
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID_1" source="UOI_ID"/>
+      </input>
+      <input node="#CONTENT_CATEGORY">
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID_1" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="UOI_ID_1"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="ASSET_LANGUAGE" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="ASSET_LANGUAGE"/>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#REGION_COUNTRY">
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+      </input>
+      <input node="#CV_LENGUAGE">
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LANGUAGE" source="ASSET_LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="UOI_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="SOLUTION_PRODUCT" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SOLUTION_PRODUCT"/>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="ASSET_LANGUAGE"/>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#ASSET_LANGUAGE">
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LANGUAGE" source="ASSET_LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+      </input>
+      <input node="#CV_SOLUTION_PRODUCT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION_PRODUCT" source="SOLUTION_PRODUCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="UOI_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="SERVICES" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SOLUTION_PRODUCT"/>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="ASSET_LANGUAGE"/>
+        <viewAttribute id="SERVICES"/>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#SOLUTION_PRODUCT">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION_PRODUCT" source="SOLUTION_PRODUCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LANGUAGE" source="ASSET_LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+      </input>
+      <input node="#CV_SERVICES">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SERVICES" source="SERVICES"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="UOI_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="INDUSTRY" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SOLUTION_PRODUCT"/>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="ASSET_LANGUAGE"/>
+        <viewAttribute id="SERVICES"/>
+        <viewAttribute id="INDUSTRY"/>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#SERVICES">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION_PRODUCT" source="SOLUTION_PRODUCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LANGUAGE" source="ASSET_LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SERVICES" source="SERVICES"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+      </input>
+      <input node="#CV_INDUSTRY">
+        <mapping xsi:type="Calculation:AttributeMapping" target="INDUSTRY" source="INDUSTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="UOI_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="SOLUTION" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="SOLUTION_PRODUCT"/>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="ASSET_LANGUAGE"/>
+        <viewAttribute id="INDUSTRY"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="SOLUTION"/>
+        <viewAttribute id="SERVICES"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#INDUSTRY">
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION_PRODUCT" source="SOLUTION_PRODUCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LANGUAGE" source="ASSET_LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INDUSTRY" source="INDUSTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SERVICES" source="SERVICES"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+      </input>
+      <input node="#CV_SOLUTION">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION" source="SOLUTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="UOI_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="APPROVAL" joinOrder="OUTSIDE_IN" joinType="rightOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="APPROVAL_STATUS"/>
+        <viewAttribute id="APPROVER_NAME"/>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="SOLUTION_PRODUCT"/>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="ASSET_LANGUAGE"/>
+        <viewAttribute id="INDUSTRY"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="SOLUTION"/>
+        <viewAttribute id="SERVICES"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+        <viewAttribute hidden="true" id="JOIN$UOI_ID$UOI_ID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#AV_APROVERS">
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_STATUS" source="APPROVAL_STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVER_NAME" source="APPROVER_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$UOI_ID$UOI_ID" source="UOI_ID"/>
+      </input>
+      <input node="#SOLUTION">
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION_PRODUCT" source="SOLUTION_PRODUCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LANGUAGE" source="ASSET_LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INDUSTRY" source="INDUSTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION" source="SOLUTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SERVICES" source="SERVICES"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$UOI_ID$UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="JOIN$UOI_ID$UOI_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="SUBSCRIPTION" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="APPROVER_NAME"/>
+        <viewAttribute id="APPROVAL_STATUS"/>
+        <viewAttribute id="SUBSCRIPTION_LOGINS"/>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="SOLUTION_PRODUCT"/>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="ASSET_LANGUAGE"/>
+        <viewAttribute id="INDUSTRY"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="SOLUTION"/>
+        <viewAttribute id="SERVICES"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#APPROVAL">
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVER_NAME" source="APPROVER_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_STATUS" source="APPROVAL_STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION_PRODUCT" source="SOLUTION_PRODUCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LANGUAGE" source="ASSET_LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INDUSTRY" source="INDUSTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION" source="SOLUTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SERVICES" source="SERVICES"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+      </input>
+      <input node="#CV_SUBSCRIPTION_BY_DOI">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SUBSCRIPTION_LOGINS" source="SUBSCRIPTION_LOGIN_IDS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="UOI_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="TASK" joinOrder="OUTSIDE_IN" joinType="rightOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="SUBSCRIPTION_LOGINS"/>
+        <viewAttribute id="APPROVER_NAME"/>
+        <viewAttribute id="APPROVAL_STATUS"/>
+        <viewAttribute id="SOLUTION_PRODUCT"/>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="ASSET_LANGUAGE"/>
+        <viewAttribute id="INDUSTRY"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="TASK"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="SERVICES"/>
+        <viewAttribute id="SOLUTION"/>
+        <viewAttribute hidden="true" id="JOIN$UOI_ID$UOI_ID"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#CV_TASK">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TASK" source="TASK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$UOI_ID$UOI_ID" source="UOI_ID"/>
+      </input>
+      <input node="#SUBSCRIPTION">
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SUBSCRIPTION_LOGINS" source="SUBSCRIPTION_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVER_NAME" source="APPROVER_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_STATUS" source="APPROVAL_STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION_PRODUCT" source="SOLUTION_PRODUCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LANGUAGE" source="ASSET_LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INDUSTRY" source="INDUSTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SERVICES" source="SERVICES"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION" source="SOLUTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="JOIN$UOI_ID$UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="JOIN$UOI_ID$UOI_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="TOPIC" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="SUBSCRIPTION_LOGINS"/>
+        <viewAttribute id="APPROVER_NAME"/>
+        <viewAttribute id="APPROVAL_STATUS"/>
+        <viewAttribute id="SOLUTION_PRODUCT"/>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="ASSET_LANGUAGE"/>
+        <viewAttribute id="INDUSTRY"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="TASK"/>
+        <viewAttribute id="TOPIC"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="SERVICES"/>
+        <viewAttribute id="SOLUTION"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#TASK">
+        <mapping xsi:type="Calculation:AttributeMapping" target="SUBSCRIPTION_LOGINS" source="SUBSCRIPTION_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVER_NAME" source="APPROVER_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_STATUS" source="APPROVAL_STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION_PRODUCT" source="SOLUTION_PRODUCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LANGUAGE" source="ASSET_LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INDUSTRY" source="INDUSTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TASK" source="TASK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SERVICES" source="SERVICES"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION" source="SOLUTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+      </input>
+      <input node="#CV_TOPICS">
+        <mapping xsi:type="Calculation:AttributeMapping" target="TOPIC" source="TOPIC"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="UOI_ID"/>
+    </calculationView>
+    <calculationView xsi:type="Calculation:JoinView" id="CMP_METADATA" joinOrder="OUTSIDE_IN" joinType="leftOuter">
+      <descriptions/>
+      <viewAttributes>
+        <viewAttribute id="UOI_ID"/>
+        <viewAttribute id="SOLUTION_PRODUCT"/>
+        <viewAttribute id="APPROVAL_STATUS"/>
+        <viewAttribute id="APPROVER_NAME"/>
+        <viewAttribute id="SUBSCRIPTION_LOGINS"/>
+        <viewAttribute id="REGION_COUNTRY"/>
+        <viewAttribute id="ASSET_LANGUAGE"/>
+        <viewAttribute id="INDUSTRY"/>
+        <viewAttribute id="CONTENT_CATEGORY"/>
+        <viewAttribute id="SAP_DIGITAL_ID"/>
+        <viewAttribute id="ASSET_NAME"/>
+        <viewAttribute id="ASSET_DESCRIPTION"/>
+        <viewAttribute id="IS_EXPIRED"/>
+        <viewAttribute id="UPLOAD_DATE"/>
+        <viewAttribute id="ASSET_LOCATION"/>
+        <viewAttribute id="Last_Modified_Date"/>
+        <viewAttribute id="CONTENT_OWNER"/>
+        <viewAttribute id="CONTENT_EMAIL"/>
+        <viewAttribute id="ASSET_TYPE"/>
+        <viewAttribute id="UPLOADED_LOGIN_ID"/>
+        <viewAttribute id="UPLOADED_BY"/>
+        <viewAttribute id="EXPIRATION_DATE"/>
+        <viewAttribute id="TASK"/>
+        <viewAttribute id="TOPIC"/>
+        <viewAttribute id="DOCUMENT_FORMAT"/>
+        <viewAttribute id="POLICY_INFORMATION"/>
+        <viewAttribute id="CONTENT_ROLE"/>
+        <viewAttribute id="CONTENT_OWNER_LOGINS"/>
+        <viewAttribute id="AUTHORIZATION"/>
+        <viewAttribute id="EXTENSION"/>
+        <viewAttribute id="CRM_WBS_ELEMEMENT"/>
+        <viewAttribute id="CAMPAIGN_NAME"/>
+        <viewAttribute id="TYPE"/>
+        <viewAttribute id="MARKETING_PROGRAM_ID"/>
+        <viewAttribute id="SOLUTION"/>
+        <viewAttribute id="PROGRAM_NAME"/>
+        <viewAttribute id="SERVICES"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <input node="#TOPIC">
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION_PRODUCT" source="SOLUTION_PRODUCT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVAL_STATUS" source="APPROVAL_STATUS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="APPROVER_NAME" source="APPROVER_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SUBSCRIPTION_LOGINS" source="SUBSCRIPTION_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="REGION_COUNTRY" source="REGION_COUNTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LANGUAGE" source="ASSET_LANGUAGE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="INDUSTRY" source="INDUSTRY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_CATEGORY" source="CONTENT_CATEGORY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SAP_DIGITAL_ID" source="SAP_DIGITAL_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_NAME" source="ASSET_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_DESCRIPTION" source="ASSET_DESCRIPTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="IS_EXPIRED" source="IS_EXPIRED"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOAD_DATE" source="UPLOAD_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_LOCATION" source="ASSET_LOCATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="Last_Modified_Date" source="Last_Modified_Date"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER" source="CONTENT_OWNER"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_EMAIL" source="CONTENT_EMAIL"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="ASSET_TYPE" source="ASSET_TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_LOGIN_ID" source="UPLOADED_LOGIN_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UPLOADED_BY" source="UPLOADED_BY"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXPIRATION_DATE" source="EXPIRATION_DATE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TASK" source="TASK"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TOPIC" source="TOPIC"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_ROLE" source="CONTENT_ROLE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CONTENT_OWNER_LOGINS" source="CONTENT_OWNER_LOGINS"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="AUTHORIZATION" source="AUTHORIZATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="EXTENSION" source="EXTENSION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CRM_WBS_ELEMEMENT" source="CRM_WBS_ELEMEMENT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="CAMPAIGN_NAME" source="CAMPAIGN_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="TYPE" source="TYPE"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="MARKETING_PROGRAM_ID" source="MARKETING_PROGRAM_ID"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SOLUTION" source="SOLUTION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="PROGRAM_NAME" source="PROGRAM_NAME"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="SERVICES" source="SERVICES"/>
+      </input>
+      <input node="#AV_SAP_CMP_METADATA">
+        <mapping xsi:type="Calculation:AttributeMapping" target="DOCUMENT_FORMAT" source="DOCUMENT_FORMAT"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="POLICY_INFORMATION" source="POLICY_INFORMATION"/>
+        <mapping xsi:type="Calculation:AttributeMapping" target="UOI_ID" source="UOI_ID"/>
+      </input>
+      <joinAttribute name="UOI_ID"/>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="CMP_METADATA">
+    <descriptions/>
+    <attributes>
+      <attribute id="UOI_ID" order="5" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="UOI_ID"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="UOI_ID"/>
+      </attribute>
+      <attribute id="SOLUTION_PRODUCT" order="6" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="SOLUTION_PRODUCT"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="SOLUTION_PRODUCT"/>
+      </attribute>
+      <attribute id="APPROVAL_STATUS" order="7" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="APPROVAL_STATUS"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="APPROVAL_STATUS"/>
+      </attribute>
+      <attribute id="APPROVER_NAME" order="8" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="APPROVER_NAME"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="APPROVER_NAME"/>
+      </attribute>
+      <attribute id="SUBSCRIPTION_LOGINS" order="9" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="SUBSCRIPTION_LOGINS"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="SUBSCRIPTION_LOGINS"/>
+      </attribute>
+      <attribute id="ASSET_LANGUAGE" order="10" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ASSET_LANGUAGE"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="ASSET_LANGUAGE"/>
+      </attribute>
+      <attribute id="INDUSTRY" order="11" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="INDUSTRY"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="INDUSTRY"/>
+      </attribute>
+      <attribute id="CONTENT_CATEGORY" order="12" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CONTENT_CATEGORY"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="CONTENT_CATEGORY"/>
+      </attribute>
+      <attribute id="SAP_DIGITAL_ID" order="13" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="SAP_DIGITAL_ID"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="SAP_DIGITAL_ID"/>
+      </attribute>
+      <attribute id="ASSET_NAME" order="14" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ASSET_NAME"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="ASSET_NAME"/>
+      </attribute>
+      <attribute id="ASSET_DESCRIPTION" order="15" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ASSET_DESCRIPTION"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="ASSET_DESCRIPTION"/>
+      </attribute>
+      <attribute id="IS_EXPIRED" order="16" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="IS_EXPIRED"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="IS_EXPIRED"/>
+      </attribute>
+      <attribute id="REGION_COUNTRY" order="17" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="REGION_COUNTRY"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="REGION_COUNTRY"/>
+      </attribute>
+      <attribute id="UPLOAD_DATE" order="18" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="UPLOAD_DATE"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="UPLOAD_DATE"/>
+      </attribute>
+      <attribute id="ASSET_LOCATION" order="19" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ASSET_LOCATION"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="ASSET_LOCATION"/>
+      </attribute>
+      <attribute id="CONTENT_OWNER" order="20" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CONTENT_OWNER"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="CONTENT_OWNER"/>
+      </attribute>
+      <attribute id="CONTENT_EMAIL" order="21" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CONTENT_EMAIL"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="CONTENT_EMAIL"/>
+      </attribute>
+      <attribute id="ASSET_TYPE" order="22" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="ASSET_TYPE"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="ASSET_TYPE"/>
+      </attribute>
+      <attribute id="UPLOADED_LOGIN_ID" order="23" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="UPLOADED_LOGIN_ID"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="UPLOADED_LOGIN_ID"/>
+      </attribute>
+      <attribute id="UPLOADED_BY" order="24" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="UPLOADED_BY"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="UPLOADED_BY"/>
+      </attribute>
+      <attribute id="EXPIRATION_DATE" order="25" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EXPIRATION_DATE"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="EXPIRATION_DATE"/>
+      </attribute>
+      <attribute id="TASK" order="26" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="TASK"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="TASK"/>
+      </attribute>
+      <attribute id="TOPIC" order="27" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="TOPIC"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="TOPIC"/>
+      </attribute>
+      <attribute id="DOCUMENT_FORMAT" order="28" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="DOCUMENT_FORMAT"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="DOCUMENT_FORMAT"/>
+      </attribute>
+      <attribute id="POLICY_INFORMATION" order="29" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="POLICY_INFORMATION"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="POLICY_INFORMATION"/>
+      </attribute>
+      <attribute id="CONTENT_ROLE" order="30" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CONTENT_ROLE"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="CONTENT_ROLE"/>
+      </attribute>
+      <attribute id="CONTENT_OWNER_LOGINS" order="31" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CONTENT_OWNER_LOGINS"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="CONTENT_OWNER_LOGINS"/>
+      </attribute>
+      <attribute id="AUTHORIZATION" order="32" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="AUTHORIZATION"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="AUTHORIZATION"/>
+      </attribute>
+      <attribute id="EXTENSION" order="33" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="EXTENSION"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="EXTENSION"/>
+      </attribute>
+      <attribute id="CRM_WBS_ELEMEMENT" order="34" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CRM_WBS_ELEMEMENT"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="CRM_WBS_ELEMEMENT"/>
+      </attribute>
+      <attribute id="CAMPAIGN_NAME" order="35" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="CAMPAIGN_NAME"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="CAMPAIGN_NAME"/>
+      </attribute>
+      <attribute id="TYPE" order="36" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="TYPE"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="TYPE"/>
+      </attribute>
+      <attribute id="MARKETING_PROGRAM_ID" order="37" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="MARKETING_PROGRAM_ID"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="MARKETING_PROGRAM_ID"/>
+      </attribute>
+      <attribute id="SOLUTION" order="38" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="SOLUTION"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="SOLUTION"/>
+      </attribute>
+      <attribute id="PROGRAM_NAME" order="39" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="PROGRAM_NAME"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="PROGRAM_NAME"/>
+      </attribute>
+      <attribute id="SERVICES" order="40" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="SERVICES"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="SERVICES"/>
+      </attribute>
+      <attribute id="Last_Modified_Date" order="41" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="Last_Modified_Date"/>
+        <keyMapping columnObjectName="CMP_METADATA" columnName="Last_Modified_Date"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes>
+      <calculatedAttribute id="IS_APPROVED" hidden="false" order="1" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="IS APPROVED"/>
+        <keyCalculation datatype="VARCHAR" expressionLanguage="COLUMN_ENGINE" length="1">
+          <formula>if(&quot;APPROVAL_STATUS&quot;='Approved','Y','N')</formula>
+        </keyCalculation>
+      </calculatedAttribute>
+      <calculatedAttribute id="DUPLOAD_DATE" hidden="false" order="2" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="DUPLOAD_DATE"/>
+        <keyCalculation datatype="TIMESTAMP" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;UPLOAD_DATE&quot;</formula>
+        </keyCalculation>
+      </calculatedAttribute>
+      <calculatedAttribute id="DLast_Modified_Date" hidden="false" order="3" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="DLast_Modified_Date"/>
+        <keyCalculation datatype="TIMESTAMP" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;Last_Modified_Date&quot;</formula>
+        </keyCalculation>
+      </calculatedAttribute>
+      <calculatedAttribute id="DEXPIRATION_DATE" hidden="false" order="4" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+        <descriptions defaultDescription="DEXPIRATION_DATE"/>
+        <keyCalculation datatype="TIMESTAMP" expressionLanguage="COLUMN_ENGINE">
+          <formula>&quot;EXPIRATION_DATE&quot;</formula>
+        </keyCalculation>
+      </calculatedAttribute>
+    </calculatedAttributes>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape expanded="true" modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="22" y="87"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="CONTENT_OWNER" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1875"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="CONTENT_CATEGORY" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1779"/>
+        <rectangleSize height="0" width="0"/>
+      </shape>
+      <shape expanded="true" modelObjectName="REGION_COUNTRY" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1683"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="ASSET_LANGUAGE" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1587"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="SOLUTION_PRODUCT" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1491"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="SERVICES" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1395"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="INDUSTRY" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1299"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="SOLUTION" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1203"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="APPROVAL" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1107"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="SUBSCRIPTION" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="1011"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="TASK" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="915"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="TOPIC" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="22" y="819"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+      <shape expanded="true" modelObjectName="CMP_METADATA" modelObjectNameSpace="CalculationView">
+        <upperLeftCorner x="30" y="520"/>
+        <rectangleSize height="-1" width="-1"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

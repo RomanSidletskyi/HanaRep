@@ -1,0 +1,18 @@
+ // To define an HDB table with main sql type columns, you can use the following code.
+// In the example below a schema should exist.
+
+
+table.schemaName = "TUSER4";
+table.tableType = COLUMNSTORE; // ROWSTORE is an alternative value
+
+
+table.columns =
+ [
+    {name = "tableName";  sqlType = NVARCHAR; length = 255; defaultValue = "";comment = "String Type";},
+    {name = "searchColumnName";  sqlType = NVARCHAR; length = 255; defaultValue = "";comment = "String Type";},
+    {name = "idColumnName";  sqlType = NVARCHAR; length = 255; defaultValue = "";comment = "String Type";},
+    {name = "TERMMAPPINGTABLE";  sqlType = NVARCHAR; length = 255; defaultValue = "";comment = "String Type";},
+    {name = "TERMMAPPINGTABLELISTID";  sqlType = NVARCHAR; length = 255; defaultValue = "";comment = "String Type";}
+
+
+];

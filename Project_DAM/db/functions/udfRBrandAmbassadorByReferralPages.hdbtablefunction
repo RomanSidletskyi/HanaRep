@@ -1,0 +1,46 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::udfRBrandAmbassadorByReferralPages"  
+                                        (startdate varchar(100),
+										 enddate  varchar(100),
+										 assettype VARCHAR(200),
+										 assetRegionName varchar(100),
+										 userRegionName varchar(100),
+										 language_  varchar(100),
+										 userId varchar(100),
+										 type  varchar(15),
+										 dois varchar(2000)
+										  ) 
+	RETURNS table ( "downloads" INT,
+                    "Referral Page" NVARCHAR(100) 
+              )  
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+
+RETURN 
+
+ SELECT TO_INT(count(distinct WD.ID)) AS  "downloads",
+        CASE WHEN IFNULL(WD.REFERING_APP,'')='' THEN 'N/A' ELSE WD.REFERING_APP END as "Referral Page"
+FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" u
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_REGION_COUNTRY" RC ON U.UOI_ID=RC.UOI_ID
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_COMMON_METADATA" L ON U.UOI_ID=L.UOI_ID
+INNER JOIN TUSER4."SAP_DM_APPROVAL_DATA" AS sdad ON sdad.APPROVAL_STATUS_CD='Approved' AND sdad.uoi_id=u.uoi_id
+INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_WORKFLOW_LOGS_DOWNLOAD" WD on u.logical_uoi_id=WD.logical_uoi_id
+INNER JOIN  tuser4.SECURITY_POLICY_UOIS UOIS_P ON UOIS_P.UOI_ID=U.UOI_ID
+INNER JOIN  tuser4.SECURITY_POLICIES SP ON  SP.ID=UOIS_P.SEC_POLICY_ID
+
+WHERE WD.DOWNLOAD_TIME >= :startdate AND 
+      WD.DOWNLOAD_TIME <ADD_DAYS(:enddate,1) AND
+      (UPPER(concat(concat(',',REPLACE(REPLACE(:dois ,CHAR(10),''),' ','')),',')) like UPPER(concat(concat('%,',u.SAP_DIGITAL_ID),',%'))  OR :type = 'NotDOISList')  AND
+      (RC.REGION_NAME=:assetRegionName or :assetRegionName='All' ) AND
+      (WD.USER_REGION_NAME=:userRegionName or :userRegionName='All' ) AND
+      (EXISTS( select CO.USER_ID from "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" CO  
+                                 where CO.EMAIL_ADDR=U.CONTENT_EMAIL and :userId = CO.USER_ID) 
+       OR :userId=U.UPLOADED_USER_ID OR :type != 'MyAssets'
+       ) AND
+      u.MODEL_ID !='600013' AND
+      (U.ASSET_TYPE =:assettype OR 'All'=:assettype) AND
+      (L.ASSET_LANGUAGE=:language_ OR 'All'=:language_) AND
+      SP.NAME ='JAM' AND u.AUTHORIZATION = 'JAM' AND WD.REFERING_APP LIKE 'https://jam4.sapjam.com/%'
+group by CASE WHEN IFNULL(WD.REFERING_APP,'')='' THEN 'N/A' ELSE WD.REFERING_APP END;
+
+END;

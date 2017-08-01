@@ -1,0 +1,146 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::udfRBrandShareFeedbackByAVGSection" (
+                                         startDate varchar(100),
+                                         endDate  varchar(100),
+                                         submittedBy varchar(200),
+                                         userId varchar(100)) 
+                       
+RETURNS table (   
+  "All AVG Value" DECIMAL(5,2),
+  "Brand Purpose AVG Value" DECIMAL(5,2),
+  "Brand Promise AVG Value" DECIMAL(5,2),
+  "Brand Attributes AVG Value" DECIMAL(5,2),
+  "Operating Principle AVG Value" DECIMAL(5,2),
+  "Logo AVG Value" DECIMAL(5,2),
+  "Typography AVG Value" DECIMAL(5,2),
+  "Sound AVG Value" DECIMAL(5,2),
+  "Color AVG Value" DECIMAL(5,2),
+  "Photography AVG Value" DECIMAL(5,2),
+  "Visual Storytelling AVG Value" DECIMAL(5,2),
+  "Brand Voice AVG Value" DECIMAL(5,2)
+ ) 
+
+LANGUAGE SQLSCRIPT
+SQL SECURITY INVOKER AS
+BEGIN
+
+
+RETURN 
+
+select
+  sum("All AVG Value") as "All AVG Value"
+  ,sum("Brand Purpose AVG Value") as "Brand Purpose AVG Value"
+  ,sum("Brand Promise AVG Value")as "Brand Promise AVG Value"
+  ,sum("Brand Attributes AVG Value")as "Brand Attributes AVG Value"
+  ,sum("Operating Principle AVG Value")as "Operating Principle AVG Value"
+  ,sum("Logo AVG Value")as "Logo AVG Value"
+  ,sum("Typography AVG Value")as "Typography AVG Value"
+  ,sum("Sound AVG Value")as "Sound AVG Value"
+  ,sum("Color AVG Value")as "Color AVG Value"
+  ,sum("Photography AVG Value")as "Photography AVG Value"
+  ,sum("Visual Storytelling AVG Value")as "Visual Storytelling AVG Value"
+  ,sum("Brand Voice AVG Value")as "Brand Voice AVG Value"
+ FROM ( 
+SELECT 
+      0 as "All AVG Value",
+      case when SECTION_NAME like 'Brand Purpose%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end  as "Brand Purpose AVG Value"     
+      ,case when SECTION_NAME like 'Brand Promise%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end as "Brand Promise AVG Value"
+      ,case when SECTION_NAME like 'Brand Attributes%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end as "Brand Attributes AVG Value"
+      ,case when SECTION_NAME like 'Operating Principle%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end as "Operating Principle AVG Value"
+      ,case when SECTION_NAME like 'Logo%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end as "Logo AVG Value"
+      ,case when SECTION_NAME like 'Typography%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end as "Typography AVG Value"
+      ,case when SECTION_NAME like 'Sound%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end  as "Sound AVG Value"
+      ,case when SECTION_NAME like 'Color%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end as "Color AVG Value"
+      ,case when SECTION_NAME like 'Photography%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end as "Photography AVG Value"
+      ,case when SECTION_NAME like 'Visual storytelling%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end as "Visual Storytelling AVG Value"
+      ,case when SECTION_NAME like 'Brand Voice%' then avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) else 0 end as "Brand Voice AVG Value"      
+FROM 
+(
+  SELECT 
+    FORM_ID, 
+    UOI_ID, 
+    fb.SECTION_NAME,
+    sum(1) as "TOTAL_AMOUNT",
+    sum(CASE WHEN IFNULL(ITEM_VALUE, 'NA') = 'YES' THEN 1 ELSE 0 END) as "YES_AMOUNT",
+    sum(CASE WHEN IFNULL(ITEM_VALUE, 'NA') = 'NA' THEN 1 ELSE 0 END) as "NA_AMOUNT"
+  FROM (
+    SELECT distinct fb.FORM_ID, fb.UOI_ID, fb.CATEGORY_ID, fb.SECTION_ID, fb.SECTION_NAME, fb.ITEM_ID, fb.ITEM_VALUE
+    FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_BRAND_FEEDBACK" fb
+    INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" u on u.uoi_id = fb.UOI_ID
+    LEFT JOIN (
+      SELECT u.USER_ID as USER_ID, 
+        case when ug.NAME = 'Brand team' then 'BT' else 'BA' end as USER_GROUP
+      FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+      JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+      JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+      WHERE ug.NAME in ('Brand team', 'Brand Ambassador')--   and u.GROUP_ID <> 1 -- EXCLUDE ADMINs
+    ) ug on ug.USER_ID = fb.FORM_CREATED_BY
+    WHERE fb.FORM_STATUS = 'COMPLETED'
+      AND fb.FORM_CREATED_DATE >= :startdate
+      AND fb.FORM_CREATED_DATE < ADD_DAYS(:enddate,1)
+      AND (ug.USER_GROUP = :submittedBy or 'All' = :submittedBy) -- SubmittedBy (All/ Brand Team/ Brand Ambassador)
+      AND (:userid in (
+                       SELECT u.USER_ID as USER_ID
+                       FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+                       JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                       JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                       WHERE ug.NAME in ('Administrator','Brand team')
+                    ) or (fb.FORM_CREATED_BY = :userid)or (:userid = 'All'))
+  ) fb
+  GROUP BY FORM_ID, UOI_ID,     fb.SECTION_NAME
+) t
+group by SECTION_NAME
+
+union 
+
+SELECT 
+
+  avg(CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END) as "All AVG Value"
+  ,0 as "Brand Purpose AVG Value"
+  ,0 as "Brand Promise AVG Value"
+  ,0 as "Brand Attributes AVG Value"
+  ,0 as "Operating Principle AVG Value"
+  ,0 as "Logo AVG Value"
+  ,0 as "Typography AVG Value"
+  ,0 as "Sound AVG Value"
+  ,0 as "Color AVG Value"
+  ,0 as "Photography AVG Value"
+  ,0 as "Visual Storytelling AVG Value"
+  ,0 as "Brand Voice AVG Value"
+FROM 
+(
+  SELECT 
+    FORM_ID, 
+    UOI_ID, 
+    sum(1) as "TOTAL_AMOUNT",
+    sum(CASE WHEN IFNULL(ITEM_VALUE, 'NA') = 'YES' THEN 1 ELSE 0 END) as "YES_AMOUNT",
+    sum(CASE WHEN IFNULL(ITEM_VALUE, 'NA') = 'NA' THEN 1 ELSE 0 END) as "NA_AMOUNT"
+  FROM (
+    SELECT distinct fb.FORM_ID, fb.UOI_ID, fb.CATEGORY_ID, fb.SECTION_ID, fb.SECTION_NAME, fb.ITEM_ID, fb.ITEM_VALUE
+    FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_BRAND_FEEDBACK" fb
+    INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" u on u.uoi_id = fb.UOI_ID
+    LEFT JOIN (
+      SELECT u.USER_ID as USER_ID, 
+        case when ug.NAME = 'Brand team' then 'BT' else 'BA' end as USER_GROUP
+      FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+      JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+      JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+      WHERE ug.NAME in ('Brand team', 'Brand Ambassador')--   and u.GROUP_ID <> 1 -- EXCLUDE ADMINs
+    ) ug on ug.USER_ID = fb.FORM_CREATED_BY
+    WHERE fb.FORM_STATUS = 'COMPLETED'
+      AND fb.FORM_CREATED_DATE >= :startdate
+      AND fb.FORM_CREATED_DATE < ADD_DAYS(:enddate,1)
+      AND (ug.USER_GROUP = :submittedBy or 'All' = :submittedBy) -- SubmittedBy (All/ Brand Team/ Brand Ambassador)
+      AND (:userid in (
+                       SELECT u.USER_ID as USER_ID
+                       FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+                       JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                       JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                       WHERE ug.NAME in ('Administrator','Brand team')
+                    ) or (fb.FORM_CREATED_BY = :userid)or (:userid = 'All'))
+  ) fb
+  GROUP BY FORM_ID, UOI_ID
+) t
+) sn;
+
+
+END;

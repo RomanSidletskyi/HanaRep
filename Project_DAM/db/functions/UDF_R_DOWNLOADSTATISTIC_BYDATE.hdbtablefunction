@@ -1,0 +1,111 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::UDF_R_DOWNLOADSTATISTIC_BYDATE" 
+(
+ startdate TIMESTAMP,
+ enddate TIMESTAMP,
+ type_ varchar(100),
+ type_code varchar(100),
+ user_id varchar(100),
+ dois varchar(2000),
+ is_internal varchar(10)
+ ) 
+	RETURNS table ( "Range_namer" NVARCHAR(100) ,
+               		"Downloads" INT,
+                	"Range_order" INT
+                  ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+
+DECLARE COUNTRY VARCHAR(255):='All';
+IF (:type_ = 'REGION_COUNTRY' and NOT(:type_code ='All' or :type_code='none')) THEN
+SELECT "FULL_COUNTRY_NAME" INTO COUNTRY FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_REGION_COUNTRY"
+       WHERE "COUNTRYNAME"= :type_code and :type_='REGION_COUNTRY';
+
+END IF;  
+
+RETURN 
+
+SELECT  wl."Range_Name" as  "Range_namer",
+        TO_INT(SUM(wl.amount)) AS  "Downloads",
+        wl."Range_Order" as "Range_order"
+FROM TUSER4."UOIS" u 
+INNER JOIN TUSER4."SAP_DM_METADATA" as  prev_versions on u.uoi_id=prev_versions.uoi_id
+INNER JOIN TUSER4."SAP_DM_APPROVAL_DATA" as sdad on sdad.APPROVAL_STATUS_CD='Approved' AND sdad.uoi_id=u.uoi_id
+INNER JOIN 
+	(SELECT u.logical_uoi_id,
+	        count(9) amount,
+		    F."Range_Name",
+		    F."Range_Order"  
+		FROM tuser4.uois u 
+		INNER JOIN "TUSER4"."WORKFLOW_LOGS_Download" wlss on u.uoi_id=wlss.object_id 
+        LEFT JOIN   "TUSER4"."Project_DAM.db.functions::UDF_GET_DATEANDRANGE"(  :startdate, :enddate ) F on wlss.time>=F."StartDate" and wlss.time< "EndDate" 
+    	WHERE
+		     ('All'=:is_internal or CASE WHEN IFNULL(wlss.USER_LOGIN,'')='' THEN 'ext' ELSE 'int' END=:is_internal) AND 
+	         ( wlss.time >= :startdate AND wlss.time <ADD_DAYS(:ENDdate,1) ) 
+        group by u.logical_uoi_id,
+                 F."Range_Name",
+                 F."Range_Order" 
+      ) wl ON u.logical_uoi_id=wl.logical_uoi_id
+INNER JOIN( SELECT DISTINCT type_table_inner.UOI_ID 
+            FROM (
+	              	SELECT sci.UOI_ID,
+	                	   sli.VALUE
+	              	FROM tuser4.SAP_COMMON_INDUSTRY sci     
+				  	INNER JOIN tuser4.SAP_LU_INDUSTRY sli on sli.ID = sci.INDUSTRY_CD
+	             	 where :type_ = 'INDUSTRY'	AND (sli.VALUE=:type_code or :type_code='All' )
+		        UNION ALL
+					SELECT sci.UOI_ID,
+					       sli.VALUE AS VALUE
+					FROM tuser4.SAP_COMMON_SOLUTION_PRODUCT sci  
+					INNER JOIN tuser4.SAP_LU_SOLUTION_PRODUCT sli on sli.ID = sci.SOLUTION_PRODUCT_CD
+					where :type_ = 'SOLUTION_PRODUCT'	AND ( ltrim(substring(sli.VALUE,LOCATE(sli.VALUE,'>')+1,LENGTH(sli.VALUE)))=:type_code or :type_code='All' )
+				UNION ALL
+					SELECT sci.UOI_ID,sli.NAME AS VALUE
+					FROM tuser4.SAP_COMMON_SERVICES sci     
+					INNER JOIN tuser4.SAP_LU_SERVICES sli     on sli.CODE = sci.SERVICES_CD
+					where :type_ = 'SERVICES'	AND (sli.NAME=:type_code or :type_code='All' )
+				UNION ALL 
+					SELECT sci.UOI_ID,sli.VALUE
+					FROM tuser4.SAP_LOB sci     
+					INNER JOIN tuser4.SAP_LU_LOB sli     on sli.id = sci.lob
+					where :type_  = 'LOB' AND (sli.VALUE=:type_code or :type_code='All' )
+				UNION ALL
+					SELECT UOI_ID, name AS VALUE 
+					FROM "TUSER4"."SAP_COMMON_REGION_COUNTRY" sci
+					INNER JOIN "TUSER4"."SAP_LU_REGION_COUNTRY"  sli on sli.ID = sci.REGION_COUNTRY_ID 
+					where :type_  = 'REGION_COUNTRY' AND (sli.name=:COUNTRY or :COUNTRY='All' )
+				UNION ALL
+				    SELECT UOI_ID, sli.name AS VALUE 
+					FROM "TUSER4"."SAP_COMMON_REGION_COUNTRY" sci
+					INNER JOIN "TUSER4"."SAP_LU_REGION_COUNTRY"  sli on sli.ID = sci.REGION_COUNTRY_ID 
+					where :type_  = 'REGION' AND (sli.name=:type_code or :type_code='All' )
+				UNION ALL
+				    SELECT UOI_ID, slc.name AS VALUE 
+					FROM "TUSER4"."SAP_COMMON_REGION_COUNTRY" sci
+					INNER JOIN "TUSER4"."SAP_LU_REGION_COUNTRY"  sli on sli.ID = sci.REGION_COUNTRY_ID 
+					INNER JOIN "TUSER4"."SAP_LU_REGION_COUNTRY"  slc on sli.ID = slc.REGION_ID 
+					where :type_  = 'REGION' AND (sli.name=:type_code or :type_code='All' )
+				UNION ALL
+	                SELECT uoi_id, '' AS VALUE 
+	                FROM tuser4.uois u
+				    where UPPER(concat(concat(',',REPLACE(REPLACE(:dois ,CHAR(10),''),' ','')),',')) like UPPER(concat(concat('%,',u.doi),',%'))  
+				         AND :type_ = 'DOISList' 
+						UNION ALL
+					SELECT u.uoi_id, '' AS VALUE 
+					FROM tuser4.uois u
+					where :user_id=IMPORT_USER_ID	AND :type_='MyAssets'
+						UNION ALL
+					SELECT sdm.uoi_id, '' AS VALUE
+					FROM tuser4.SAP_DM_METADATA sdm 
+					LEFT JOIN tuser4.PARTICIPANTS p on p.EMAIL_ADDR=sdm.CONTACT_EMAIL
+					where :user_id=p.TEAMS_USER_ID AND :type_='MyAssets'
+			) AS type_table_inner 
+			LEFT JOIN  tuser4.SECURITY_POLICY_UOIS UOIS_P ON UOIS_P.UOI_ID=type_table_inner.UOI_ID
+			LEFT JOIN  tuser4.SECURITY_POLICIES SP ON  SP.ID=UOIS_P.SEC_POLICY_ID
+			WHERE SP.NAME !='Brand' 
+	    ) as type_table ON type_table.uoi_id=u.uoi_id  
+WHERE u.IS_LATEST_VERSION='Y' AND u.MODEL_ID !='600013' AND 
+      exists(SELECT 0 FROM tuser4.SAP_DM_APPROVAL_DATA WHERE APPROVAL_STATUS_CD='Approved' AND uoi_id=u.uoi_id)
+GROUP BY wl."Range_Name" ,
+         wl."Range_Order";
+END;

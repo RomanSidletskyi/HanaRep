@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_CRM_WBS_ELEMENT" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_CRM_WBS_ELEMENT"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="CRM_WBS_CODE" key="true" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CRM_WBS_CODE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="CRM_WBS_CODE"/>
+    </attribute>
+    <attribute id="CAMPAIGN_NAME" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="CAMPAIGN_NAME"/>
+    </attribute>
+    <attribute id="CAMPAIGN_ID" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="CAMPAIGN_ID"/>
+    </attribute>
+    <attribute id="HAS_ASSETS" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HAS_ASSETS"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="HAS_ASSETS"/>
+    </attribute>
+    <attribute id="SOURCE" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SOURCE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="SOURCE"/>
+    </attribute>
+    <attribute id="IS_DISABLED" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IS_DISABLED"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="IS_DISABLED"/>
+    </attribute>
+    <attribute id="CAMPAIGN_TYPE" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="CAMPAIGN_TYPE"/>
+    </attribute>
+    <attribute id="OBJECTIVE" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="OBJECTIVE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="OBJECTIVE"/>
+    </attribute>
+    <attribute id="PARTNER_FUNCTION_NAME" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PARTNER_FUNCTION_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="PARTNER_FUNCTION_NAME"/>
+    </attribute>
+    <attribute id="TACTIC" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="TACTIC"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="TACTIC"/>
+    </attribute>
+    <attribute id="INTEGRATED_PLAN" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="INTEGRATED_PLAN"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="INTEGRATED_PLAN"/>
+    </attribute>
+    <attribute id="CRM_REGIONNAME" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CRM_REGIONNAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="CRM_REGIONNAME"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes>
+    <calculatedAttribute id="CRM_YEAR" hidden="false" order="1" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CRM_YEAR"/>
+      <keyCalculation datatype="VARCHAR" expressionLanguage="COLUMN_ENGINE" length="10">
+        <formula>midstr(&quot;CRM_WBS_CODE&quot;,7,2)</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+  </calculatedAttributes>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT"/>
+      </tableProxy>
+    </tableProxies>
+    <joins/>
+    <layout>
+      <shapes>
+        <shape modelObjectName="CRM_WBS_ELEMENT" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="40" y="35"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

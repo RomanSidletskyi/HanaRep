@@ -1,0 +1,66 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::UDF_R_USER_SEARCH_DETAIL" ( 
+                                         startDate varchar(20),
+                                         endDate varchar(20),
+                                         searchType varchar(10),
+                                         topValueText INT,
+                                         topValueTag INT ) 
+	RETURNS table ( 
+                "RowID" INT  ,
+                "Search type" VARCHAR(10),
+                "SEARCH" NVARCHAR(500),
+                "Amount" BIGINT
+                   )  
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+
+RETURN
+ SELECT  
+  TO_INT(MS."RowID") as "RowID",
+  'Metadata Tag' as "Search type",
+   LEFT((
+  SELECT STRING_AGG(prompt)
+  FROM "TUSER4"."METADATA_FIELDS" mf 
+  WHERE MS.searched_model like concat(concat('%',field_id),'%')
+ ),500) as "SEARCH", 
+  TO_BIGINT(MS.amount) as "Amount"
+FROM ( 
+  SELECT top 200 
+    Row_Number() over (order by  COUNT(9) desc) as "RowID",
+    TO_NVARCHAR(wl.searched_model) as searched_model,  
+    COUNT(9) as amount
+  FROM "TUSER4"."WORKFLOW_LOGS_MODEL_SEARCH" wl
+  WHERE wl."TIME" >= :startDate
+    AND wl."TIME" < ADD_DAYS(:endDate , 1)
+    AND (:searchType = 'All' OR :searchType = 'Model') 
+  GROUP BY TO_NVARCHAR(wl.searched_model)
+  ORDER BY COUNT(9) DESC
+) as MS
+where MS."RowID" <= :topValueTag
+
+UNION All
+
+SELECT 
+   TO_INT(TSW."RowID") as "RowID",
+   'Keyword' as "Search type",
+   LEFT(TSW."SEARCH",500) as "SEARCH",
+   TO_BIGINT(TSW."Amount") as "Amount"
+FROM (
+  SELECT TOP 200 
+  Row_Number() over (order by  COUNT(1) desc) as "RowID",
+  lower(TO_NVARCHAR(fs.SEARCHED_TEXT)) as "SEARCH", 
+  COUNT(1) as "Amount"
+  FROM "TUSER4"."WORKFLOW_LOGS_FULL_SEARCH" fs
+  WHERE fs."TIME" >= :startDate
+    AND fs."TIME" < ADD_DAYS(:endDate ,1)
+    AND (:searchType = 'All' OR :searchType = 'Text')
+  GROUP BY lower(TO_NVARCHAR(fs.SEARCHED_TEXT))
+  ORDER BY COUNT(1) DESC
+  ) TSW
+where TSW."RowID" <= :topValueText
+;
+
+END;
+
+
+

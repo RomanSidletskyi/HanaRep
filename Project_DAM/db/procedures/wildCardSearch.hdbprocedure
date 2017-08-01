@@ -1,0 +1,439 @@
+PROCEDURE "TUSER4"."Project_DAM.db.procedures::wildCardSearch"
+ (
+in keyword NVARCHAR(300), 
+in artesia_id NVARCHAR(300), 
+in view_id DECIMAL, 
+in session_id DECIMAL, 
+in fuzzy_coef Double, 
+in user_id NVARCHAR(45),
+in is_admin int,
+in is_uploadpage int, --1 upload page; 0 -other 
+in usage_scope NVARCHAR(45),
+out count INT 
+ ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "TUSER4" 
+	AS
+BEGIN
+
+ 
+
+
+DECLARE asset_title INT:=0;		    --Search in Asset Title (Asset Name). 
+DECLARE description INT:=0; 		--Search in Asset Description. 
+DECLARE asset_type INT:=0;			--Search in Asset Type
+DECLARE content_category INT:=0; 	--Search in Content Category
+DECLARE authorization INT:=0; 		--Search in Authorization
+DECLARE type INT:=0; 				--Search in Type
+DECLARE task INT:=0; 				--Search in Task
+DECLARE topic INT:=0; 				-- Search in Topic
+DECLARE region_country INT:=0; 		--Search in Region Country
+DECLARE content_owner INT:=0;		--Search in Content Owner
+DECLARE company_size INT:=0;		--Search in Company Size
+DECLARE language INT:=0;			--Search in Language
+DECLARE sap_dam_products  INT:=0;	--Search in Sap Dam Products
+DECLARE industry INT:=0; 			-- Search in INDUSTRY asset metadata filed. 
+DECLARE service INT:=0; 			--Search in Service
+DECLARE solutions INT:=0;			--Search in Solutions
+DECLARE document_format INT:=0;		--Search in Document Format
+DECLARE content_class INT:=0;		--Search in Content Class
+DECLARE policy_information INT:=0;	--Search in Policy information
+
+
+DECLARE  content_email NVARCHAR(300):='';
+DECLARE  metadata_field NVARCHAR(300):='';
+DECLARE  metadata_field_alias NVARCHAR(300):='';
+DECLARE  strexec NVARCHAR(4000);
+DECLARE  metadata_portion NVARCHAR(300):='';
+DECLARE  new_keyword NVARCHAR(1000):='';
+DECLARE  keywordteg NVARCHAR(300):='';
+DECLARE  keywordteg_portion NVARCHAR(300):='';
+DECLARE  logical_keywordteg NVARCHAR(300):='';
+DECLARE  new_keywordteg NVARCHAR(300):='';
+DECLARE  exc_keywordteg NVARCHAR(300):='';
+DECLARE  logical_condition NVARCHAR(300):='';
+DECLARE  wildcard_condition NVARCHAR(300):='';
+DECLARE  fuzzy_condition NVARCHAR(300):='';
+DECLARE  conditions NVARCHAR(1000):='';
+DECLARE  first_position INT:=0;
+DECLARE  temp_keyword NVARCHAR(1000):='';
+DECLARE  cnt INT:=0;
+DECLARE domain_value_fuzzy NVARCHAR(300):= 'FUZZY(0.7,''similarCalculationMode=substringsearch,spellCheckFactor=0.85'')';
+DECLARE text_value_fuzzy   NVARCHAR(300):= 'FUZZY(0.7,''textsearch=compare, considernonmatchingtokens=input, composewords=5, decomposewords=5, spellCheckFactor=0.85'')';
+    
+    	delete FROM "TUSER4"."VIEW_ELEMENTS" WHERE "VIEW_ID" = :view_id;
+
+
+select TOP 1 EMAIL_ADDR as content_email INTO content_email
+	from "TUSER4"."PARTICIPANTS"
+	WHERE TEAMS_USER_ID=:user_id;
+
+    
+metadata_field_tables = 
+SELECT 'asset_title:' as metadata_field,'uoi.ASSET_NAME' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'asset_title:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition  
+FROM DUMMY
+UNION ALL
+SELECT 'description:' as metadata_field,'uoi.ASSET_DESCRIPTION' metadata_field_alias, 
+       CASE WHEN LOCATE(:keyword,'description:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition    
+FROM DUMMY
+UNION ALL
+SELECT 'asset_type:' as metadata_field,'uoi.ASSET_TYPE' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'asset_type:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition    --domain_value_fuzzy
+FROM DUMMY
+UNION ALL
+SELECT 'content_category:' as metadata_field,'content_category.CONTENT_CATEGORY' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'content_category:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'authorization:' as metadata_field,'uoi.AUTHORIZATION' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'authorization:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'type:' as metadata_field,'DM_METADATA.TYPE' metadata_field_alias,
+        CASE WHEN LOCATE(:keyword,'type:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'task:' as metadata_field,'task.TASK' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'task:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'topic:' as metadata_field,'topic.TOPIC' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'topic:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'region_country:' as metadata_field,'region_country.REGION_COUNTRY_NAME' metadata_field_alias,
+        CASE WHEN LOCATE(:keyword,'region_country:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition        
+FROM DUMMY
+UNION ALL
+SELECT 'content_owner:' as metadata_field,'DM_METADATA.CONTENT_OWNER' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'content_owner:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition    
+FROM DUMMY
+UNION ALL
+SELECT 'company_size:' as metadata_field,'company_size.COMPANY_SIZE' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'company_size:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'language:' as metadata_field,'language.ASSET_LANGUAGE' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'language:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'sap_dam_products:' as metadata_field,'sap_dam_products.SOLUTION_PRODUCT_NAME' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'sap_dam_products:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'sap_dam_products:' as metadata_field,'sap_dam_products1.LAGACY_PRODUCT_NAME' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'sap_dam_products:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition     
+FROM DUMMY
+UNION ALL
+SELECT 'industry:' as metadata_field,'industry.INDUSTRY_NAME' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'industry:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'service:' as metadata_field,'service.SERVICE_NAME' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'service:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'solutions:' as metadata_field,'solutions.SOLUTION_NAME' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'solutions:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'document_format:' as metadata_field,'CMP_METADATA.DOCUMENT_FORMAT' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'document_format:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'content_class:' as metadata_field,'uoi.CONTENT_CLASS' metadata_field_alias,
+       CASE WHEN LOCATE(:keyword,'content_class:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition      
+FROM DUMMY
+UNION ALL
+SELECT 'policy_information:' as metadata_field,'CMP_METADATA.POLICY_INFORMATION' metadata_field_alias,
+        CASE WHEN LOCATE(:keyword,'policy_information:')>0 THEN 1 ELSE 0 END as IS_EXISTS,
+       :text_value_fuzzy as fuzzy_condition     
+FROM DUMMY;
+
+
+SELECT MAX(CASE WHEN metadata_field='asset_title:' THEN 1 ELSE 0 END) AS asset_title,
+       MAX(CASE WHEN metadata_field='description:' THEN 1 ELSE 0 END) AS description,
+       MAX(CASE WHEN metadata_field='asset_type:' THEN 1 ELSE 0 END) AS asset_type,
+       MAX(CASE WHEN metadata_field='content_category:' THEN 1 ELSE 0 END) AS content_category,
+       MAX(CASE WHEN metadata_field='authorization:' THEN 1 ELSE 0 END) AS authorization,
+       MAX(CASE WHEN metadata_field='type:' THEN 1 ELSE 0 END) AS type,
+       MAX(CASE WHEN metadata_field='task:' THEN 1 ELSE 0 END) AS task,
+       MAX(CASE WHEN metadata_field='topic:' THEN 1 ELSE 0 END) AS topic,
+       MAX(CASE WHEN metadata_field='region_country:' THEN 1 ELSE 0 END) AS region_country,
+       MAX(CASE WHEN metadata_field='content_owner:' THEN 1 ELSE 0 END) AS content_owner,
+       MAX(CASE WHEN metadata_field='company_size:' THEN 1 ELSE 0 END) AS company_size,
+       MAX(CASE WHEN metadata_field='language:' THEN 1 ELSE 0 END) AS language,
+       MAX(CASE WHEN metadata_field='sap_dam_products:' THEN 1 ELSE 0 END) AS sap_dam_products,
+       MAX(CASE WHEN metadata_field='industry:' THEN 1 ELSE 0 END) AS industry,
+       MAX(CASE WHEN metadata_field='service:' THEN 1 ELSE 0 END) AS service,
+       MAX(CASE WHEN metadata_field='solutions:' THEN 1 ELSE 0 END) AS solutions,
+       MAX(CASE WHEN metadata_field='document_format:' THEN 1 ELSE 0 END) AS document_format,
+       MAX(CASE WHEN metadata_field='content_class:' THEN 1 ELSE 0 END) AS content_class,
+       MAX(CASE WHEN metadata_field='policy_information:' THEN 1 ELSE 0 END) AS policy_information
+       INTO asset_title,description,asset_type,content_category,authorization,type,
+            task,topic,region_country,content_owner,company_size,language,sap_dam_products,
+            industry,service,solutions,document_format,content_class,policy_information  
+FROM :metadata_field_tables
+WHERE IS_EXISTS=1;
+
+
+--temp_keyword:=TRIM(SUBSTR_BEFORE(SUBSTR_AFTER(:keyword,''''),'''')) ;
+temp_keyword:=TRIM(:keyword) ;
+temp_keyword:=CASE WHEN LEFT(:temp_keyword,1)='''' AND RIGHT(:temp_keyword,1)='''' THEN SUBSTRING(:temp_keyword,2,LENGTH(:temp_keyword)-2)
+                   ELSE :temp_keyword
+              END;
+
+WHILE length(:temp_keyword)>0 DO
+
+SELECT COUNT(*) INTO cnt FROM :metadata_field_tables WHERE IS_EXISTS=1 and LOCATE (:temp_keyword, metadata_field) >0;
+
+IF :cnt>0 THEN
+
+	SELECT SUBSTR_BEFORE (:temp_keyword, ']')||']' metadata_portion,
+	       SUBSTR_AFTER (:temp_keyword, ']') new_keyword
+	       INTO  metadata_portion,new_keyword
+	FROM DUMMY; 
+	--select metadata_portion,new_keyword FROM DUMMY; 
+	
+	select TOP 1 metadata_field_alias,
+	       fuzzy_condition,
+	       --LOCATE (:metadata_portion, metadata_field) as first_position,  
+	       SUBSTRING(:metadata_portion,1,LOCATE (:metadata_portion, metadata_field)-1) as logical_condition,
+	       TRIM(SUBSTR_BEFORE(SUBSTR_AFTER(:metadata_portion,'['),']')) as keywordteg
+	INTO metadata_field_alias,fuzzy_condition,
+	    --first_position,
+	     logical_condition,keywordteg
+	from :metadata_field_tables
+	WHERE IS_EXISTS=1 and LOCATE (:metadata_portion, metadata_field) >0;
+
+--------------parcing teg----------------------------------------------------------------------------------------------------
+
+WHILE length(:keywordteg)>0 DO
+
+select TRIM(CASE WHEN LOCATE(:keywordteg,' ')=0 THEN :keywordteg
+                 WHEN LOCATE(SUBSTR_BEFORE(:keywordteg,' '),'"')>0 THEN SUBSTRING(:keywordteg,1,LOCATE(:keywordteg,'"',2)) 
+                 ELSE SUBSTR_BEFORE(:keywordteg,' ') 
+            END) as keywordteg_portion,
+       TRIM(CASE WHEN LOCATE(SUBSTR_BEFORE(:keywordteg,' '),'"')>0 THEN TRIM(SUBSTRING(:keywordteg,LOCATE(:keywordteg,'"',2)+1,length(:keywordteg))) 
+            ELSE TRIM(SUBSTR_AFTER(:keywordteg,' ')) 
+       END) as keywordteg
+       INTO keywordteg_portion,keywordteg
+FROM DUMMY;
+
+IF LOCATE(:keywordteg_portion,'-')>0 THEN
+	SELECT :exc_keywordteg||' '|| :keywordteg_portion as exc_keywordteg
+	INTO exc_keywordteg 
+	FROM DUMMY;
+	
+ELSEIF LOCATE(:keywordteg_portion,'AND')>0 THEN
+	SELECT CASE WHEN :logical_keywordteg=:keywordteg_portion THEN :new_keywordteg
+	       ELSE :new_keywordteg ||' ' 
+	       END AS new_keywordteg,
+	       :keywordteg_portion AS logical_keywordteg
+	INTO new_keywordteg,logical_keywordteg 
+	FROM DUMMY;
+
+ELSEIF LOCATE(:keywordteg_portion,'OR')>0 THEN
+	SELECT CASE WHEN :logical_keywordteg=:keywordteg_portion OR :logical_keywordteg='AND' THEN :new_keywordteg
+	       ELSE :new_keywordteg ||' OR ' 
+	       END AS exc_keywordteg,
+	       :keywordteg_portion AS logical_keywordteg
+	INTO new_keywordteg,logical_keywordteg 
+	FROM DUMMY;
+
+ELSE 
+new_keywordteg:=:new_keywordteg||CASE WHEN :new_keywordteg='' THEN '' 
+                                      WHEN :logical_keywordteg!='' THEN ''
+                                      ELSE ' OR ' 
+                                 END||:keywordteg_portion;
+END IF;
+IF LOCATE(:keywordteg_portion,'AND')=0 AND LOCATE(:keywordteg_portion,'OR')=0 THEN
+logical_keywordteg:='';
+END IF;
+
+
+
+END WHILE;
+
+new_keywordteg:=new_keywordteg||' '||IFNULL(:exc_keywordteg,'');
+
+------------------------------------------------------------------------------------------------------------------------------	
+SELECT 'CONTAINS('||:metadata_field_alias||','''||:new_keywordteg||''','||:fuzzy_condition||')' INTO wildcard_condition FROM DUMMY;
+
+ELSE
+		logical_condition:=:temp_keyword;
+ 		new_keyword:='';
+ 		wildcard_condition:='';
+END IF;
+
+conditions:=:conditions||UPPER(IFNULL(:logical_condition,''))||IFNULL(:wildcard_condition,'');
+
+--select conditions  from DUMMY;
+
+
+temp_keyword:=:new_keyword;
+new_keywordteg:='';
+exc_keywordteg:='';
+logical_keywordteg:='';     
+END WHILE;
+
+
+	
+/*	
+	INSERT INTO "TUSER4"."VIEW_ELEMENTS"(view_id, element_type, element_id, position, session_id) 
+		SELECT :view_id, 'UOI', uo.uoi_id, uo.rownum, :session_id 
+			FROM (SELECT ui.uoi_id, 
+                  Row_Number() OVER (ORDER BY b0 DESC) AS rownum 
+                  FROM (
+				        SELECT DISTINCT uoi.uoi_id, uoi.IMPORT_DT b0 
+                        FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" uoi 
+					    INNER JOIN "TUSER4"."SAP_DM_APPROVAL_DATA" t1 ON uoi.uoi_id = t1.uoi_id 
+					    LEFT OUTER JOIN "TUSER4"."SAP_ASSET_STATUS" t2 ON uoi.uoi_id = t2.uoi_id 
+---			 	
+						LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_DM_ASSET_TYPE" content_category
+                        LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_DM_METADATA" DM_METADATA
+                        LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_TASK" task
+                        LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_TOPIC" topic
+                        LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_REGION_COUNTRY" region_country
+                        LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_TARGET_SEGMENT" company_size
+						LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_COMMON_METADATA" language
+						LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_SOLUTION_PRODUCTS" sap_dam_products
+						LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_PRODUCTS_LEGACY" sap_dam_products1
+						LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_INDUSTRY" industry
+						LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_SERVICES" service
+						LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_SOLUTIONS" solutions
+						LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_CMP_METADATA" CMP_METADATA
+						--NOT Admin
+						inner join "TUSER4"."SECURITY_POLICY_UOIS" t19 on uoi.uoi_id = t19.uoi_id
+						inner join "TUSER4"."SECURITY_POLICY_PERMISSIONS" t20 on t20.sec_policy_id = t19.sec_policy_id and t20.ASSET_VIEW_PERM = 'Y'
+						inner join "TUSER4"."USER_GROUP_USERS" t21 on t20.user_group_id = t21.user_group_id;
+						
+                        WHERE uoi.IS_LATEST_VERSION = 'Y' 
+							AND (uoi.CONTENT_STATE != 'DELETED' OR uoi.CONTENT_STATE IS NULL) 
+							AND (uoi.USAGE_SCOPE != 'Folders' OR uoi.USAGE_SCOPE IS NULL) 
+							AND t1.APPROVAL_STATUS_CD = 'Approved'   
+							AND uoi.IS_EXPIRED = 'N'
+							AND (t2.ASSET_STATUS != 'Source' OR t2.ASSET_STATUS IS NULL) 
+							and ( 1=1
+						    	and case when :asset_title = '' then '' else uoi.ASSET_NAME end = :asset_title
+								and case when :description = '' then '' else uoi.DESCR end = :description
+								and case when :asset_type = '' then '' else uoi.ASSET_TYPE end = :asset_type   
+								and case when :content_category = '' then '' else content_category.CONTENT_CATEGORY end = :content_category
+                                and case when :authorization  = '' then '' else uoi.AUTHORIZATION end = :authorization   
+								and case when :type  = '' then '' else DM_METADATA.TYPE end = :type 
+                                and case when :task  = '' then '' else task.TASK end = :task
+                                and case when :topic  = '' then '' else topic.TOPIC end = :topic
+								and case when :region_country  = '' then '' else region_country.REGION_COUNTRY_NAME end = :region_country
+						 		and case when :content_owner  = '' then '' else DM_METADATA.CONTENT_OWNER end = :content_owner
+								and case when :company_size  = '' then '' else company_size.COMPANY_SIZE end = :company_size
+								and case when :language  = '' then '' else language.ASSET_LANGUAGE end = :language
+								and case when :sap_dam_products  = '' then '' else sap_dam_products.SOLUTION_PRODUCT_NAME end = :sap_dam_products
+								and case when :sap_dam_products  = '' then '' else sap_dam_products1.LAGACY_PRODUCT_NAME end = :sap_dam_products
+								and case when :industry  = '' then '' else industry.INDUSTRY_NAME end = :industry
+								and case when :service  = '' then '' else service.SERVICE_NAME end = :service
+								and case when :solutions  = '' then '' else solutions.SOLUTION_NAME end = :solutions
+								and case when :document_format  = '' then '' else CMP_METADATA.DOCUMENT_FORMAT end = :document_format
+								and case when :content_class  = '' then '' else uoi.CONTENT_CLASS end = :content_class
+								and case when :policy_information  = '' then '' else CMP_METADATA.POLICY_INFORMATION end = :policy_information
+                               --not Admin 
+								and case when :is_admin = 0 then '' else t21.user_id end= :user_id end                                 
+ 			                 ) ui 
+			          ) uo;
+			
+*/
+
+	--	select conditions  from DUMMY;
+
+strexec := 	'INSERT INTO "TUSER4"."VIEW_ELEMENTS"(view_id, element_type, element_id, position, session_id) ' ;
+strexec := strexec 	||	' SELECT '|| :view_id ||' , ''UOI'', uo.uoi_id, uo.rownum, '|| :session_id ||' ' ;
+strexec := strexec 		||	' FROM (SELECT ui.uoi_id, Row_Number() OVER (ORDER BY b0 DESC) AS rownum FROM ( '; 
+strexec := strexec 			||	' SELECT DISTINCT uoi.uoi_id, uoi.UPLOAD_DATE as b0 FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" uoi ' ;
+strexec := strexec 				||	' INNER JOIN "TUSER4"."SAP_DM_APPROVAL_DATA" t1 ON uoi.uoi_id = t1.uoi_id ' ;
+strexec := strexec 				||	' LEFT OUTER JOIN "TUSER4"."SAP_ASSET_STATUS" t2 ON uoi.uoi_id = t2.uoi_id '	;	
+
+IF (:content_category =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_DM_ASSET_TYPE" content_category ON uoi.uoi_id = content_category.uoi_id ';
+END IF;
+IF (:type =1 OR :content_owner =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_DM_METADATA" DM_METADATA ON uoi.uoi_id = DM_METADATA.uoi_id  ';
+END IF;
+IF (:task =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_TASK" task ON uoi.uoi_id = task.uoi_id  ';
+END IF;
+IF (:topic =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_TOPIC" topic ON uoi.uoi_id = topic.uoi_id  ';
+END IF;
+IF (:region_country =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_REGION_COUNTRY" region_country ON uoi.uoi_id = region_country.uoi_id  ';
+END IF;			
+IF (:company_size =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_TARGET_SEGMENT" company_size ON uoi.uoi_id = company_size.uoi_id  ';
+END IF;
+IF (:language =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_COMMON_METADATA" languag ON uoi.uoi_id = languag.uoi_id e ';
+END IF;
+IF (:sap_dam_products =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_SOLUTION_PRODUCTS" sap_dam_products ON uoi.uoi_id = sap_dam_products.uoi_id  ';
+END IF;
+IF (:sap_dam_products =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_LU_PRODUCTS_LEGACY" sap_dam_products1 ON uoi.uoi_id = sap_dam_products1.uoi_id  ';
+END IF;
+IF (:industry =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_INDUSTRY" industry ON uoi.uoi_id = industry.uoi_id  ';
+END IF;
+IF (:service =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_SERVICES" service ON uoi.uoi_id = service.uoi_id  ';
+END IF;	
+IF (:solutions =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_SOLUTIONS" solutions ON uoi.uoi_id = solutions.uoi_id  ';
+END IF;
+IF (:document_format =1 or :policy_information =1) THEN strexec := strexec ||' LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_CMP_METADATA" CMP_METADATA ON uoi.uoi_id = CMP_METADATA.uoi_id  ';
+END IF;
+
+IF (:is_admin <>'1') THEN strexec := strexec ||' INNER JOIN "TUSER4"."SECURITY_POLICY_UOIS" t19 on uoi.uoi_id = t19.uoi_id ' ;
+END IF;
+
+IF (:is_admin <>'1') THEN strexec := strexec ||' INNER JOIN "TUSER4"."SECURITY_POLICY_PERMISSIONS" t20 on t20.sec_policy_id = t19.sec_policy_id and t20.ASSET_VIEW_PERM = ''Y'' ';
+END IF;
+
+IF (:is_admin <>'1') THEN strexec := strexec ||' INNER JOIN "TUSER4"."USER_GROUP_USERS" t21 on t20.user_group_id = t21.user_group_id  ';
+END IF;
+
+	strexec := strexec ||' WHERE (uoi.CONTENT_STATE != ''DELETED'' OR uoi.CONTENT_STATE IS NULL) ';
+
+IF (:is_uploadpage = 0 ) THEN  	 strexec := strexec ||'		AND t1.APPROVAL_STATUS_CD = ''Approved''  ' ;
+END IF;
+
+IF (:is_uploadpage = 0 ) THEN 	strexec := strexec ||'		AND uoi.IS_EXPIRED = ''N'' ';
+END IF;
+
+IF (:is_uploadpage = 1 and :is_admin <>'0') THEN 	strexec := strexec ||'		AND ( uoi.UPLOADED_USER_ID = ''' || :user_id ||''' or uoi.CONTENT_EMAIL = ''' || :content_email ||'''  ) ';
+
+END IF;
+
+    strexec := strexec ||'		AND (uoi.MODEL_ID in (''500000'',''600003'')) ';
+    strexec := strexec ||'		AND (uoi.USAGE_SCOPE != ''' || :usage_scope ||''' or uoi.USAGE_SCOPE is null ) '; 
+	strexec := strexec ||'		AND (t2.ASSET_STATUS != ''Source'' OR t2.ASSET_STATUS IS NULL) ';
+	strexec := strexec ||'		AND ( 1=1 ';
+   strexec := strexec || 'AND '|| conditions ;
+IF (:is_admin <>'1') THEN  strexec := strexec ||' and t21.user_id= ''' || :user_id ||''' ';
+END IF;
+	
+strexec := strexec ||'	)) ui 	) uo ';
+
+--select strexec from DUMMY;
+	exec strexec;
+	
+	SELECT COUNT(*) INTO count FROM "TUSER4"."VIEW_ELEMENTS" WHERE "VIEW_ID" = :view_id;		
+	--SELECT * FROM "TUSER4"."VIEW_ELEMENTS" WHERE "VIEW_ID" = :view_id;
+
+END;

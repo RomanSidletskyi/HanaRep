@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_WORKFLOW_LOGS_DOWNLOAD" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_WORKFLOW_LOGS_DOWNLOAD"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="LOGICAL_UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="LOGICAL_UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="LOGICAL_UOI_ID"/>
+    </attribute>
+    <attribute id="IP_ADDRESS" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="IP_ADDRESS"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download" columnName="IP_ADDRESS"/>
+    </attribute>
+    <attribute id="USER_LOGIN" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="USER_LOGIN"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download" columnName="USER_LOGIN"/>
+    </attribute>
+    <attribute id="DOWNLOAD_TIME" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DOWNLOAD_TIME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download" columnName="TIME"/>
+    </attribute>
+    <attribute id="REFERING_APP" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REFERING_APP"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download" columnName="REFERING_APP"/>
+    </attribute>
+    <attribute id="USER_REGION_NAME" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="USER_REGION_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY" columnName="NAME"/>
+    </attribute>
+    <attribute id="RegionbyIP_NAME" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="RegionbyIP_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY" alias="SAP_LU_REGION_COUNTRY_1" columnName="NAME"/>
+    </attribute>
+    <attribute id="Region_IDbyIP" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="Region_IDbyIP"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download" columnName="REGION_ID"/>
+    </attribute>
+    <attribute id="USERID" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="USERID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download" columnName="USERID"/>
+    </attribute>
+    <attribute id="COMPANY_NAME" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="COMPANY_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="IP_INFORMATION" columnName="COMPANY_NAME"/>
+    </attribute>
+    <attribute id="ID" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download" columnName="ID"/>
+    </attribute>
+    <attribute id="CONTENT_TYPE" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CONTENT_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="CONTENT_TYPE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes>
+    <calculatedAttribute id="EXTERNAL_INTERNAL" hidden="false" order="2" semanticType="empty" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EXTERNAL_INTERNAL"/>
+      <keyCalculation datatype="VARCHAR" expressionLanguage="COLUMN_ENGINE" length="3">
+        <formula>if(isnull(&quot;USER_LOGIN&quot;),'ext','int')</formula>
+      </keyCalculation>
+    </calculatedAttribute>
+  </calculatedAttributes>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="UOIS"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_USER_INFO"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY" alias="SAP_LU_REGION_COUNTRY_1"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="IP_INFORMATION"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="UOIS"/>
+        <rightTable schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download"/>
+        <leftColumns>
+          <columnName>UOI_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>OBJECT_ID</columnName>
+        </rightColumns>
+        <properties cardinality="C1_N" joinOperator="Equal" joinType="inner"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_USER_INFO"/>
+        <leftColumns>
+          <columnName>USERID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>USER_ID</columnName>
+        </rightColumns>
+        <properties cardinality="C1_N" joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_USER_INFO"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY"/>
+        <leftColumns>
+          <columnName>REGION_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties cardinality="C1_N" joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY" alias="SAP_LU_REGION_COUNTRY_1"/>
+        <leftColumns>
+          <columnName>REGION_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties cardinality="C1_N" joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="WORKFLOW_LOGS_Download"/>
+        <rightTable schemaName="TUSER4" columnObjectName="IP_INFORMATION"/>
+        <leftColumns>
+          <columnName>IP_ADDRESS</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>IP_ADDRESS</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="UOIS" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_USER_INFO" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="734" y="42"/>
+        </shape>
+        <shape modelObjectName="WORKFLOW_LOGS_Download" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="429" y="49"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_REGION_COUNTRY" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="960" y="50"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_REGION_COUNTRY_1" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="780" y="231"/>
+        </shape>
+        <shape modelObjectName="IP_INFORMATION" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="472" y="366"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="0" width="0"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

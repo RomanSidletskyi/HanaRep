@@ -1,0 +1,171 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::udfRBrandShareFeedbackGrowthProgress" 
+                                        (startDate varchar(100), 
+                                         endDate  varchar(100), 
+                                         submittedBy varchar(200),                                     
+                                         userId varchar(100),
+                                         splitYearBy varchar(100)
+                                        ) 
+                                        
+RETURNS table ( "Growth_All" DECIMAL(5,2),
+				        "Growth_BrandAttributes" DECIMAL(5,2),
+				        "Growth_BrandPromise" DECIMAL(5,2),
+				        "Growth_BrandPurpose" DECIMAL(5,2),
+				        "Growth_BrandVoice" DECIMAL(5,2),
+				        "Growth_Color" DECIMAL(5,2),
+				        "Growth_Logo" DECIMAL(5,2),
+				        "Growth_OperatingPrinciple" DECIMAL(5,2),
+				        "Growth_Photography" DECIMAL(5,2),
+				        "Growth_Typography" DECIMAL(5,2),
+				        "Growth_Visualstorytelling" DECIMAL(5,2)
+              )  
+    LANGUAGE SQLSCRIPT
+    SQL SECURITY INVOKER AS
+BEGIN
+
+RETURN 
+
+SELECT 
+  sum(case when M_TYPE = 'min' then "AVG Section All" else 0 end)- sum(case when M_TYPE = 'max' then "AVG Section All" else 0 end) as "Growth_All", 
+  sum(case when M_TYPE = 'min' then "AVG Section BrandAttributes" else 0 end)-sum(case when M_TYPE = 'max' then "AVG Section BrandAttributes" else 0 end) as "Growth_BrandAttributes",
+  sum(case when M_TYPE = 'min' then "AVG Section BrandPromise" else 0 end)-sum(case when M_TYPE = 'max' then "AVG Section BrandPromise" else 0 end) as "Growth_BrandPromise",
+  sum(case when M_TYPE = 'min' then "AVG Section BrandPurpose" else 0 end)-sum(case when M_TYPE = 'max' then "AVG Section BrandPurpose" else 0 end) as "Growth_BrandPurpose",
+  sum(case when M_TYPE = 'min' then "AVG Section BrandVoice" else 0 end)-sum(case when M_TYPE = 'max' then "AVG Section BrandVoice" else 0 end) as "Growth_BrandVoice",
+  sum(case when M_TYPE = 'min' then "AVG Section Color" else 0 end)-sum(case when M_TYPE = 'max' then "AVG Section Color" else 0 end) as "Growth_Color",
+  sum(case when M_TYPE = 'min' then "AVG Section Logo" else 0 end)-sum(case when M_TYPE = 'max' then "AVG Section Logo" else 0 end) as "Growth_Logo",
+  sum(case when M_TYPE = 'min' then "AVG Section OperatingPrinciple" else 0 end)-sum(case when M_TYPE = 'max' then "AVG Section OperatingPrinciple" else 0 end) as "Growth_OperatingPrinciple",
+  sum(case when M_TYPE = 'min' then "AVG Section Photography" else 0 end)-sum(case when M_TYPE = 'max' then "AVG Section Photography" else 0 end) as "Growth_Photography",
+  sum(case when M_TYPE = 'min' then "AVG Section Typography" else 0 end)-sum(case when M_TYPE = 'max' then "AVG Section Typography" else 0 end) as "Growth_Typography",
+  sum(case when M_TYPE = 'min' then "AVG Section Visualstorytelling" else 0 end)-sum(case when M_TYPE = 'max' then "AVG Section Visualstorytelling" else 0 end) as "Growth_Visualstorytelling"
+FROM (
+  SELECT 
+    MM.M_TYPE ,
+    AVG(CASE WHEN "Summary Score NA" = "Summary Score ALL" THEN 0 ELSE "Summary Score YES"/ ("Summary Score ALL" - "Summary Score NA")*100 END) as "AVG Section All", 
+    AVG(CASE WHEN "BrandAttributes NA" = "Summary BrandAttributes" THEN 0 ELSE "BrandAttributes YES"/ ("Summary BrandAttributes" - "BrandAttributes NA")*100 END) as "AVG Section BrandAttributes", 
+    AVG(CASE WHEN "Brand Promise NA" = "Summary Brand Promise" THEN 0 ELSE "Brand Promise YES"/ ("Summary Brand Promise" - "Brand Promise NA")*100 END) as "AVG Section BrandPromise", 
+    AVG(CASE WHEN "Brand Purpose NA" = "Summary Brand Purpose" THEN 0 ELSE "Brand Purpose YES"/ ("Summary Brand Purpose" - "Brand Purpose NA")*100 END) as "AVG Section BrandPurpose", 
+    AVG(CASE WHEN "Brand Voice NA" = "Summary Brand Voice" THEN 0 ELSE "Brand Voice YES"/ ("Summary Brand Voice" - "Brand Voice NA")*100 END) as "AVG Section BrandVoice", 
+    AVG(CASE WHEN "Color NA" = "Summary Color" THEN 0 ELSE "Color YES"/ ("Summary Color" - "Color NA")*100 END) as "AVG Section Color", 
+    AVG(CASE WHEN "Logo NA" = "Summary Logo" THEN 0 ELSE "Logo YES"/ ("Summary Logo" - "Logo NA")*100 END) as "AVG Section Logo", 
+    AVG(CASE WHEN "Operating Principle NA" = "Summary Operating Principle" THEN 0 ELSE "Operating Principle YES"/ ("Summary Operating Principle" - "Operating Principle NA")*100 END) as "AVG Section OperatingPrinciple", 
+    AVG(CASE WHEN "Photography NA" = "Photography ALL" THEN 0 ELSE "Photography YES"/ ("Photography ALL" - "Photography NA")*100 END) as "AVG Section Photography", 
+    AVG(CASE WHEN "Typography NA" = "Typography ALL" THEN 0 ELSE "Typography YES"/ ("Typography ALL" - "Typography NA")*100 END) as "AVG Section Typography", 
+    AVG(CASE WHEN "Visual storytelling NA" = "Summary Visual storytelling" THEN 0 ELSE "Visual storytelling YES"/ ("Summary Visual storytelling" - "Visual storytelling NA")*100 END) as "AVG Section Visualstorytelling"
+  FROM (
+      SELECT  f.FORM_ID, t."StartDate", t."EndDate", t."Range_Order", t."Range_Name",
+
+        sum(case when IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "Summary Score YES", 
+        sum(case when IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "Summary Score NA", 
+        sum(1) as "Summary Score ALL",
+  
+        sum(case when f.SECTION_NAME like 'Brand Attributes%' and IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "BrandAttributes YES", 
+        sum(case when f.SECTION_NAME like 'Brand Attributes%' and  IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "BrandAttributes NA", 
+        sum(case when f.SECTION_NAME like 'Brand Attributes%'  then  1 else 0 end ) as "Summary BrandAttributes",
+  
+        sum(case when f.SECTION_NAME = 'Brand Promise' and IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "Brand Promise YES", 
+        sum(case when f.SECTION_NAME = 'Brand Promise' and IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "Brand Promise NA", 
+        sum(case when f.SECTION_NAME = 'Brand Promise'  then  1 else 0 end ) as "Summary Brand Promise",
+  
+        sum(case when f.SECTION_NAME = 'Brand Purpose' and IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "Brand Purpose YES", 
+        sum(case when f.SECTION_NAME = 'Brand Purpose' and IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "Brand Purpose NA", 
+        sum(case when f.SECTION_NAME = 'Brand Purpose'  then  1 else 0 end ) as "Summary Brand Purpose",
+  
+        sum(case when f.SECTION_NAME = 'Brand Voice' and IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "Brand Voice YES", 
+        sum(case when f.SECTION_NAME = 'Brand Voice' and IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "Brand Voice NA", 
+        sum(case when f.SECTION_NAME = 'Brand Voice'  then  1 else 0 end ) as "Summary Brand Voice",
+  
+        sum(case when f.SECTION_NAME = 'Color' and IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "Color YES", 
+        sum(case when f.SECTION_NAME = 'Color' and IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "Color NA", 
+        sum(case when f.SECTION_NAME = 'Color' then   1 else 0 end ) as "Summary Color",
+  
+        sum(case when f.SECTION_NAME = 'Logo' and IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "Logo YES", 
+        sum(case when f.SECTION_NAME = 'Logo' and IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "Logo NA", 
+        sum(case when f.SECTION_NAME = 'Logo' then   1 else 0 end ) as "Summary Logo",
+  
+        sum(case when f.SECTION_NAME = 'Operating Principle' and IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "Operating Principle YES", 
+        sum(case when f.SECTION_NAME = 'Operating Principle' and IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "Operating Principle NA", 
+        sum(case when f.SECTION_NAME = 'Operating Principle' then   1 else 0 end ) as "Summary Operating Principle",
+  
+        sum(case when f.SECTION_NAME = 'Photography' and IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "Photography YES", 
+        sum(case when f.SECTION_NAME = 'Photography' and IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "Photography NA", 
+        sum(case when f.SECTION_NAME = 'Photography' then   1 else 0 end ) as "Photography ALL",
+
+        sum(case when f.SECTION_NAME = 'Typography' and IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "Typography YES", 
+        sum(case when f.SECTION_NAME = 'Typography' and IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "Typography NA", 
+        sum(case when f.SECTION_NAME = 'Typography' then   1 else 0 end ) as "Typography ALL",
+  
+        sum(case when f.SECTION_NAME like 'Visual storytelling%' and IFNULL(ITEM_VALUE, 'NA') = 'YES' then 1 else 0 end ) as "Visual storytelling YES", 
+        sum(case when f.SECTION_NAME like 'Visual storytelling%' and  IFNULL(ITEM_VALUE, 'NA') = 'NA' then 1 else 0 end ) as "Visual storytelling NA", 
+        sum(case when f.SECTION_NAME like 'Visual storytelling%'  then  1 else 0 end ) as "Summary Visual storytelling"  
+  
+      FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_BRAND_FEEDBACK"  f
+      INNER JOIN "TUSER4"."Project_DAM.db.functions::UDF_GET_DATEANDRANGE"(:startDate, :endDate) t  on t."StartDate" <= f.FORM_CREATED_DATE and f.FORM_CREATED_DATE < t."EndDate"
+      INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" u on u.uoi_id = f.UOI_ID
+      LEFT JOIN (
+                  SELECT u.USER_ID as USER_ID, 
+                          case when ug.NAME = 'Brand team' then 'BT' else 'BA' end as USER_GROUP
+                  FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+                  INNER JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                  INNER JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                  WHERE ug.NAME in ('Brand team', 'Brand Ambassador')--   and u.GROUP_ID <> 1 -- EXCLUDE ADMINs
+                  ) ug on ug.USER_ID = f.FORM_CREATED_BY
+      WHERE f.FORM_STATUS = 'COMPLETED'
+          AND (ug.USER_GROUP = :submittedBy or 'All' = :submittedBy) -- SubmittedBy (All/ Brand Team/ Brand Ambassador)
+          AND (:userid in (
+                          SELECT u.USER_ID as USER_ID
+                          FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+                          INNER JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                          INNER JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                          WHERE ug.NAME in ('Administrator','Brand team')
+                          ) or (f.FORM_CREATED_BY = :userid)or (:userid = 'All')
+                )  
+      GROUP BY f.FORM_ID, t."StartDate", t."EndDate", t."Range_Order", t."Range_Name"
+  )t 
+  INNER JOIN(
+    SELECT MIN(t."Range_Order") as "m_Range_Order",  'min' as M_TYPE 
+    FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_BRAND_FEEDBACK"  f
+    INNER JOIN "TUSER4"."Project_DAM.db.functions::UDF_GET_DATEANDRANGE"(:startDate, :endDate) t ON t."StartDate" <= f.FORM_CREATED_DATE AND f.FORM_CREATED_DATE < t."EndDate"
+    LEFT JOIN (
+              SELECT u.USER_ID as USER_ID, 
+                      case when ug.NAME = 'Brand team' then 'BT' else 'BA' end as USER_GROUP
+              FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+              INNER JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+              INNER JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+              WHERE ug.NAME in ('Brand team', 'Brand Ambassador')--   and u.GROUP_ID <> 1 -- EXCLUDE ADMINs
+              ) ug on ug.USER_ID = f.FORM_CREATED_BY
+    WHERE f.FORM_STATUS = 'COMPLETED'
+      AND (ug.USER_GROUP = :submittedBy or 'All' = :submittedBy) -- SubmittedBy (All/ Brand Team/ Brand Ambassador)
+      AND (:userid in (
+                      SELECT u.USER_ID as USER_ID
+                      FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+                      INNER JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                      INNER JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                      WHERE ug.NAME in ('Administrator','Brand team')
+                      ) or (f.FORM_CREATED_BY = :userid)or (:userid = 'All')
+            )  
+    UNION ALL 
+    select MAX(t."Range_Order") as "m_Range_Order",  'max' as M_TYPE
+    FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_BRAND_FEEDBACK"  f
+    INNER JOIN  "TUSER4"."Project_DAM.db.functions::UDF_GET_DATEANDRANGE"(:startDate, :endDate) t ON t."StartDate" <= f.FORM_CREATED_DATE AND f.FORM_CREATED_DATE < t."EndDate"
+    LEFT JOIN (
+                SELECT u.USER_ID as USER_ID, 
+                      case when ug.NAME = 'Brand team' then 'BT' else 'BA' end as USER_GROUP
+                FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+                INNER JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                INNER JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                WHERE ug.NAME in ('Brand team', 'Brand Ambassador')--   and u.GROUP_ID <> 1 -- EXCLUDE ADMINs
+                ) ug on ug.USER_ID = f.FORM_CREATED_BY
+      WHERE f.FORM_STATUS = 'COMPLETED'
+        AND (ug.USER_GROUP = :submittedBy or 'All' = :submittedBy) -- SubmittedBy (All/ Brand Team/ Brand Ambassador)
+        AND (:userid in (
+                        SELECT u.USER_ID as USER_ID
+                        FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+                        INNER JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                        INNER JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                        WHERE ug.NAME in ('Administrator','Brand team')
+                      ) or (f.FORM_CREATED_BY = :userid)or (:userid = 'All')
+             )  
+  )MM on MM."m_Range_Order" = t."Range_Order"
+  GROUP BY MM.M_TYPE
+) GRW;
+
+END;

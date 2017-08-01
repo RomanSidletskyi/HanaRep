@@ -1,0 +1,69 @@
+PROCEDURE "TUSER4"."Project_DAM.db.procedures::split_string" ( in TEXT NVARCHAR(800) ) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	--DEFAULT SCHEMA <default_schema_name>
+	READS SQL DATA AS
+BEGIN
+  declare _items_log nvarchar(100) ARRAY;
+  declare _items_group nvarchar(100) ARRAY;
+  declare _text nvarchar(100);
+  declare _index integer;
+  declare _index_group integer;
+  declare _indic_and_or integer; --1 and ;2 or
+  _text := :TEXT;
+  _index := 1;
+  _index_group:=1;
+  _indic_and_or:=0;
+ 
+
+
+ 
+   WHILE LOCATE(:_text,' and ') > 0 or LOCATE(:_text,' or ') > 0 DO
+   
+   if LOCATE(:_text,' and ')<LOCATE(:_text,' or ') and LOCATE(:_text,' and ')>0 then
+    --1
+    	_items_log[:_index] := SUBSTR_BEFORE(:_text,' and ');
+    	_items_group[:_index] :=_index_group;
+	    _text := SUBSTR_AFTER(:_text,' and ');
+	    _index := :_index + 1;
+	    _indic_and_or:=1;
+	  
+	   --2 check next
+         --2.1 next and
+	    if LOCATE(:_text,' and ')<LOCATE(:_text,' or ') and LOCATE(:_text,' and ')>0 then
+	       _indic_and_or:=1;
+	    end if;
+       --2.1 next or 
+       	if LOCATE(:_text,' and ')>LOCATE(:_text,' or ') and LOCATE(:_text,' or ')>0 then
+	           	_items_log[:_index] := SUBSTR_BEFORE(:_text,' or ');
+	           	_items_group[:_index] :=_index_group;
+	           
+	           	_index_group:=_index_group+1;
+	           	
+	           	_text := SUBSTR_AFTER(:_text,' or ');
+			    _index := :_index + 1;
+			    _indic_and_or:=2;
+		end if;
+    else--if LOCATE(:_text,' and ')>LOCATE(:_text,' or ') and LOCATE(:_text,' or ')>0  then
+           
+           _items_log[:_index] := SUBSTR_BEFORE(:_text,' or ');
+           _items_group[:_index] :=_index_group;
+	  	   _index_group:=_index_group+1;
+	  	  
+	  	   _text := SUBSTR_AFTER(:_text,' or ');
+	   	   _index := :_index + 1;
+	       _indic_and_or:=2;  
+   end if;
+   
+   END WHILE;
+ 
+    _items_log[:_index] := :_text;
+    _items_group[:_index] :=_index_group;
+    rst = UNNEST(:_items_log,:_items_group) AS ("items_log","items_group");
+
+  
+  SELECT * FROM :rst;
+
+  
+END;
+

@@ -1,0 +1,28 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::isNumeric" ( IN checkString NVARCHAR(64) ) 
+	RETURNS isNumeric INTEGER	
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+DECLARE tmp_string nvarchar(64) := :checkString;
+DECLARE empty_string nvarchar(1) :='';
+
+/* replace all numbers with the empty string */
+tmp_string := REPLACE (:tmp_string, '1', :empty_string);
+tmp_string := REPLACE (:tmp_string, '2', :empty_string);
+tmp_string := REPLACE (:tmp_string, '3', :empty_string);
+tmp_string := REPLACE (:tmp_string, '4', :empty_string);
+tmp_string := REPLACE (:tmp_string, '5', :empty_string);
+tmp_string := REPLACE (:tmp_string, '6', :empty_string);
+tmp_string := REPLACE (:tmp_string, '7', :empty_string);
+tmp_string := REPLACE (:tmp_string, '8', :empty_string);
+tmp_string := REPLACE (:tmp_string, '9', :empty_string);
+tmp_string := REPLACE (:tmp_string, '0', :empty_string);
+
+/*if the remaining string is not empty, it must contain non-number characters */
+IF LENGTH(:tmp_string)>0 then
+    isNumeric := 0;
+ELSE  
+    isNumeric := 1;
+END IF;
+
+END;

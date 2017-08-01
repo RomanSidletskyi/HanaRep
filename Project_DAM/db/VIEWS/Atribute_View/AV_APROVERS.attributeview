@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_APROVERS" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_APROVERS"/>
+  <metadata changedAt="2016-11-17 12:28:28.509"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_APPROVAL_DATA" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="APPROVAL_STATUS" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_APPROVAL" columnName="NAME"/>
+    </attribute>
+    <attribute id="APPROVER_NAME" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="APPROVER_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_APPROVAL_DATA" columnName="APPROVER_NAME"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_DM_APPROVAL_DATA"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_APPROVAL"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_LU_APPROVAL"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_DM_APPROVAL_DATA"/>
+        <leftColumns>
+          <columnName>CODE</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>APPROVAL_STATUS_CD</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="referential"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_DM_APPROVAL_DATA" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_APPROVAL" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="371" y="30"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

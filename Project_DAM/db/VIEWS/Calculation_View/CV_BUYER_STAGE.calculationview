@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Calculation:scenario xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:Calculation="http://www.sap.com/ndb/BiModelCalculation.ecore" schemaVersion="2.3" id="CV_BUYER_STAGE" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" visibility="internal" calculationScenarioType="SCRIPT_BASED" dataCategory="DEFAULT" enforceSqlExecution="false" executionSemantic="UNDEFINED" scriptParametersCaseSensitive="true">
+  <origin/>
+  <descriptions defaultDescription="CV_BUYER_STAGE"/>
+  <metadata changedAt="2016-12-01 17:51:27.434"/>
+  <localVariables/>
+  <variableMappings/>
+  <dataSources/>
+  <calculationViews>
+    <calculationView xsi:type="Calculation:SqlScriptView" id="Script_View">
+      <viewAttributes>
+        <viewAttribute datatype="VARCHAR" id="UOI_ID" length="40"/>
+        <viewAttribute datatype="VARCHAR" id="BUYER_STAGE" length="800"/>
+      </viewAttributes>
+      <calculatedViewAttributes/>
+      <definition> 
+ /********* Begin Procedure Script ************/ 
+ BEGIN 
+ 	 var_out =  select BUYER_STAGE.UOI_ID,
+ 	                  STRING_AGG(D_BUYER_STAGE.VALUE,', ') as BUYER_STAGE
+               from  TUSER4.SAP_DM_BUYER_STAGE BUYER_STAGE 
+               inner join  TUSER4.SAP_LU_BUYER_STAGE D_BUYER_STAGE on BUYER_STAGE.BUYER_STAGE=D_BUYER_STAGE.ID
+               group by BUYER_STAGE.UOI_ID;
+
+END /********* End Procedure Script ************/</definition>
+    </calculationView>
+  </calculationViews>
+  <logicalModel id="Script_View">
+    <attributes>
+      <attribute id="UOI_ID" order="1">
+        <descriptions defaultDescription="UOI_ID"/>
+        <keyMapping columnObjectName="Script_View" columnName="UOI_ID"/>
+      </attribute>
+      <attribute id="BUYER_STAGE" order="2">
+        <descriptions defaultDescription="BUYER_STAGE"/>
+        <keyMapping columnObjectName="Script_View" columnName="BUYER_STAGE"/>
+      </attribute>
+    </attributes>
+    <calculatedAttributes/>
+    <privateDataFoundation>
+      <tableProxies/>
+      <joins/>
+      <layout>
+        <shapes/>
+      </layout>
+    </privateDataFoundation>
+    <baseMeasures/>
+    <calculatedMeasures/>
+    <restrictedMeasures/>
+    <localDimensions/>
+  </logicalModel>
+  <layout>
+    <shapes>
+      <shape modelObjectName="Output" modelObjectNameSpace="MeasureGroup">
+        <upperLeftCorner x="40" y="85"/>
+      </shape>
+    </shapes>
+  </layout>
+</Calculation:scenario>

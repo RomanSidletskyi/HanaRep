@@ -1,0 +1,65 @@
+service  { 
+
+
+   "Project_DAM.db.VIEWS.Calculation_View::CV_ASSETS_CONTENT2"
+    //Full path to your Attribute View & its Name  
+   as "AssetCollection"                  //Name of Entity Type     
+   with ( "UOI_ID",
+   		  "SAP_DIGITAL_ID",
+   		  "ASSET_NAME",
+   		  "ASSET_DESCRIPTION",
+   		  "UPLOAD_DATE",
+   		  "Last_Modified_Date",
+   		  "EXPIRATION_DATE",
+   		  "DUPLOAD_DATE",
+   		  "DLast_Modified_Date",
+   		  "DEXPIRATION_DATE",
+   		  "UPLOADED_BY",
+   		  "CONTENT_EMAIL",
+   		  "CONTENT_OWNER",
+   		  
+   		  "UPLOADED_LOGIN_ID",
+   		  "CONTENT_OWNER_LOGINS", 
+   		  "SUBSCRIPTION_LOGINS", 
+   		  
+   		  "APPROVAL_STATUS",
+   		  "APPROVER_NAME",
+   		  
+   		  "ASSET_TYPE",  
+   		  "CONTENT_CATEGORY",
+   		  "SOLUTION_PRODUCT",
+   		  "INDUSTRY",
+   		  "REGION_COUNTRY",
+   		  "SERVICES",
+   		  "ASSET_LANGUAGE",
+   		  "SOLUTION",
+   		  
+   		  "ASSET_LOCATION",
+   		  "IS_EXPIRED",
+   		  "IS_APPROVED",
+   		  "AUTHORIZATION",
+   		  "EXTENSION",
+   		  
+   		  "MARKETING_PROGRAM_ID",
+   		  "PROGRAM_NAME",
+   		  "CRM_WBS_ELEMEMENT",
+   		  "CAMPAIGN_NAME",
+   		  "TASK",
+          "TOPIC",
+          "DOCUMENT_FORMAT",
+          "POLICY_INFORMATION", 
+          "TYPE",
+          "KEYWORDS",
+          "EVENT",
+          "COMPANY_SIZE",
+          "MARKETING_PLAN",
+          "BUSINESS_PARTNER_NUMBER"
+   		  )                //List of exposed columns
+   keys ( "UOI_ID" );              //Key relevant for Attribute view   
+   
+   }
+
+
+annotations {
+enable OData4SAP;
+}

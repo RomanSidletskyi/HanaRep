@@ -1,0 +1,86 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::UDF_CRM_ASSET_REUSE_STATISTIC_DETAIL_BASE"  
+                                                         (STARTDATE varchar(100),
+										                  ENDDATE  varchar(100),
+										                  ASSOCIATED_CRM_WBS_CODE VARCHAR(200),
+										                  DISTRIBUTION_NAME VARCHAR(100),
+										                  ASSETTYPE VARCHAR(200),
+										                  USERS_ID varchar(100),
+										                  DOIS varchar(100),
+										                  TYPE  varchar(15)
+										                  ) 
+RETURNS table      
+(
+"Asset SAP Digital ID" VARCHAR(40) ,
+"Asset Type" VARCHAR(256) ,
+"Asset name" VARCHAR(256) ,
+"CRM/WBS Element" VARCHAR(256) ,
+"Campaign Name" VARCHAR(256) ,  
+"Distribution Channel" VARCHAR(256) ,
+"Generated Anonymous Asset URL" VARCHAR(256) ,
+"Number of Downloads" INT ,
+"Views" INT ,
+"Campaign Type" VARCHAR(55) ,
+"Objective" VARCHAR(55) ,
+"Partner Function Name" VARCHAR(255) ,
+"Tactic" VARCHAR(55) ,
+"Integrated Plan" VARCHAR(400) ,
+"Video Preview URLs"   VARCHAR(256) ,
+"Hosting URLs"     VARCHAR(256) ,
+"Buyer Stage"    VARCHAR(100) 
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+DECLARE USERSID VARCHAR(100):='0';
+IF (:USERS_ID!=0) THEN
+	SELECT CASE WHEN GROUP_ID=1 THEN '0' ELSE :USERS_ID END INTO USERSID FROM "TUSER4"."USERS" WHERE USER_ID=:USERS_ID LIMIT 1;
+END IF;
+
+RETURN
+SELECT U.SAP_DIGITAL_ID AS  "Asset SAP Digital ID",
+       U.ASSET_TYPE AS "Asset Type",
+       U.ASSET_NAME AS "Asset name",
+       CS.ASSOCIATED_CRM_WBS_CODE "CRM/WBS Element",
+	   CS.ASSOCIATED_CAMPAIGN_NAME "Campaign Name", 
+	   CS.DISTRIBUTION_NAME "Distribution Channel",
+	   CONCAT('https://dam.sap.com/mac',CS.CRM_TRACKING_URL) "Generated Anonymous Asset URL",
+	   IFNULL(CS.ADOWNLOADS,0) as "Number of Downloads", 
+	   WV.VAMAUNT AS "Views",
+	   CS.CAMPAIGN_TYPE "Campaign Type",
+	   CS.OBJECTIVE "Objective",
+	   CS.PARTNER_FUNCTION_NAME "Partner Function Name",
+	   CS.TACTIC "Tactic",
+	   CS.INTEGRATED_PLAN "Integrated Plan",
+	   CS.PREVIEW_URL "Video Preview URLs",
+	   CS.HOSTING_URL "Hosting URLs",
+	   BUYER_STAGE.BUYER_STAGE "Buyer Stage"  
+FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U
+-- LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" CO ON CO.EMAIL_ADDR=U.CONTENT_EMAIL
+
+INNER JOIN (SELECT   CS.UOI_ID,
+                    CS.ASSOCIATED_CRM_WBS_CODE,CS.ASSOCIATED_CAMPAIGN_NAME,CS.DISTRIBUTION_NAME,
+                    CS.CAMPAIGN_TYPE, CS.OBJECTIVE,CS.PARTNER_FUNCTION_NAME,CS.TACTIC,CS.INTEGRATED_PLAN,
+                    CS.PREVIEW_URL,CS.HOSTING_URL,CS.CRM_TRACKING_URL,
+                    COUNT(CS.DATE_LOAD) AS ADOWNLOADS
+           FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS 
+           WHERE (CS.DATE_LOAD BETWEEN :STARTDATE AND ADD_DAYS(:ENDDATE,1)) AND
+      			 (CS.ASSOCIATED_CRM_WBS_CODE =:ASSOCIATED_CRM_WBS_CODE OR :ASSOCIATED_CRM_WBS_CODE='All') AND
+     			 (CS.DISTRIBUTION_NAME =:DISTRIBUTION_NAME OR :DISTRIBUTION_NAME='All') AND
+     			 (CS.ASSET_TYPE =:ASSETTYPE OR :ASSETTYPE='All') 
+     	   GROUP BY CS.UOI_ID,CS.ASSOCIATED_CRM_WBS_CODE,CS.ASSOCIATED_CAMPAIGN_NAME,CS.DISTRIBUTION_NAME,
+                    CS.CAMPAIGN_TYPE, CS.OBJECTIVE,CS.PARTNER_FUNCTION_NAME,CS.TACTIC,CS.INTEGRATED_PLAN,
+                    CS.PREVIEW_URL,CS.HOSTING_URL,CS.CRM_TRACKING_URL
+           ) AS CS ON U.UOI_ID=CS.UOI_ID
+
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Calculation_View/CV_BUYER_STAGE" BUYER_STAGE ON U.UOI_ID=BUYER_STAGE.UOI_ID
+LEFT JOIN (SELECT LOGICAL_UOI_ID,COUNT(CONTENT_VIEW_TIME) AS VAMAUNT
+            FROM  "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_WORKFLOW_LOGS_CONTENT_VIEW" WV 
+            WHERE WV.CONTENT_VIEW_TIME >= :STARTDATE AND  WV.CONTENT_VIEW_TIME <= ADD_DAYS(:ENDDATE,1)  
+		    GROUP BY WV.logical_uoi_id
+		    ) WV ON U.LOGICAL_UOI_ID=WV.LOGICAL_UOI_ID
+WHERE (U.ASSET_TYPE =:ASSETTYPE OR :ASSETTYPE='All')  AND 
+      (EXISTS( select CO.USER_ID from "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" CO  where CO.EMAIL_ADDR=U.CONTENT_EMAIL AND :USERSID = CO.USER_ID)
+        OR :USERSID=U.UPLOADED_USER_ID OR :USERSID=0) AND
+      (UPPER(concat(concat(',',REPLACE(REPLACE(:DOIS ,CHAR(10),''),' ','')),',')) like UPPER(concat(concat('%,',U.SAP_DIGITAL_ID),',%')) OR :TYPE = 'NotDOISList');
+   
+END;

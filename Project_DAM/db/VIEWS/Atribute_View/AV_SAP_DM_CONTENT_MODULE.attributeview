@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_SAP_DM_CONTENT_MODULE" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_SAP_DM_CONTENT_MODULE"/>
+  <metadata changedAt="2017-02-14 14:54:41.492"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_CONTENT_MODULE" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="MODULE_TYPE" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="MODULE_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_CONTENT_MODULE" columnName="MODULE_TYPE"/>
+    </attribute>
+    <attribute id="BUSINESS_PRIORITY" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="BUSINESS_PRIORITY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_BUSINESS_PRIORITY" columnName="VALUE"/>
+    </attribute>
+    <attribute id="END_2_END_SOLUTION" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="END_2_END_SOLUTION"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_END_2_END_SOLUTION" columnName="VALUE"/>
+    </attribute>
+    <attribute id="SOLUTION_CAPABILITY" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SOLUTION_CAPABILITY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_SOLUTION_CAPABILITY" columnName="VALUE"/>
+    </attribute>
+    <attribute id="TECHNOLOGY" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="TECHNOLOGY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_TECHNOLOGY" columnName="VALUE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_DM_CONTENT_MODULE"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_BUSINESS_PRIORITY"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_END_2_END_SOLUTION"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_SOLUTION_CAPABILITY"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_TECHNOLOGY"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_CONTENT_MODULE"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_SOLUTION_CAPABILITY"/>
+        <leftColumns>
+          <columnName>SOLUTION_CAPABILITY</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_CONTENT_MODULE"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_END_2_END_SOLUTION"/>
+        <leftColumns>
+          <columnName>END_2_END_SOLUTION</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_CONTENT_MODULE"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_BUSINESS_PRIORITY"/>
+        <leftColumns>
+          <columnName>BUSINESS_PRIORITY</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_CONTENT_MODULE"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_TECHNOLOGY"/>
+        <leftColumns>
+          <columnName>TECHNOLOGY</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_DM_CONTENT_MODULE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_BUSINESS_PRIORITY" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="385" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_END_2_END_SOLUTION" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="381" y="141"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_SOLUTION_CAPABILITY" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="387" y="256"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_TECHNOLOGY" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="410" y="370"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

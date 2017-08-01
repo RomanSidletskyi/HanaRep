@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:AccessControl="http://www.sap.com/ndb/SQLCoreModelAccessControl.ecore" xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_CRM_WBS_CAMPAIGN_STATISTIC" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_CRM_WBS_CAMPAIGN_STATISTIC"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="LOGICAL_UOI_ID" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="LOGICAL_UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="LOGICAL_UOI_ID"/>
+    </attribute>
+    <attribute id="UOI_ID" key="true" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="UOIS" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="USER_ID" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="USER_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ANONYMOUSURL" columnName="USER_ID"/>
+    </attribute>
+    <attribute id="HOSTING_URL" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HOSTING_URL"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ANONYMOUSURL" columnName="HOSTING_URL"/>
+    </attribute>
+    <attribute id="PREVIEW_URL" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PREVIEW_URL"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ANONYMOUSURL" columnName="PREVIEW_URL"/>
+    </attribute>
+    <attribute id="CRM_TRACKING_URL" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CRM_TRACKING_URL"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ANONYMOUSURL" columnName="CRM_TRACKING_URL"/>
+    </attribute>
+    <attribute id="DISTRIBUTION_NAME" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DISTRIBUTION_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_DISTRIBUTION" columnName="DISTRIBUTION_NAME"/>
+    </attribute>
+    <attribute id="ASSOCIATED_CRM_WBS_CODE" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSOCIATED_CRM_WBS_CODE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="CRM_WBS_CODE"/>
+    </attribute>
+    <attribute id="ASSOCIATED_CAMPAIGN_NAME" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSOCIATED_CAMPAIGN_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="CAMPAIGN_NAME"/>
+    </attribute>
+    <attribute id="CAMPAIGN_TYPE" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="CAMPAIGN_TYPE"/>
+    </attribute>
+    <attribute id="OBJECTIVE" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="OBJECTIVE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="OBJECTIVE"/>
+    </attribute>
+    <attribute id="PARTNER_FUNCTION_NAME" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PARTNER_FUNCTION_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="PARTNER_FUNCTION_NAME"/>
+    </attribute>
+    <attribute id="TACTIC" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="TACTIC"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="TACTIC"/>
+    </attribute>
+    <attribute id="INTEGRATED_PLAN" order="14" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="INTEGRATED_PLAN"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="INTEGRATED_PLAN"/>
+    </attribute>
+    <attribute id="DATE_LOAD" order="15" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="DATE_LOAD"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_DOWNLOADSTATISTIC" columnName="DATE_LOAD"/>
+    </attribute>
+    <attribute id="ASSET_TYPE" order="16" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSET_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="sap_mkt_lu_asset" columnName="NAME"/>
+    </attribute>
+    <attribute id="REGION_NAME" order="17" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REGION_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY" alias="SAP_LU_REGION_COUNTRY_1" columnName="NAME"/>
+    </attribute>
+    <attribute id="COMPANY_NAME" order="18" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="COMPANY_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="IP_INFORMATION" columnName="COMPANY_NAME"/>
+    </attribute>
+    <attribute id="WORKFLOW_LOGS_DOWNLOAD_ID" order="19" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="WORKFLOW_LOGS_DOWNLOAD_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_DOWNLOADSTATISTIC" columnName="WORKFLOW_LOGS_DOWNLOAD_ID"/>
+    </attribute>
+    <attribute id="ANONYM_ID" order="20" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ANONYM_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ANONYMOUSURL" columnName="ANONYM_ID"/>
+    </attribute>
+    <attribute id="ID" order="21" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_DOWNLOADSTATISTIC" columnName="ID"/>
+    </attribute>
+    <attribute id="CRM_REGIONNAME" order="22" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CRM_REGIONNAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT" columnName="CRM_REGIONNAME"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="UOIS"/>
+        <columnFilter columnName="MODEL_ID">
+          <valueFilter xsi:type="AccessControl:ListValueFilter" operator="IN" including="true">
+            <operands value="500000"/>
+            <operands value="600003"/>
+          </valueFilter>
+        </columnFilter>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="CRM_WBS_DOWNLOADSTATISTIC"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="CRM_WBS_DISTRIBUTION"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="CRM_WBS_ANONYMOUSURL"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="sap_mkt_lu_asset"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY" alias="SAP_LU_REGION_COUNTRY_1"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="IP_INFORMATION"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="UOIS"/>
+        <rightTable schemaName="TUSER4" columnObjectName="CRM_WBS_ANONYMOUSURL"/>
+        <leftColumns>
+          <columnName>UOI_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>UOI_ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="rightOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="CRM_WBS_ANONYMOUSURL"/>
+        <rightTable schemaName="TUSER4" columnObjectName="CRM_WBS_DISTRIBUTION"/>
+        <leftColumns>
+          <columnName>DISTRIBUTION_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>DISTRIBUTION_ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="CRM_WBS_ANONYMOUSURL"/>
+        <rightTable schemaName="TUSER4" columnObjectName="CRM_WBS_ELEMENT"/>
+        <leftColumns>
+          <columnName>CAMPAIGN_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>CAMPAIGN_ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="UOIS"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+        <leftColumns>
+          <columnName>UOI_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>UOI_ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="sap_mkt_lu_asset"/>
+        <leftColumns>
+          <columnName>ASSET_CD</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>CODE</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY" alias="SAP_LU_REGION_COUNTRY_1"/>
+        <leftColumns>
+          <columnName>REGION_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="CRM_WBS_DOWNLOADSTATISTIC"/>
+        <rightTable schemaName="TUSER4" columnObjectName="IP_INFORMATION"/>
+        <leftColumns>
+          <columnName>IP_ADDRESS</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>IP_ADDRESS</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="IP_INFORMATION"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_REGION_COUNTRY"/>
+        <leftColumns>
+          <columnName>REGION_COUNTRY_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="CRM_WBS_ANONYMOUSURL"/>
+        <rightTable schemaName="TUSER4" columnObjectName="CRM_WBS_DOWNLOADSTATISTIC"/>
+        <leftColumns>
+          <columnName>ANONYM_ID</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ANONYM_ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="UOIS" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="339" y="24"/>
+        </shape>
+        <shape modelObjectName="CRM_WBS_ELEMENT" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="1047" y="11"/>
+        </shape>
+        <shape modelObjectName="CRM_WBS_DOWNLOADSTATISTIC" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="1101" y="278"/>
+        </shape>
+        <shape modelObjectName="CRM_WBS_DISTRIBUTION" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="1102" y="445"/>
+        </shape>
+        <shape modelObjectName="CRM_WBS_ANONYMOUSURL" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="722" y="23"/>
+        </shape>
+        <shape modelObjectName="SAP_DM_METADATA" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="12" y="32"/>
+        </shape>
+        <shape modelObjectName="sap_mkt_lu_asset" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="717" y="500"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_REGION_COUNTRY" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="1627" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_REGION_COUNTRY_1" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="1934" y="30"/>
+        </shape>
+        <shape modelObjectName="IP_INFORMATION" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="1339" y="73"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize height="192" width="209"/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

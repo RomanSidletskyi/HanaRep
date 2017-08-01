@@ -1,0 +1,42 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::UDF_R_BMO_DOWNLOADSBYASSETTYPE" 
+                                                        (timePeriod varchar(4),
+										                  crm_wbs  varchar(200),
+										                  ASSETTYPE VARCHAR(200),
+										                  campaignType VARCHAR(100),
+										                  tactic VARCHAR(100),
+										                  Objective VARCHAR(100),
+										                  crm_RegionName varchar(40)
+										                  ) 
+RETURNS table      
+(
+ "AssetType"      VARCHAR(256),  
+ "downloads" INT
+)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+
+DECLARE STARTDATE timestamp;
+DECLARE ENDDATE timestamp;
+
+
+STARTDATE:=TO_TIMESTAMP( case when :timePeriod='' or LENGTH(:timePeriod)<>4  then '2016' else :timePeriod end||'-01-01','YYYY-MM-DD');
+ENDDATE:=ADD_YEARS( :STARTDATE,1);
+	
+RETURN
+ SELECT CASE WHEN IFNULL(CS.ASSET_TYPE,'')='' THEN 'Other' ELSE CS.ASSET_TYPE END as "AssetType",
+		 count(CS.DATE_LOAD)       as "downloads"
+		 FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS 
+		 INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U on CS.UOI_ID=U.UOI_ID
+		  where 
+		     (:crm_RegionName=CS.CRM_REGIONNAME or :crm_RegionName ='All') and
+			 (CS.DATE_LOAD BETWEEN :STARTDATE AND :ENDDATE) AND
+ 	         (:crm_wbs=CS.ASSOCIATED_CRM_WBS_CODE or :crm_wbs='All') AND
+			 (:ASSETTYPE=CS.ASSET_TYPE  OR :ASSETTYPE='All') AND
+			 (:campaignType= CS.CAMPAIGN_TYPE or :campaignType='All') AND
+			 (:tactic= CS.TACTIC or :tactic='All') AND
+			 (:objective= CS.OBJECTIVE or :objective='All')
+
+		group by CASE WHEN IFNULL(CS.ASSET_TYPE,'')='' THEN 'Other' ELSE CS.ASSET_TYPE END
+		ORDER BY "downloads" ;
+END;

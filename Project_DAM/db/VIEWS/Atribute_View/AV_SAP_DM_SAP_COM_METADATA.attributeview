@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_SAP_DM_SAP_COM_METADATA" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_SAP_DM_SAP_COM_METADATA"/>
+  <metadata changedAt="2017-02-14 15:32:06.252"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_SAP_COM_METADATA" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="SAP_COM_ASSET_TYPE" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SAP_COM_ASSET_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_ASSET_TYPE" columnName="VALUE"/>
+    </attribute>
+    <attribute id="CORE_COMPETENCY" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CORE_COMPETENCY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_CORE_COMPETENCY" columnName="VALUE"/>
+    </attribute>
+    <attribute id="SAP_EVENTS" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SAP_EVENTS"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_EVENTS" columnName="VALUE"/>
+    </attribute>
+    <attribute id="KEYWORDS" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="KEYWORDS"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_SAP_COM_METADATA" columnName="KEYWORDS"/>
+    </attribute>
+    <attribute id="REGISTRATION_LEVEL" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="REGISTRATION_LEVEL"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_REG_LEVEL" columnName="VALUE"/>
+    </attribute>
+    <attribute id="SOLUTION_CATEGORY" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="SOLUTION_CATEGORY"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_SOLUTION_CAT" columnName="VALUE"/>
+    </attribute>
+    <attribute id="ASSET_SUB_TYPE" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSET_SUB_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_SUB_ASSET_TYPE" columnName="VALUE"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_DM_SAP_COM_METADATA"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_ASSET_TYPE"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_CORE_COMPETENCY"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_EVENTS"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_REG_LEVEL"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_SOLUTION_CAT"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_SUB_ASSET_TYPE"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_SAP_COM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_ASSET_TYPE"/>
+        <leftColumns>
+          <columnName>ASSET</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_SAP_COM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_CORE_COMPETENCY"/>
+        <leftColumns>
+          <columnName>CORE_COMPETENCY</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_SAP_COM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_EVENTS"/>
+        <leftColumns>
+          <columnName>EVENTS</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_SAP_COM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_REG_LEVEL"/>
+        <leftColumns>
+          <columnName>REGISTRATION_LEVEL</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_SAP_COM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_SOLUTION_CAT"/>
+        <leftColumns>
+          <columnName>SOLUTION_CATEGORY</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_SAP_COM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_SAP_COM_SUB_ASSET_TYPE"/>
+        <leftColumns>
+          <columnName>SUB_ASSET</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_DM_SAP_COM_METADATA" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_SAP_COM_ASSET_TYPE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="396" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_SAP_COM_CORE_COMPETENCY" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="388" y="145"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_SAP_COM_EVENTS" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="388" y="253"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_SAP_COM_REG_LEVEL" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="388" y="363"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_SAP_COM_SOLUTION_CAT" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="720" y="163"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_SAP_COM_SUB_ASSET_TYPE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="701" y="28"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

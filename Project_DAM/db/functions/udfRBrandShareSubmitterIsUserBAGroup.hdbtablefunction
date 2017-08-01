@@ -1,0 +1,15 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::udfRBrandShareSubmitterIsUserBAGroup" (userId varchar(100) ) 
+	 RETURNS table ( "IsBrandAmbassador" INT)
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER AS
+BEGIN
+RETURN 
+  SELECT 
+    case when  :userId in ( SELECT u.USER_ID as USER_ID
+    FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+    JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                        JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                        WHERE ug.NAME in ('Administrator','Brand team') ) or :userId = 'All' then 1 else 0 end as "IsBrandAmbassador"
+  from "TUSER4"."R_SELECT"    
+  where id = 1;  
+END;

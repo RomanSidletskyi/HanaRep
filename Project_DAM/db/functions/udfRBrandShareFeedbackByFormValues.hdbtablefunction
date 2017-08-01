@@ -1,0 +1,67 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::udfRBrandShareFeedbackByFormValues" 
+                                        (startDate varchar(100),
+                                         endDate  varchar(100),
+                                         submittedBy varchar(200),
+                                         section varchar(100),
+                                         scoreLimit varchar(100),
+                                         userId varchar(100)
+                                        ) 
+    RETURNS table ( "FORM_ID" INT,
+                    "UOI_ID" NVARCHAR(100),
+                    "Percent" DECIMAL(5,2),
+                    "Below" TINYINT,
+                    "Above" TINYINT
+              )  
+    LANGUAGE SQLSCRIPT
+    SQL SECURITY INVOKER AS
+BEGIN
+
+RETURN 
+
+SELECT 
+  FORM_ID, 
+  UOI_ID,
+  CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 0 ELSE "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 END as "Percent",
+  CASE WHEN "NA_AMOUNT" = "TOTAL_AMOUNT" THEN 1 
+       WHEN "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 < :scoreLimit THEN 1
+       ELSE 0 END as "Below",
+  CASE WHEN "TOTAL_AMOUNT" = "NA_AMOUNT" THEN 0
+       WHEN "YES_AMOUNT"/ ("TOTAL_AMOUNT" - "NA_AMOUNT")*100 >= :scoreLimit THEN 1
+       ELSE 0 END as "Above"       
+FROM 
+(
+  SELECT 
+    fb."FORM_ID", 
+    fb."UOI_ID", 
+    sum(1) as "TOTAL_AMOUNT",
+    sum(CASE WHEN IFNULL(ITEM_VALUE, 'NA') = 'YES' THEN 1 ELSE 0 END) as "YES_AMOUNT",
+    sum(CASE WHEN IFNULL(ITEM_VALUE, 'NA') = 'NA' THEN 1 ELSE 0 END) as "NA_AMOUNT"
+  FROM (
+    SELECT distinct fb.FORM_ID, fb.UOI_ID, fb.CATEGORY_ID, fb.SECTION_ID, fb.SECTION_NAME, fb.ITEM_ID, fb.ITEM_VALUE
+    FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_BRAND_FEEDBACK" fb
+    INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" u on u.uoi_id = fb.UOI_ID
+    LEFT JOIN (
+      SELECT u.USER_ID as USER_ID, 
+        case when ug.NAME = 'Brand team' then 'BT' else 'BA' end as USER_GROUP
+      FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+      JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+      JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+      WHERE ug.NAME in ('Brand team', 'Brand Ambassador')--   and u.GROUP_ID <> 1 -- EXCLUDE ADMINs
+    ) ug on ug.USER_ID = fb.FORM_CREATED_BY
+    WHERE fb.FORM_STATUS = 'COMPLETED'
+      AND fb.FORM_CREATED_DATE >= :startdate
+      AND fb.FORM_CREATED_DATE < ADD_DAYS(:enddate,1)
+      AND (ug.USER_GROUP = :submittedBy or 'All' = :submittedBy) -- SubmittedBy (All/ Brand Team/ Brand Ambassador)
+      AND (fb.SECTION_NAME like concat(concat('%',:section),'%') or 'All' = :section)
+      AND (:userid in (
+                       SELECT u.USER_ID as USER_ID
+                       FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+                       JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                       JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                       WHERE ug.NAME in ('Administrator','Brand team')
+                    ) or (fb.FORM_CREATED_BY = :userid)or (:userid = 'All'))
+  ) fb
+  GROUP BY fb."FORM_ID", fb."UOI_ID"
+) t;
+
+END;

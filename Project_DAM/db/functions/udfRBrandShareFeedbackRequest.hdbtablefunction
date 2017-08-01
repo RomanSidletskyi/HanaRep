@@ -1,0 +1,82 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::udfRBrandShareFeedbackRequest" (formId varchar(100)) 
+RETURNS table ( "FORM_ID" INT,
+                "Feedback Details" NVARCHAR(100),
+                "Feedback Value" int,
+                "Feedback Value Text" NVARCHAR(100)
+              )  
+    LANGUAGE SQLSCRIPT
+    SQL SECURITY INVOKER AS
+BEGIN
+
+RETURN 
+
+SELECT 
+  hrh.FORM_ID,
+  CASE 
+    WHEN hrh.LEVEl = 1 THEN "CATEGORY_NAME"
+    WHEN hrh.LEVEl = 2 THEN CONCAT(CONCAT(CAST((hrh."s_p"+1)as NVARCHAR(20)),'.'), CONCAT('     ', "SECTION_NAME"))
+    WHEN hrh.LEVEl = 3 THEN CONCAT('-                ', "ITEM_NAME")
+  END as "Feedback Details", 
+  CASE WHEN hrh.LEVEl = 3 THEN 
+       CASE WHEN ifnull(hrh.ITEM_VALUE, '') ='' THEN -2
+            WHEN hrh.ITEM_VALUE = 'NA' THEN -1
+            WHEN hrh.ITEM_VALUE = 'NO' THEN 0
+            WHEN hrh.ITEM_VALUE = 'YES' THEN 1
+        END
+        ELSE null
+   END as "Feedback Value",  
+   CASE WHEN hrh.LEVEl = 3 THEN 
+       CASE WHEN ifnull(hrh.ITEM_VALUE, '') ='' THEN ''
+            WHEN hrh.ITEM_VALUE = 'NA' THEN 'NA'
+            WHEN hrh.ITEM_VALUE = 'NO' THEN 'NO'
+            WHEN hrh.ITEM_VALUE = 'YES' THEN 'YES'
+        END
+        ELSE '' 
+   END as "Feedback Value Text"    
+FROM (
+  select 
+    f.ID as "FORM_ID",
+    c.NAME as "CATEGORY_NAME",
+    null as "SECTION_NAME",
+    null as "ITEM_NAME",
+    null as "ITEM_VALUE",
+    c.POSITION as "c_p",
+    null as "s_p",
+    null as "i_p",
+    1 as "LEVEL"
+  from "TUSER4"."BRAND_FEEDBACK_FORM" f 
+  JOIN "TUSER4"."BRAND_FEEDBACK_CATEGORY" c on c.FEEDBACK_FORM_ID = f.ID
+  WHERE f.STATUS = 'COMPLETED'
+  UNION ALL
+  select 
+    f.ID as "FORM_ID",
+    c.NAME as "CATEGORY_NAME",
+    s.NAME as "SECTION_NAME",
+    null as "ITEM_NAME",
+    null as "ITEM_VALUE",
+    c.POSITION as "c_p",
+    s.POSITION as "s_p",
+    null as "i_p",
+    2 as "LEVEL"
+  from "TUSER4"."BRAND_FEEDBACK_FORM" f 
+  JOIN "TUSER4"."BRAND_FEEDBACK_CATEGORY" c on c.FEEDBACK_FORM_ID = f.ID
+  JOIN "TUSER4"."BRAND_FEEDBACK_SECTION" s on s.FEEDBACK_CATEGORY_ID = c.ID
+  WHERE f.STATUS = 'COMPLETED'
+  UNION ALL
+  select 
+    FORM_ID,
+    CATEGORY_NAME,
+    SECTION_NAME,
+    ITEM_NAME,
+    ITEM_VALUE,
+    CATEGORY_POSITION as "c_p",
+    SECTION_POSITION as s_p,
+    ITEM_POSITION as i_p,
+    3 as "LEVEL"
+  from "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_BRAND_FEEDBACK"
+  WHERE FORM_STATUS = 'COMPLETED'
+) hrh
+WHERE hrh.FORM_ID = :formID
+ORDER BY "c_p", "s_p", "i_p";
+
+END;

@@ -1,0 +1,98 @@
+FUNCTION "TUSER4"."Project_DAM.db.functions::udfRBrandShareSubmitterDetail" 
+                                       (startDate varchar(100), 
+                                        endDate  varchar(100), 
+                                        submitterRole varchar(200),
+                                        userId varchar(100)
+                                        ) 
+    RETURNS table ( "FORM_ID" INT,
+                    "UOI_ID" NVARCHAR(100),
+                    "SAP ID" NVARCHAR(100),
+                    "Asset Title" NVARCHAR(100),
+                    "Description" NVARCHAR(100),
+                    "Date Submitted" NVARCHAR(100),
+                    "Submitted By" NVARCHAR(100),
+                    "Summary Score" DECIMAL(5,2),
+                    "What we stand for"DECIMAL(5,2),
+                    "How we look" DECIMAL(5,2),
+                    "How we sound" DECIMAL(5,2),
+                    "Uploader" NVARCHAR(100),
+                    "Content Owner" NVARCHAR(100),
+                    "Expiration Date" NVARCHAR(100),
+                    "Region/Country" NVARCHAR(100),
+                    "Language" NVARCHAR(100),
+                    "Keywords" NVARCHAR(100)                    
+              )  
+    LANGUAGE SQLSCRIPT
+    SQL SECURITY INVOKER AS
+BEGIN
+
+RETURN 
+SELECT distinct
+  f.ID as "FORM_ID",
+  f.UOI_ID as "UOI_ID",
+  u.SAP_DIGITAL_ID as "SAP ID",
+  ifnull(u.ASSET_NAME, '') as "Asset Title",
+  ifnull(u.ASSET_DESCRIPTION, '') as "Description",
+  TO_VARCHAR(CASE WHEN  f.CREATED_DATE ='' THEN '1900-01-01' ELSE  f.CREATED_DATE END, 'YYYY-MM-DD') as "Date Submitted",
+  ifnull(fu.USER_NAME, '') as "Submitted By",
+  CASE WHEN "Summary Score NA" = "Summary Score ALL" THEN 0 ELSE "Summary Score YES"/ ("Summary Score ALL" - "Summary Score NA")*100 END as "Summary Score", 
+  CASE WHEN "What we stand for NA" = "What we stand for ALL" THEN 0 ELSE "What we stand for YES"/ ("What we stand for ALL" - "What we stand for NA")*100 END as "What we stand for",
+  CASE WHEN "How we look NA" = "How we look ALL" THEN 0 ELSE "How we look YES"/ ("How we look ALL" - "How we look NA")*100 END as "How we look",
+  CASE WHEN "How we sound NA" = "How we sound ALL" THEN 0 ELSE "How we sound YES"/ ("How we sound ALL" - "How we sound NA")*100 END as "How we sound",
+  ifnull(u.UPLOADED_BY, '') as "Uploader",
+  ifnull(u.CONTENT_OWNER, '') as "Content Owner",
+  TO_VARCHAR(CASE WHEN u.EXPIRATION_DATE='' THEN '1900-01-01' ELSE u.EXPIRATION_DATE END, 'YYYY-MM-DD')as "Expiration Date",
+  ifnull(rc.REGION_COUNTRY, '') as "Region/Country",
+  ifnull(cm.ASSET_LANGUAGE, '') as "Language",
+  ifnull(cmk.KEYWORDS, '') as "Keywords"  
+FROM "TUSER4"."BRAND_FEEDBACK_FORM" f
+INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" u on u.uoi_id = f.UOI_ID
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Calculation_View/CV_REGION_COUNTRY" rc on rc.UOI_ID = u.uoi_id
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_COMMON_METADATA" cm on  cm.UOI_ID = u.uoi_id
+LEFT JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_SAP_DM_SAP_COM_METADATA" cmk on cmk.UOI_ID = u.uoi_id
+JOIN (
+  SELECT DISTINCT f.ID, ug.USER_NAME, ug.USER_GROUP 
+  FROM  "TUSER4"."BRAND_FEEDBACK_FORM" f
+  JOIN (
+     SELECT u.USER_ID as USER_ID, concat(concat(FIRST_NAME, ' '),LAST_NAME) as USER_NAME,
+         case when ug.NAME = 'Brand team' then 'BT' else 'BA' end as USER_GROUP, ug.NAME 
+      FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+      JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+      JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+      WHERE ug.NAME in ('Brand team', 'Brand Ambassador')--   and u.GROUP_ID <> 1 -- EXCLUDE ADMINs
+     ) ug on ug.USER_ID = f.CREATED_BY
+   WHERE f.STATUS <> 'DELETED'
+      AND f.CREATED_DATE >= :startdate
+      AND f.CREATED_DATE < ADD_DAYS(:enddate,1)
+      AND (ug.USER_GROUP = :submitterrole or 'All' = :submitterrole) -- SubmittedBy (All/ Brand Team/ Brand Ambassador)
+      AND (:userid in (
+                SELECT u.USER_ID as USER_ID
+                FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_USERS" u
+                JOIN "TUSER4"."USER_GROUP_USERS" ugu on ugu.USER_ID = u.USER_ID
+                JOIN "TUSER4"."USER_GROUPS" ug on ug.ID = ugu.USER_GROUP_ID 
+                WHERE ug.NAME in ('Administrator','Brand team')
+             ) or (f.CREATED_BY = :userid) or (:userid = 'All'))
+ ) fu on fu.ID = f.ID
+ left join (select FORM_ID, UOI_ID, 
+  
+  sum(case when ITEM_VALUE = 'YES' then 1 else 0 end ) as "Summary Score YES", 
+  sum(case when ITEM_VALUE = 'NA' then 1 else 0 end ) as "Summary Score NA", 
+  sum(1) as "Summary Score ALL",  
+                     
+  sum(case when CATEGORY_NAME = 'What we stand for' AND ITEM_VALUE = 'YES' then 1 else 0 end) as "What we stand for YES",
+  sum(case when CATEGORY_NAME = 'What we stand for' AND ITEM_VALUE = 'NA' then 1 else 0 end) as "What we stand for NA",
+  sum(case when CATEGORY_NAME = 'What we stand for' then 1 else 0 end) as "What we stand for ALL",
+  
+  sum(case when CATEGORY_NAME = 'How we look' AND ITEM_VALUE = 'YES' then 1 else 0 end) as "How we look YES",
+  sum(case when CATEGORY_NAME = 'How we look' AND ITEM_VALUE = 'NA' then 1 else 0 end) as "How we look NA",
+  sum(case when CATEGORY_NAME = 'How we look' then 1 else 0 end) as "How we look ALL",
+  
+  sum(case when CATEGORY_NAME = 'How we sound' AND ITEM_VALUE = 'YES' then 1 else 0 end) as "How we sound YES",
+  sum(case when CATEGORY_NAME = 'How we sound' AND ITEM_VALUE = 'NA' then 1 else 0 end) as "How we sound NA",
+  sum(case when CATEGORY_NAME = 'How we sound' then 1 else 0 end) as "How we sound ALL"
+  
+FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_BRAND_FEEDBACK" 
+group by  FORM_ID, UOI_ID
+)sc on sc.FORM_ID =  f.ID;
+
+END;

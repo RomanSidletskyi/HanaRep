@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dimension:dimension xmlns:Dimension="http://www.sap.com/ndb/BiModelDimension.ecore" schemaVersion="1.2" id="AV_SAP_DM_METADATA" applyPrivilegeType="ANALYTIC_PRIVILEGE" checkAnalyticPrivileges="true" defaultClient="$$client$$" defaultLanguage="$$language$$" hierarchiesSQLEnabled="false" translationRelevant="true" visibility="internal" dimensionType="Standard">
+  <origin/>
+  <descriptions defaultDescription="AV_SAP_DM_METADATA"/>
+  <metadata changedAt="2017-02-14 15:12:28.469"/>
+  <informationModelLayout relativeWidthScenario="27"/>
+  <attributes>
+    <attribute id="UOI_ID" key="true" order="1" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="UOI_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="UOI_ID"/>
+    </attribute>
+    <attribute id="ASSET_TYPE" order="2" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="ASSET_TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="sap_mkt_lu_asset" columnName="NAME"/>
+    </attribute>
+    <attribute id="CAMPAIGN_LIFECYCLE" order="3" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_LIFECYCLE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_DM_CMPGN_LCYCLE" columnName="NAME"/>
+    </attribute>
+    <attribute id="CAMPAIGN" order="4" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_DM_CMPGN_TYPE" columnName="NAME"/>
+    </attribute>
+    <attribute id="TYPE" order="5" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="TYPE"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_LU_TYPE" columnName="VALUE"/>
+    </attribute>
+    <attribute id="CAMPAIGN_NAME" order="6" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAG_CAMPAIGN"/>
+    </attribute>
+    <attribute id="EXECUTION_CONSIDERATION" order="7" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="EXECUTION_CONSIDERATION"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAG_EXECUTION"/>
+    </attribute>
+    <attribute id="CAG_GTM" order="8" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAG_GTM"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAG_GTM"/>
+    </attribute>
+    <attribute id="PROGRAM_CAMPAIGN_MANAGER" order="9" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PROGRAM_CAMPAIGN_MANAGER"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAG_MANAGER"/>
+    </attribute>
+    <attribute id="MASTER_ASSET_IN_DAM" order="10" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="MASTER_ASSET_IN_DAM"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAG_MASTER_ASSET"/>
+    </attribute>
+    <attribute id="HIGH_LEVEL_MESSAGING" order="11" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="HIGH_LEVEL_MESSAGING"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAG_MESSAGING"/>
+    </attribute>
+    <attribute id="CAMPAIGN_OBJECTIVES" order="12" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_OBJECTIVES"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAG_OBJECTIVES"/>
+    </attribute>
+    <attribute id="PROGRAM" order="13" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PROGRAM"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAG_PROGRAM"/>
+    </attribute>
+    <attribute id="CAMPAIGN_ID" order="14" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAMPAIGN_ID"/>
+    </attribute>
+    <attribute id="CAMPAIGN_NAME_1" order="15" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CAMPAIGN_NAME_1"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CAMPAIGN_NAME"/>
+    </attribute>
+    <attribute id="CONTENT_OWNER_EMAIL" order="16" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CONTENT_OWNER_EMAIL"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CONTACT_EMAIL"/>
+    </attribute>
+    <attribute id="CONTENT_OWNER" order="17" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CONTENT_OWNER"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CONTACT_NAME"/>
+    </attribute>
+    <attribute id="CRM_WBS_ELEMEMENT" order="18" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="CRM_WBS_ELEMEMENT"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="CRM_WBS_ELEMEMENT"/>
+    </attribute>
+    <attribute id="MARKETING_PROGRAM_ID" order="19" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="MARKETING_PROGRAM_ID"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="PROGRAM_ID"/>
+    </attribute>
+    <attribute id="PROGRAM_NAME" order="20" attributeHierarchyActive="false" displayAttribute="false">
+      <descriptions defaultDescription="PROGRAM_NAME"/>
+      <keyMapping schemaName="TUSER4" columnObjectName="SAP_DM_METADATA" columnName="PROGRAMNAME_CD"/>
+    </attribute>
+  </attributes>
+  <calculatedAttributes/>
+  <privateDataFoundation>
+    <tableProxies>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="sap_mkt_lu_asset"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_DM_CMPGN_LCYCLE"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_DM_CMPGN_TYPE"/>
+      </tableProxy>
+      <tableProxy>
+        <table schemaName="TUSER4" columnObjectName="SAP_LU_TYPE"/>
+      </tableProxy>
+    </tableProxies>
+    <joins>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="sap_mkt_lu_asset"/>
+        <leftColumns>
+          <columnName>ASSET_CD</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>CODE</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_DM_CMPGN_LCYCLE"/>
+        <leftColumns>
+          <columnName>CAMPAIGN_LIFECYCLE_CD</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>CODE</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_DM_CMPGN_TYPE"/>
+        <leftColumns>
+          <columnName>CAMPAIGN_NAME</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>CODE</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+      <join>
+        <leftTable schemaName="TUSER4" columnObjectName="SAP_DM_METADATA"/>
+        <rightTable schemaName="TUSER4" columnObjectName="SAP_LU_TYPE"/>
+        <leftColumns>
+          <columnName>SAP_TYPE</columnName>
+        </leftColumns>
+        <rightColumns>
+          <columnName>ID</columnName>
+        </rightColumns>
+        <properties joinOperator="Equal" joinType="leftOuter"/>
+      </join>
+    </joins>
+    <layout>
+      <shapes>
+        <shape modelObjectName="SAP_DM_METADATA" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="70" y="30"/>
+        </shape>
+        <shape modelObjectName="sap_mkt_lu_asset" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="395" y="30"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_DM_CMPGN_LCYCLE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="401" y="142"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_DM_CMPGN_TYPE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="427" y="255"/>
+        </shape>
+        <shape modelObjectName="SAP_LU_TYPE" modelObjectNameSpace="TUSER4" modelObjectType="catalog">
+          <upperLeftCorner x="421" y="379"/>
+        </shape>
+        <shape modelObjectName="DataFoundation" modelObjectNameSpace="DataFoundation" modelObjectType="repository">
+          <upperLeftCorner x="40" y="85"/>
+          <rectangleSize/>
+        </shape>
+      </shapes>
+    </layout>
+  </privateDataFoundation>
+  <hierarchies/>
+</Dimension:dimension>

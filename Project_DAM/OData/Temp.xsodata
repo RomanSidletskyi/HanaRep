@@ -1,0 +1,9 @@
+service  { 
+   "Project_DAM.db.VIEWS.Calculation_View::CV_ASSET_TYPE_COUNT" 
+   as "AssetTypeCount" 
+   key ("ASSET_TYPE");
+}
+annotations 
+{
+  enable OData4SAP;
+}

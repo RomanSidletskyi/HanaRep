@@ -1,0 +1,129 @@
+FUNCTION  "TUSER4"."Project_DAM.db.functions::UDF_R_BMO_TOTALMEASURES" (timePeriod varchar(4),
+                                                          crm_wbs  varchar(200),
+                                                          ASSETTYPE VARCHAR(200),
+                                                          campaignType VARCHAR(100),
+                                                          tactic VARCHAR(100),
+                                                          Objective VARCHAR(100),
+                                                          crm_RegionName varchar(40)
+                                                          ) 
+RETURNS table      
+(
+"Unique Assets" INT,
+"Campaign Codes thet Utilized an Asset" INT,
+"Total Downloads" INT,
+"of NA MArkets" INT,
+"Re-Usage Rate" INT,
+ "Fast Facts1"   VARCHAR(256),
+ "Fast Facts2"   VARCHAR(256),
+ "Fast Facts3"   VARCHAR(256),
+ "Fast Facts4"   VARCHAR(256)  
+ 
+)
+    LANGUAGE SQLSCRIPT
+    SQL SECURITY INVOKER AS
+BEGIN
+
+DECLARE STARTDATE timestamp;
+DECLARE ENDDATE timestamp;
+DECLARE currentDate timestamp;
+DECLARE totalDownloads int; 
+DECLARE uniqAssets int;
+DECLARE uniqCampaign int; 
+DECLARE re_UsageRate int; 
+DECLARE campaignWithOneAssets int;
+DECLARE assetswithNoDownloads int;
+DECLARE assetsDownloadsinDiffCampaign int;
+
+
+STARTDATE:=TO_TIMESTAMP( case when :timePeriod='' or LENGTH(:timePeriod)<>4  then '2016' else :timePeriod end||'-01-01','YYYY-MM-DD');
+ENDDATE:=ADD_YEARS( :STARTDATE,1);
+
+
+SELECT count(DISTINCT CS.UOI_ID) as "uniqAssets", 
+       count(DISTINCT CS.ASSOCIATED_CRM_WBS_CODE) as "uniqCampaign",
+       count(CS.ID) as "totalDownloads"
+INTO uniqAssets,uniqCampaign,totalDownloads
+FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS 
+INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U on CS.UOI_ID=U.UOI_ID
+where 
+     (:crm_RegionName=CS.CRM_REGIONNAME or :crm_RegionName ='All') and
+     (CS.DATE_LOAD BETWEEN :STARTDATE AND :ENDDATE) AND
+     (:crm_wbs=CS.ASSOCIATED_CRM_WBS_CODE or :crm_wbs='All') AND
+     (:ASSETTYPE=CS.ASSET_TYPE  OR :ASSETTYPE='All') AND
+     (:campaignType= CS.CAMPAIGN_TYPE or :campaignType='All') AND
+     (:tactic= CS.TACTIC or :tactic='All') AND
+     (:objective= CS.OBJECTIVE or :objective='All');
+
+    
+
+SELECT Round(sum(case when "CampaignAmount">1 then 1 else 0 end)*100/:uniqAssets,0)  INTO re_UsageRate
+FROM (
+ SELECT CS.UOI_ID,
+        count(distinct CS.ASSOCIATED_CRM_WBS_CODE) as "CampaignAmount",
+        count(CS.ID) as "AssetsDownloads"  
+
+         FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS 
+         INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U on CS.UOI_ID=U.UOI_ID
+          where 
+             (:crm_RegionName=CS.CRM_REGIONNAME or :crm_RegionName ='All') and
+             (CS.DATE_LOAD BETWEEN :STARTDATE AND :ENDDATE) AND
+             (:crm_wbs=CS.ASSOCIATED_CRM_WBS_CODE or :crm_wbs='All') AND
+             (:ASSETTYPE=CS.ASSET_TYPE  OR :ASSETTYPE='All') AND
+             (:campaignType= CS.CAMPAIGN_TYPE or :campaignType='All') AND
+             (:tactic= CS.TACTIC or :tactic='All') AND
+             (:objective= CS.OBJECTIVE or :objective='All')
+        group by CS.UOI_ID
+ ) AS Z;
+
+
+SELECT COUNT(DISTINCT Z.UOI_ID) as AssetswithNoDownloads,
+       COUNT(DISTINCT dow.OBJECT_ID)  
+INTO assetswithNoDownloads,assetsDownloadsinDiffCampaign
+FROM (
+ SELECT CS.UOI_ID,
+        count(CS.ID) as "UnAssetsDownloads"  
+
+         FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS 
+         INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U on CS.UOI_ID=U.UOI_ID
+          where 
+             (:crm_RegionName=CS.CRM_REGIONNAME or :crm_RegionName ='All') and
+             (CS.DATE_LOAD BETWEEN :STARTDATE AND :ENDDATE) AND
+             (:crm_wbs=CS.ASSOCIATED_CRM_WBS_CODE or :crm_wbs='All') AND
+             (:ASSETTYPE=CS.ASSET_TYPE  OR :ASSETTYPE='All') AND
+             (:campaignType= CS.CAMPAIGN_TYPE or :campaignType='All') AND
+             (:tactic= CS.TACTIC or :tactic='All') AND
+             (:objective= CS.OBJECTIVE or :objective='All')
+        group by CS.UOI_ID
+ ) AS Z
+ left join "TUSER4"."WORKFLOW_LOGS_Download" dow on dow.OBJECT_ID=z.UOI_ID and  (dow.TIME BETWEEN :STARTDATE AND :ENDDATE );
+ 
+SELECT sum(case when "AssetsAmount"=1 then 1 else 0 end) as campaignWithOneAssets  INTO campaignWithOneAssets
+FROM (
+ SELECT CS.ASSOCIATED_CRM_WBS_CODE,
+        count(distinct CS.UOI_ID) as "AssetsAmount"
+         FROM "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_CRM_WBS_CAMPAIGN_STATISTIC" CS 
+         INNER JOIN "_SYS_BIC"."Project_DAM.db.VIEWS.Atribute_View/AV_UOISMETADATA" U on CS.UOI_ID=U.UOI_ID
+          where 
+             (:crm_RegionName=CS.CRM_REGIONNAME or :crm_RegionName ='All') and
+             (CS.DATE_LOAD BETWEEN :STARTDATE AND :ENDDATE) AND
+             (:crm_wbs=CS.ASSOCIATED_CRM_WBS_CODE or :crm_wbs='All') AND
+             (:ASSETTYPE=CS.ASSET_TYPE  OR :ASSETTYPE='All') AND
+             (:campaignType= CS.CAMPAIGN_TYPE or :campaignType='All') AND
+             (:tactic= CS.TACTIC or :tactic='All') AND
+             (:objective= CS.OBJECTIVE or :objective='All')
+        group by CS.ASSOCIATED_CRM_WBS_CODE
+ ) AS Z;
+
+RETURN
+SELECT uniqAssets as "Unique Assets",
+       uniqCampaign as "Campaign Codes thet Utilized an Asset",
+       totalDownloads as "Total Downloads",
+       100 as "of NA MArkets",
+       20 as "Re-Usage Rate", -- re_UsageRate as "Re-Usage Rate",
+       'The maximum number of campaigns associated with 1 asset was 10'  as "Fast Facts1", -- CONCAT('The maximum number of campaigns associated with 1 asset was ',TO_VARCHAR(campaignWithOneAssets)) as "Fast Facts1",
+       '' as "Fast Facts2",
+       '' as "Fast Facts3",
+       'Only ' ||  TO_VARCHAR(assetswithNoDownloads) || ' of the ' || TO_VARCHAR(uniqAssets) || ' unique assets had no downloads recorded and ' ||
+        CONCAT(TO_VARCHAR(assetsDownloadsinDiffCampaign),' of them had been reused with downloads reported in other campaigns') as "Fast Facts4"
+FROM DUMMY;
+END;

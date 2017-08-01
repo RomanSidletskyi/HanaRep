@@ -1,0 +1,323 @@
+PROCEDURE "TUSER4"."Project_DAM.db.procedures::fulltextSearch_old" (
+in keyword NVARCHAR(300), 
+in artesia_id NVARCHAR(300), 
+in field_content NVARCHAR(1), 
+in file_content NVARCHAR(1), 
+in view_id DECIMAL, 
+in session_id DECIMAL, 
+in fuzzy_coef Double, 
+in asset_cd NVARCHAR(4000),
+
+in assettype_cd NVARCHAR(300),
+in language_cd NVARCHAR(300),
+in region_cd NVARCHAR(300),
+in country_cd NVARCHAR(300),
+in year NVARCHAR(4),
+in industry_cd NVARCHAR(300),
+in services_cd NVARCHAR(300),
+in solution_product_cd NVARCHAR(300),
+in target_segment_cd NVARCHAR(300),
+in lob NVARCHAR(300),
+in audience_cd NVARCHAR(300),
+in campaign_lc_cd NVARCHAR(300),
+in cmp_tgp_information NVARCHAR(300),
+in cmp_doc_format NVARCHAR(300),
+in approver_name NVARCHAR(300),
+in sales_kit NVARCHAR(300),
+in uoi_ids NVARCHAR(4000),
+in usage NVARCHAR(300),
+in usage_scope NVARCHAR(300),
+in is_collat NVARCHAR(300),
+in topic NVARCHAR(300),
+in task NVARCHAR(300),
+in sap_type NVARCHAR(300),
+in rowcnt INT,
+in user_id NVARCHAR(45),
+in is_admin NVARCHAR(5),
+out count INT --,
+--out str NVARCHAR (4000)
+) 
+	LANGUAGE SQLSCRIPT
+	SQL SECURITY INVOKER 
+	DEFAULT SCHEMA "TUSER4" 
+	AS
+BEGIN
+/***************************** 
+	Write your procedure logic 
+ *****************************/  
+	DECLARE table_counter Integer := 1;
+	DECLARE table_row_count Integer := 0;
+	DECLARE column_counter Integer := 1;
+	DECLARE column_row_count Integer := 0;
+	DECLARE table_name NVARCHAR(200);
+	DECLARE searched_column_name NVARCHAR(40);
+	DECLARE selected_column_name NVARCHAR(20);
+	DECLARE strexec NVARCHAR(4000);
+	
+	DELETE FROM "TUSER4"."Project_DAM.db.tables::mac_search_result" WHERE "ARTESIA_ID" = :artesia_id;
+	
+	IF (:field_content = 'Y') THEN
+		indexed_tables = SELECT row_number() OVER (ORDER BY p."TABLE_NAME") AS ROW_NUMBER, p."TABLE_NAME" FROM (
+			SELECT DISTINCT "TABLE_NAME" FROM "SYS"."FULLTEXT_INDEXES" WHERE "SCHEMA_NAME" = 'TUSER4'
+		) as p;
+		SELECT COUNT(*) INTO table_row_count FROM :indexed_tables;	
+		
+		WHILE table_counter < table_row_count + 1 DO
+			SELECT "TABLE_NAME" INTO table_name FROM :indexed_tables WHERE "ROW_NUMBER" = :table_counter;
+			
+			SELECT CASE
+				WHEN table_name='OBJECT_STACKS' THEN '"OBJECT_ID"'
+				ELSE '"UOI_ID"' 
+				END AS COLUMN INTO selected_column_name FROM DUMMY;
+			
+			indexed_columns = SELECT row_number() OVER (ORDER BY p."COLUMN_NAME") AS ROW_NUMBER, p."COLUMN_NAME" FROM (
+				SELECT "TABLE_NAME", SUBSTRING("INTERNAL_COLUMN_NAME", 14, LENGTH("INTERNAL_COLUMN_NAME") - 14) AS COLUMN_NAME FROM "SYS"."FULLTEXT_INDEXES" WHERE "SCHEMA_NAME" = 'TUSER4' AND "TABLE_NAME" = :table_name
+			) as p;
+			
+			SELECT COUNT(*) INTO column_row_count FROM :indexed_columns;
+			
+			column_counter := 1;
+			
+			WHILE column_counter < column_row_count + 1 DO
+					
+				SELECT "COLUMN_NAME" INTO searched_column_name FROM :indexed_columns WHERE "ROW_NUMBER" = :column_counter;
+				
+				IF (:table_name != 'OBJECT_STACKS') THEN
+					exec 'INSERT INTO "TUSER4"."Project_DAM.db.tables::mac_search_result" SELECT '||selected_column_name||' AS ID, SCORE() AS SCORE, '''||artesia_id||''' AS ARTESIA_ID FROM "TUSER4"."'||table_name||'" WHERE contains('||searched_column_name||', '''||keyword||''', fuzzy('||:fuzzy_coef||'))';				
+				ELSE	
+					IF (:searched_column_name != 'TEXT_CONTENT') THEN
+						exec 'INSERT INTO "TUSER4"."Project_DAM.db.tables::mac_search_result" SELECT '||selected_column_name||' AS ID, SCORE() AS SCORE, '''||artesia_id||''' AS ARTESIA_ID FROM "TUSER4"."'||table_name||'" WHERE contains('||searched_column_name||', '''||keyword||''', fuzzy('||:fuzzy_coef||'))';
+					END IF;
+				END IF;	
+				
+				column_counter := column_counter + 1;
+			END WHILE;
+			
+			table_counter := table_counter + 1;		
+		END WHILE;
+	ELSE
+		IF (:file_content = 'Y') THEN
+			exec 'INSERT INTO "TUSER4"."Project_DAM.db.tables::mac_search_result" SELECT '||selected_column_name||' AS ID, SCORE() AS SCORE, '''||artesia_id||''' AS ARTESIA_ID FROM "TUSER4"."OBJECT_STACKS" WHERE contains(TEXT_CONTENT, '''||keyword||''', fuzzy('||:fuzzy_coef||'))';
+		END IF;
+	END IF;
+	
+	selected_ids = SELECT DISTINCT p."ID" FROM (SELECT "ID", "SCORE" FROM "TUSER4"."Project_DAM.db.tables::mac_search_result" WHERE "ARTESIA_ID" = :artesia_id ORDER BY SCORE DESC, ID ASC) AS p;
+	
+/*	INSERT INTO "TUSER4"."VIEW_ELEMENTS"(view_id, element_type, element_id, position, session_id) 
+		SELECT :view_id, 'UOI', uo.uoi_id, uo.rownum, :session_id 
+			FROM (SELECT TOP 200 ui.uoi_id, Row_Number() OVER (ORDER BY b0 DESC) AS rownum FROM (
+				SELECT DISTINCT uoi.uoi_id, uoi.IMPORT_DT b0 FROM "TUSER4"."UOIS" uoi 
+					INNER JOIN "TUSER4"."SAP_DM_APPROVAL_DATA" t1 ON uoi.uoi_id = t1.uoi_id 
+					LEFT OUTER JOIN "TUSER4"."SAP_ASSET_STATUS" t2 ON uoi.uoi_id = t2.uoi_id 
+					 inner join "TUSER4"."SAP_DM_METADATA" t3 on uoi.uoi_id = t3.uoi_id 
+					 inner join "TUSER4"."SAP_COMMON_ASSETTYPE" t4 on uoi.uoi_id = t4.uoi_id 
+					 inner join "TUSER4"."SAP_COMMON_METADATA" t5 on uoi.uoi_id = t5.uoi_id 
+					 inner join "TUSER4"."SAP_COMMON_REGION" t6 on uoi.uoi_id = t6.uoi_id 
+ 					 inner join "TUSER4"."SAP_COMMON_COUNTRY1" t7 on uoi.uoi_id = t7.uoi_id 
+ 					 inner join "TUSER4"."SAP_COMMON_INDUSTRY" t8 on uoi.uoi_id = t8.uoi_id 
+ 					 inner join "TUSER4"."SAP_COMMON_SERVICES" t9 on uoi.uoi_id = t9.uoi_id 
+					 inner join "TUSER4"."SAP_COMMON_SOLUTION_PRODUCT" t10 on uoi.uoi_id = t10.uoi_id 
+ 					 inner join "TUSER4"."SAP_COMMON_TARGET_SEG" t11 on uoi.uoi_id = t11.uoi_id 
+ 					 inner join "TUSER4"."SAP_LOB" t12 on uoi.uoi_id = t12.uoi_id 
+ 					 inner join "TUSER4"."SAP_DM_AUDIENCE" t13 on uoi.uoi_id = t13.uoi_id 
+ 					 inner join "TUSER4"."SAP_CMP_METADATA" t14 on uoi.uoi_id = t14.uoi_id 
+ 					 inner join "TUSER4"."SAP_DM_APPROVAL_DATA" t15 on uoi.uoi_id = t15.uoi_id
+ 					 inner join "TUSER4"."СONTAINERS" t16 on uoi.uoi_id = t16.uoi_id 
+					WHERE uoi.IS_LATEST_VERSION = 'Y' 
+						AND (uoi.CONTENT_STATE != 'DELETED' OR uoi.CONTENT_STATE IS NULL) 
+						AND (uoi.USAGE_SCOPE != 'Folders' OR uoi.USAGE_SCOPE IS NULL) 
+						AND t1.APPROVAL_STATUS_CD = 'Approved'   
+						AND uoi.IS_EXPIRED = 'N'
+						AND (t2.ASSET_STATUS != 'Source' OR t2.ASSET_STATUS IS NULL) 
+						and ( 1=1
+						    and case when : = '' then '' else t3.ASSET_CD end = :asset_cd   
+							and case when :assettype_cd = '' then '' else t4.ASSETTYPE_CD end = :assettype_cd   
+							and case when :language_cd = '' then '' else t5.LANGUAGE_CD end = :language_cd   
+							and case when :region_cd = '' then '' else t6.REGION_CD end = :region_cd   
+							and case when :country_cd  = '' then '' else t7.COUNTRY_CD end = :country_cd   
+							and case when :year  = '' then '' else t3.YEAR end = :year  
+							and case when :industry_cd = '' then '' else t8.INDUSTRY_CD end = :industry_cd   
+							and case when :services_cd = '' then '' else t9.SERVICES_CD end = :services_cd   
+							and case when :solution_product_cd = '' then '' else t10.SOLUTION_PRODUCT_CD end = :solution_product_cd   
+							and case when :target_segment_cd = '' then '' else t11.TARGET_SEGMENT_CD end = :target_segment_cd   
+							and case when :lob = '' then '' else t12.LOB end = :lob   
+							and case when :audience_cd = '' then '' else t13.AUDIENCE_CD end = :audience_cd   
+							and case when :campaign_lc_cd = '' then '' else t3.CAMPAIGN_LIFECYCLE_CD end = :campaign_lc_cd   
+							and case when :cmp_tgp_information = '' then '' else t14.CMP_TGP_INFORMATION end = :cmp_tgp_information   
+							and case when :cmp_doc_format = '' then '' else t14.CMP_DOCUMENT_FORMAT end = :cmp_doc_format   
+							and case when :approver_name = '' then '' else UPPER(t15.APPROVER_NAME) end = :approver_name  
+							(and t16.TYPE_ID = 'SAP.FOLDER.SALES KITS' and t16.NAME = :sales_kit)
+							)  AND uoi.uoi_id IN (SELECT * FROM :selected_ids)
+				) ui 
+			) uo;
+			
+*/
+
+strexec := 	'INSERT INTO "TUSER4"."VIEW_ELEMENTS"(view_id, element_type, element_id, position, session_id) ' ;
+strexec := strexec 	||	' SELECT '|| :view_id ||' , ''UOI'', uo.uoi_id, uo.rownum, '|| :session_id ||' ' ;
+strexec := strexec 		||	' FROM (SELECT TOP ' || :rowcnt || ' ui.uoi_id, Row_Number() OVER (ORDER BY b0 DESC) AS rownum FROM ( '; 
+strexec := strexec 			||	' SELECT DISTINCT uoi.uoi_id, uoi.IMPORT_DT b0 FROM "TUSER4"."UOIS" uoi ' ;
+strexec := strexec 				||	' INNER JOIN "TUSER4"."SAP_DM_APPROVAL_DATA" t1 ON uoi.uoi_id = t1.uoi_id ' ;
+strexec := strexec 				||	' LEFT OUTER JOIN "TUSER4"."SAP_ASSET_STATUS" t2 ON uoi.uoi_id = t2.uoi_id '	;	
+
+IF (:asset_cd <> '' or :year <>'' or :campaign_lc_cd <>'' or :sap_type <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_DM_METADATA" t3 on uoi.uoi_id = t3.uoi_id ';
+END IF;
+
+IF (:assettype_cd <> '') THEN strexec := strexec ||' inner join "TUSER4"."SAP_COMMON_ASSETTYPE" t4 on uoi.uoi_id = t4.uoi_id ';
+END IF;
+
+IF (:language_cd <> '') THEN strexec := strexec ||' inner join "TUSER4"."SAP_COMMON_METADATA" t5 on uoi.uoi_id = t5.uoi_id ';
+END IF;
+		
+IF (:region_cd <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_COMMON_REGION" t6 on uoi.uoi_id = t6.uoi_id ';
+END IF;
+
+IF (:country_cd <> '') THEN strexec := strexec ||' inner join "TUSER4"."SAP_COMMON_COUNTRY1" t7 on uoi.uoi_id = t7.uoi_id ';
+END IF;
+
+IF (:industry_cd <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_COMMON_INDUSTRY" t8 on uoi.uoi_id = t8.uoi_id ';
+END IF;			
+		
+IF (:services_cd <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_COMMON_SERVICES" t9 on uoi.uoi_id = t9.uoi_id ';
+END IF;
+
+IF (:solution_product_cd <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_COMMON_SOLUTION_PRODUCT" t10 on uoi.uoi_id = t10.uoi_id ';
+END IF;
+
+IF (:target_segment_cd <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_COMMON_TARGET_SEG" t11 on uoi.uoi_id = t11.uoi_id ';
+END IF;
+		
+IF (:lob <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_LOB" t12 on uoi.uoi_id = t12.uoi_id ';
+END IF;
+
+IF (:audience_cd <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_DM_AUDIENCE" t13 on uoi.uoi_id = t13.uoi_id ';
+END IF;
+
+IF (:cmp_tgp_information <> '' or :cmp_doc_format <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_CMP_METADATA" t14 on uoi.uoi_id = t14.uoi_id ';
+END IF;	
+
+IF (:approver_name <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_DM_APPROVAL_DATA" t15 on uoi.uoi_id = t15.uoi_id ';
+END IF;
+
+IF (:sales_kit <>'') THEN strexec := strexec ||' inner join "TUSER4"."СONTAINERS" t16 on uoi.uoi_id = t16.uoi_id ';
+END IF;
+/**/
+IF (:topic <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_DM_TOPIC" t17 on uoi.uoi_id = t17.uoi_id ';
+END IF;
+
+IF (:task <>'') THEN strexec := strexec ||' inner join "TUSER4"."SAP_DM_TASK" t18 on uoi.uoi_id = t18.uoi_id ';
+END IF;
+/*Admin*/
+IF (:is_admin <>'0') THEN strexec := strexec ||' inner join "TUSER4"."SECURITY_POLICY_UOIS" t19 on uoi.uoi_id = t19.uoi_id ' ;
+END IF;
+/*Admin*/
+IF (:is_admin <>'0') THEN strexec := strexec ||' inner join "TUSER4"."SECURITY_POLICY_PERMISSIONS" t20 on t20.sec_policy_id = t19.sec_policy_id and t20.ASSET_VIEW_PERM = ''Y'' ';
+END IF;
+/*Admin*/
+IF (:is_admin <>'0') THEN strexec := strexec ||' inner join "TUSER4"."USER_GROUP_USERS" t21 on t20.user_group_id = t21.user_group_id  ';
+END IF;
+/**/
+
+
+
+
+
+	strexec := strexec ||' WHERE uoi.IS_LATEST_VERSION = ''Y'' ';
+	strexec := strexec ||'		AND (uoi.CONTENT_STATE != ''DELETED'' OR uoi.CONTENT_STATE IS NULL) ';
+
+IF (:usage_scope ='') THEN strexec := strexec ||'		AND (uoi.USAGE_SCOPE != ''Folders'' OR uoi.USAGE_SCOPE IS NULL) ';
+END IF;
+
+--	strexec := strexec ||'		AND (uoi.USAGE_SCOPE != ''Folders'' OR uoi.USAGE_SCOPE IS NULL) ';
+	strexec := strexec ||'		AND t1.APPROVAL_STATUS_CD = ''Approved''  ' ;
+	strexec := strexec ||'		AND uoi.IS_EXPIRED = ''N'' ';
+	strexec := strexec ||'		AND (t2.ASSET_STATUS != ''Source'' OR t2.ASSET_STATUS IS NULL) ';
+	strexec := strexec ||'		and ( 1=1 ';
+	
+	
+IF (:asset_cd <> '') THEN strexec := strexec ||' and  ' ||:asset_cd ||' ';
+END IF;
+
+IF ( :year <>'' ) THEN strexec := strexec ||' and t3.YEAR = ''' || :year || ''' ';
+END IF;
+
+IF (:campaign_lc_cd <>'') THEN strexec := strexec ||' and t3.CAMPAIGN_LIFECYCLE_CD = ''' || :campaign_lc_cd ||''' ';
+END IF;
+
+IF (:sap_type <>'') THEN strexec := strexec ||' and t3.SAP_TYPE = ''' || :sap_type ||''' ';
+END IF;
+
+
+IF (:assettype_cd <> '') THEN strexec := strexec ||' and t4.ASSETTYPE_CD = ''' || :assettype_cd ||''' ';
+END IF;
+
+IF (:language_cd <> '') THEN strexec := strexec ||' and t5.LANGUAGE_CD = ''' || :language_cd ||''' ';
+END IF;
+		
+IF (:region_cd <>'') THEN strexec := strexec ||' and t6.REGION_CD = ''' ||:region_cd ||''' ';
+END IF;
+
+IF (:country_cd <> '') THEN strexec := strexec ||' and t7.COUNTRY_CD = ''' ||:country_cd ||''' ';
+END IF;
+
+IF (:industry_cd <>'') THEN strexec := strexec ||' and t8.INDUSTRY_CD = ''' ||:industry_cd || ''' ';
+END IF;			
+		
+IF (:services_cd <>'') THEN strexec := strexec ||' and t9.SERVICES_CD = ''' || :services_cd ||''' ';
+END IF;
+
+IF (:solution_product_cd <>'') THEN strexec := strexec ||' and t10.SOLUTION_PRODUCT_CD = ''' ||:solution_product_cd ||''' ';
+END IF;
+
+IF (:target_segment_cd <>'') THEN strexec := strexec ||' and t11.TARGET_SEGMENT_CD = ''' ||:target_segment_cd ||''' ';
+END IF;
+		
+IF (:lob <>'') THEN strexec := strexec ||' and t12.LOB = ''' ||:lob ||''' ';
+END IF;
+
+IF (:audience_cd <>'') THEN strexec := strexec ||' and t13.AUDIENCE_CD = ''' ||:audience_cd ||''' ';
+END IF;
+
+IF (:cmp_tgp_information <> '') THEN strexec := strexec ||' and t14.CMP_TGP_INFORMATION = ''' ||:cmp_tgp_information ||''' ';
+END IF;	
+
+IF ( :cmp_doc_format <>'') THEN strexec := strexec ||' and t14.CMP_DOCUMENT_FORMAT = ''' || :cmp_doc_format ||''' ';
+END IF;	
+
+IF (:approver_name <>'') THEN strexec := strexec ||' and UPPER(t15.APPROVER_NAME) = ''' || :approver_name ||''' ';
+END IF;
+
+IF (:sales_kit <>'') THEN strexec := strexec ||' (and t16.TYPE_ID = ''SAP.FOLDER.SALES KITS'' and t16.NAME = ''' || :sales_kit ||''') ';
+END IF;
+
+IF (:uoi_ids <>'') THEN strexec := strexec ||' and ( ' || :uoi_ids ||' )';
+END IF;
+
+IF (:usage <>'') THEN strexec := strexec ||' and  uoi.USAGE = '''|| :usage ||''' ';
+END IF;
+
+IF (:usage_scope <>'') THEN strexec := strexec ||' and uoi.USAGE_SCOPE = ''' || :usage_scope ||''' ';
+END IF;
+
+IF (:is_collat <>'') THEN strexec := strexec ||' and uoi.IS_COLLATERAL= ''' || :is_collat ||''' ';
+END IF;
+
+IF (:topic <>'') THEN strexec := strexec ||' and t17.TOPIC= ''' || :is_collat ||''' ';
+END IF;
+IF (:task <>'') THEN strexec := strexec ||' and t18.TASK= ''' || :is_collat ||''' ';
+END IF;
+IF (:is_admin <>'0') THEN  strexec := strexec ||' and t21.user_id= ''' || :user_id ||''' ';
+END IF;
+	
+strexec := strexec ||'	AND uoi.uoi_id IN (SELECT DISTINCT p."ID" FROM (SELECT "ID", "SCORE" FROM "TUSER4"."Project_DAM.db.tables::mac_search_result" WHERE "ARTESIA_ID" = '''||:artesia_id||'''  ORDER BY SCORE DESC, ID ASC) AS p)  ';  --AND uoi.uoi_id IN (SELECT * FROM :selected_ids)
+strexec := strexec ||'	)) ui 	) uo ';
+	
+	exec strexec;
+	
+			
+	SELECT COUNT(*) INTO count FROM "TUSER4"."VIEW_ELEMENTS" WHERE "VIEW_ID" = :view_id;
+	DELETE FROM "TUSER4"."Project_DAM.db.tables::mac_search_result" WHERE "ARTESIA_ID" = :artesia_id;
+
+	
+--		SELECT strexec INTO str FROM DUMMY;
+END
